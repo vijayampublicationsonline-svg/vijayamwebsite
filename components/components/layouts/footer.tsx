@@ -94,7 +94,7 @@ export default function Footer() {
           {/* Contact */}
           <div>
             <h3 className="mb-5 text-lg font-semibold text-white">
-              Contact U
+              Contact Us
             </h3>
 
             <div className="space-y-4">
