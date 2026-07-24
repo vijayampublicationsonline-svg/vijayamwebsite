@@ -13,12 +13,12 @@ import {
 
 const navigation = [
   { name: "Home", href: "/" },
-  { name: "Books", href: "/books" },
-  { name: "Categories", href: "/categories" },
-  { name: "Publishers", href: "/publishers" },
-  { name: "New Arrivals", href: "/new-arrivals" },
-  { name: "Best Sellers", href: "/best-sellers" },
-  { name: "Contact", href: "/contact" },
+  { name: "Courses", href: "/books" },
+  { name: "Shop Now", href: "/categories" },
+  { name: "Catalogues", href: "/publishers" },
+  { name: "Manuscript", href: "/new-arrivals" },
+  { name: "Join as an Author", href: "/best-sellers" },
+  { name: "About Us", href: "/contact" },
 ];
 
 export default function Navbar() {

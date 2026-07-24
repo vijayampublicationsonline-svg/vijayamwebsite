@@ -1,23 +1,23 @@
 import Hero from "@/components/home/Hero";
-import Categories from "@/components/home/categories";
-import FeaturedBooks from "@/components/home/FeaturedBooks";
+import Courses from "@/components/home/courses";
+import Catalogue from "@/components/home/catalogue";
 import BestSellers from "@/components/home/BestSellers";
 import Publishers from "@/components/home/Publishers";
 import AIBanner from "@/components/home/AIBanner";
-import Newsletter from "@/components/home/NewsLetter";
+import Newsletter from "@/components/home/author";
 
 export default function HomePage() {
   return (
     <main className="bg-slate-50">
       <Hero />
 
-      <Categories />
+      <Courses />
 
-      <FeaturedBooks />
+      <Catalogue />
 
       <BestSellers />
 
-      <Publishers />
+      <a/>
 
       <AIBanner />
 

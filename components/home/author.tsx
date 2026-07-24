@@ -1,3 +1,3 @@
 export default function Newsletter() {
-    return <div>Newsletter</div>;
+    return <div>join as author </div>;
   }
