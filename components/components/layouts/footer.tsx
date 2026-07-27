@@ -115,7 +115,9 @@ export default function Footer() {
                 <Phone className="text-blue-400" size={18} />
                 <span>
                    +91 88854 14000
-                   +91 88854 14666
+                </span>
+                <span>
+                +91 88854 14666
                 </span>
               </div>
 
@@ -137,7 +139,7 @@ export default function Footer() {
                 </Link>
 
                 <Link
-                  href="https://instagram.com"
+                  href="https://www.instagram.com/vijayampublications"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="rounded-full bg-slate-800 p-2 transition hover:bg-pink-600"

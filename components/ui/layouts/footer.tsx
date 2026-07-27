@@ -182,7 +182,7 @@ export default function Footer() {
                 </Link>
 
                 <Link
-                  href="#"
+                  href="https://www.instagram.com/vijayampublications"
                   className="rounded-full bg-slate-800 p-2 transition hover:bg-blue-600"
                   aria-label="LinkedIn"
                 >

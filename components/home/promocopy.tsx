@@ -12,7 +12,7 @@ import {
 
 export default function PromoSection() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-r from-blue-500 via-white to-indigo-250">
+    <section className="relative overflow-hidden bg-gradient-to-r from-yellow-500 via-amber to-yellow-250">
 
       {/* Decorative Blurs */}
 
@@ -82,7 +82,7 @@ export default function PromoSection() {
 
             <div className="grid grid-cols-2 gap-6">
 
-              <div className="rounded-3xl bg-white/10 p-7 backdrop-blur">
+              <div className="rounded-3xl bg-blue/30 p-7 backdrop-hover">
 
                 <BookOpen className="mb-4 h-10 w-10 text-cyan-300" />
 
