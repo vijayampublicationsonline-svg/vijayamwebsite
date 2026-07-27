@@ -113,12 +113,15 @@ export default function Footer() {
 
               <div className="flex items-center gap-3">
                 <Phone className="text-blue-400" size={18} />
-                <span>+91 98765 43210</span>
+                <span>
+                   +91 88854 14000
+                   +91 88854 14666
+                </span>
               </div>
 
               <div className="flex items-center gap-3">
                 <Mail className="text-blue-400" size={18} />
-                <span>support@vijayampublications.com</span>
+                <span>vijayampublicationsvja@gmail.com</span>
               </div>
 
               {/* Social Links */}
@@ -169,7 +172,7 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="mt-12 border-t border-slate-700 pt-6 text-center text-sm text-slate-400">
-          © {new Date().getFullYear()} Vijayam Publications. All rights
+          © {new Date().getFullYear()} Vijayam Publications. All rights 
           reserved.
         </div>
       </div>

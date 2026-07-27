@@ -13,7 +13,7 @@ import {
 
 export default function JoinAuthorSection() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 py-24">
+    <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-pink-900 to-beige-900 py-24">
 
       {/* Background Glow */}
       <div className="absolute -top-24 left-0 h-80 w-80 rounded-full bg-blue-500/20 blur-3xl"></div>

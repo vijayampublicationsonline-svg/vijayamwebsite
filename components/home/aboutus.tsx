@@ -24,9 +24,9 @@ export default function AboutUsSection() {
 
           <div className="relative">
 
-            <div className="rounded-3xl bg-gradient-to-br from-blue-700 to-indigo-700 p-10 text-white shadow-2xl">
+            <div className="rounded-3xl bg-gradient-to-br from-Amber-700 to-amber-700 p-10 text-yellow shadow-2xl">
 
-              <div className="inline-flex rounded-full bg-white/20 px-4 py-2">
+              <div className="inline-flex rounded-full bg-forestgreen/20 px-4 py-2">
 
                 Trusted Academic Publisher
 

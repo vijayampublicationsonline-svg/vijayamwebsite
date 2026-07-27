@@ -10,7 +10,7 @@ import Link from "next/link";
 
 export default function CatalogueSection() {
   return (
-    <section className="py-24 bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-700">
+    <section className="py-24 bg-gradient-to-r from-yellow-600 via-orange-600 to-sky-700">
 
       <div className="container mx-auto px-6">
 

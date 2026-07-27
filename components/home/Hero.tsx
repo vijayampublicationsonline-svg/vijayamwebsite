@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-r from-blue-50 via-white to-indigo-50">
+    <section className="relative overflow-hidden bg-gradient-to-r from-yellow-500 via-amber to-yellow-250">
 
       <div className="absolute inset-0">
         <Image
