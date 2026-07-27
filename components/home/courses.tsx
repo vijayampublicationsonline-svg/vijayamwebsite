@@ -44,7 +44,7 @@ const courses = [
     title: "Degree",
     icon: BriefcaseMedical,
     books: "100+ Books",
-    color: "<from-cyan-100 to-blue-700",
+    color: "from-cyan-400 to-blue-700",
   },
 ];
 

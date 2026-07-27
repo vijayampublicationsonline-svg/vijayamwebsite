@@ -115,8 +115,8 @@ Discover expertly curated textbooks, exam resources, and academic learning mater
 
             <Image
               src="/images/hero-book.png"
-              width={650}
-              height={650}
+              width={600}
+              height={600}
               alt="Books"
               priority
               className="mx-auto animate-float"
