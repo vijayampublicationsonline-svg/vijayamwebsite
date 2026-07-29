@@ -16,7 +16,7 @@ const navigation = [
   { name: "Courses", href: "/books" },
   { name: "Shop Now", href: "/categories" },
   { name: "Catalogues", href: "/publishers" },
-  { name: "promo copy", href: "/new-arrivals" },
+  { name: "Promo Copy", href: "/new-arrivals" },
   { name: "Join as an Author", href: "/best-sellers" },
   { name: "About Us", href: "/contact" },
 ];
