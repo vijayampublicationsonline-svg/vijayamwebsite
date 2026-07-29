@@ -23,7 +23,7 @@ const quickLinks = [
 ];
 
 const supportLinks = [
-  { name: "Shipping Policy", href: "/shipping-policy" },
+  { name: "Shipping Policy", href: "/shipping-policy.tsx" },
   { name: "Return Policy", href: "/return-policy" },
   { name: "Privacy Policy", href: "/privacy-policy" },
   { name: "Terms & Conditions", href: "/terms" },
@@ -114,10 +114,7 @@ export default function Footer() {
               <div className="flex items-center gap-3">
                 <Phone className="text-blue-400" size={18} />
                 <span>
-                   +91 88854 14000
-                </span>
-                <span>
-                +91 88854 14666
+                   +91 88854 14000 , +91 88854 14666
                 </span>
               </div>
 
@@ -159,7 +156,7 @@ export default function Footer() {
                 </Link>
 
                 <Link
-                  href="https://youtube.com"
+                  href="https://www.youtube.com/@vijayam"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="rounded-full bg-slate-800 p-2 transition hover:bg-red-600"
