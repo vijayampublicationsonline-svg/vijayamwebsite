@@ -44,14 +44,14 @@ interface Book {
 }
 
 const books: Book[] = [
-  { id: 1, title: "Medical Surgical Nursing", image: "/images/books/book1.png" },
-  { id: 2, title: "Child Health Nursing", image: "/images/books/book2.png" },
-  { id: 3, title: "Mental Health Nursing", image: "/images/books/book3.png" },
-  { id: 4, title: "Community Health Nursing", image: "/images/books/book4.png" },
-  { id: 5, title: "Nutrition", image: "/images/books/book5.png" },
-  { id: 6, title: "Anatomy", image: "/images/books/book6.png" },
-  { id: 7, title: "Microbiology", image: "/images/books/book7.png" },
-  { id: 8, title: "Pharmacology", image: "/images/books/book8.png" },
+  { id: 1, title: "Medical Surgical Nursing", image:""},
+  { id: 2, title: "Child Health Nursing", image: "" },
+  { id: 3, title: "Mental Health Nursing", image: "" },
+  { id: 4, title: "Community Health Nursing", image: "" },
+  { id: 5, title: "Nutrition", image: "" },
+  { id: 6, title: "Anatomy", image: "" },
+  { id: 7, title: "Microbiology", image: "" },
+  { id: 8, title: "Pharmacology", image: ""},
 ];
 
 /* ----------------------------------------------------------------- */
