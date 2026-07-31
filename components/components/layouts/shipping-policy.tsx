@@ -20,14 +20,14 @@ export default function ShoppingPolicy() {
           
           {/* Section 1 */}
           <section>
-            <h2 className="text-xl font-bold text-slate-950 mb-3">1. Digital Product Delivery</h2>
+            <h2 className="text-xl font-bold text-slate-950 mb-3">1. Physical Product Delivery</h2>
             <p className="text-slate-600 leading-relaxed mb-3">
-              All our educational materials, courses, and memberships are digital products. We do not ship physical goods.
+              All our educational materials, courses, and memberships are digital products and physical goods. We do ship physical goods.
             </p>
             <ul className="list-disc pl-5 space-y-1 text-slate-600">
               <li>Access links are sent immediately via email after checkout.</li>
               <li>Courses are accessible via your student dashboard right away.</li>
-              <li>Downloadable files (PDFs, code) are available instantly.</li>
+              <li>Downloadable files (PDFs) are available instantly.</li>
             </ul>
           </section>
 
@@ -71,7 +71,7 @@ export default function ShoppingPolicy() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 text-sm font-medium">
               <a href="mailto:support@yourwebsite.com" className="inline-flex items-center text-indigo-600 hover:text-indigo-800 transition-colors">
-                ✉️ support@yourwebsite.com
+                ✉️ https://vijayampublications.com
               </a>
               <span className="hidden sm:inline text-slate-300">|</span>
               <span className="text-slate-600">⏱️ Response Time: Within 24-48 hours</span>

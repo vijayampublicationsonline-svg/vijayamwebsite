@@ -12,7 +12,7 @@ import {
 
 export default function PromoSection() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-r from-yellow-500 via-amber to-yellow-250">
+    <section className="relative overflow-hidden bg-gradient-to-r from-amber-500 via-yellow to-teal-250">
 
       {/* Decorative Blurs */}
 
@@ -27,7 +27,7 @@ export default function PromoSection() {
 
           <div>
 
-            <div className="inline-flex items-center rounded-full bg-white/15 px-5 py-2 text-sm font-semibold text-black backdrop-blur">
+            <div className="inline-flex items-center rounded-full bg-white/15 px-5 py-2 text-sm font-bold text-black ">
 
               <Sparkles className="mr-2 h-4 w-4" />
 
@@ -86,53 +86,53 @@ export default function PromoSection() {
 
                 <BookOpen className="mb-4 h-10 w-10 text-cyan-300" />
 
-                <h3 className="text-xl font-bold text-white">
+                <h3 className="text-xl font-bold text-black">
                   Lecture Notes
                 </h3>
 
-                <p className="mt-3 text-blue-100">
+                <p className="mt-3 text-black-100">
                   Structured notes prepared according to the latest syllabus.
                 </p>
 
               </div>
 
-              <div className="rounded-3xl bg-white/10 p-7 backdrop-blur">
+              <div className="rounded-3xl bg/10 p-7 ">
 
-                <GraduationCap className="mb-4 h-10 w-10 text-cyan-300" />
+                <GraduationCap className="mb-4 h-10 w-10 text-teal-300" />
 
-                <h3 className="text-xl font-bold text-white">
+                <h3 className="text-xl font-bold text-black">
                   Teaching PPTs
                 </h3>
 
-                <p className="mt-3 text-blue-100">
+                <p className="mt-3 text-black-100">
                   Ready-to-use classroom presentations.
                 </p>
 
               </div>
 
-              <div className="rounded-3xl bg-white/10 p-7 backdrop-blur">
+              <div className="rounded-3xl bg-white/10 p-7 ">
 
                 <FileText className="mb-4 h-10 w-10 text-cyan-300" />
 
-                <h3 className="text-xl font-bold text-white">
+                <h3 className="text-xl font-bold text-black">
                   Question Banks
                 </h3>
 
-                <p className="mt-3 text-blue-100">
+                <p className="mt-3 text-black-100">
                   Unit-wise and university-wise practice questions.
                 </p>
 
               </div>
 
-              <div className="rounded-3xl bg-white/10 p-7 backdrop-blur">
+              <div className="rounded-3xl bg-white/10 p-7 ">
 
                 <Download className="mb-4 h-10 w-10 text-cyan-300" />
 
-                <h3 className="text-xl font-bold text-white">
+                <h3 className="text-xl font-bold text-black">
                   Instant Access
                 </h3>
 
-                <p className="mt-3 text-blue-100">
+                <p className="mt-3 text-black-100">
                   Download free resources or unlock premium materials.
                 </p>
 

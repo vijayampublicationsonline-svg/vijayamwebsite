@@ -99,8 +99,8 @@ const categories: CatalogueCategory[] = [
 ]
 
 const statistics: Statistic[] = [
-  { label: "Books", value: "500+" },
-  { label: "Students", value: "2L+" },
+  { label: "Books", value: "600+" },
+  { label: "Students", value: "1000000L+" },
   { label: "Colleges", value: "800+" },
 ]
 
@@ -312,7 +312,7 @@ export default function CatalogueHero() {
                 className="rounded-3xl border border-slate-200 bg-white/80 p-5 backdrop-blur-xl"
               >
                 <motion.div variants={cardHover}>
-                  <h3 className="text-3xl font-black text-blue-600">500+</h3>
+                  <h3 className="text-3xl font-black text-blue-600">650+</h3>
                   <p className="mt-1 text-sm font-medium text-slate-600">
                     Books
                   </p>
@@ -327,9 +327,9 @@ export default function CatalogueHero() {
                 className="rounded-3xl border border-slate-200 bg-white/80 p-5 backdrop-blur-xl"
               >
                 <motion.div variants={cardHover}>
-                  <h3 className="text-3xl font-black text-cyan-600">45+</h3>
+                  <h3 className="text-3xl font-black text-cyan-600">5000+</h3>
                   <p className="mt-1 text-sm font-medium text-slate-600">
-                    Universities
+                    colleges
                   </p>
                 </motion.div>
               </motion.div>
@@ -342,9 +342,9 @@ export default function CatalogueHero() {
                 className="rounded-3xl border border-slate-200 bg-white/80 p-5 backdrop-blur-xl"
               >
                 <motion.div variants={cardHover}>
-                  <h3 className="text-3xl font-black text-indigo-600">2026</h3>
+                  <h3 className="text-3xl font-black text-indigo-600">23+</h3>
                   <p className="mt-1 text-sm font-medium text-slate-600">
-                    Editions
+                    years of publishing
                   </p>
                 </motion.div>
               </motion.div>
@@ -360,9 +360,9 @@ export default function CatalogueHero() {
                 whileTap={{ scale: 0.97 }}
                 className="inline-flex items-center gap-3 rounded-2xl bg-gradient-to-r from-blue-600 to-cyan-500 px-8 py-4 font-bold text-white shadow-2xl shadow-blue-500/30"
               >
-                Browse Catalogue
+               Download Catalogue 
                 <ArrowRight className="h-5 w-5" />
-              </motion.button>
+              </motion.button> 
 
               <motion.button
                 whileHover={{ scale: 1.03 }}
@@ -457,6 +457,8 @@ export default function CatalogueHero() {
             >
               <Library className="h-7 w-7 text-cyan-600" />
             </motion.div>
+
+            
 
             {/* Premium Book Wrapper */}
             <motion.div
@@ -753,21 +755,21 @@ export default function CatalogueHero() {
               className="grid grid-cols-3 gap-4 rounded-3xl border border-white/40 bg-white/70 p-6 backdrop-blur-xl shadow-lg"
             >
               <div className="text-center">
-                <h5 className="text-3xl font-black text-blue-600">25+</h5>
+                <h5 className="text-3xl font-black text-blue-600">23+</h5>
                 <p className="mt-2 text-sm text-slate-600">
                   Years Experience
                 </p>
               </div>
 
               <div className="text-center">
-                <h5 className="text-3xl font-black text-cyan-600">2L+</h5>
+                <h5 className="text-3xl font-black text-cyan-600">10L+</h5>
                 <p className="mt-2 text-sm text-slate-600">
                   Happy Students
                 </p>
               </div>
 
               <div className="text-center">
-                <h5 className="text-3xl font-black text-indigo-600">500+</h5>
+                <h5 className="text-3xl font-black text-indigo-600">600+</h5>
                 <p className="mt-2 text-sm text-slate-600">
                   Premium Titles
                 </p>
@@ -835,11 +837,11 @@ export default function CatalogueHero() {
                 variants={fadeUp}
                 className="mt-10 flex flex-wrap justify-center gap-5"
               >
-                <motion.button
+               <motion.button
                   whileHover={{ scale: 1.05, y: -3 }}
                   whileTap={{ scale: 0.96 }}
                   aria-label="Browse Catalogue"
-                  className="inline-flex items-center gap-3 rounded-2xl bg-white px-8 py-4 font-bold text-blue-700 shadow-2xl"
+                  className="inline-flex items-center gap-3 rounded-2xl bg-white px-8 py-4 font-bold text-blue-700 shadow-2xl" 
                 >
                   <BookOpen className="h-5 w-5" />
                   Browse Catalogue
@@ -869,14 +871,14 @@ export default function CatalogueHero() {
                 </motion.div>
 
                 <motion.div variants={fadeUp}>
-                  <h3 className="text-4xl font-black">45+</h3>
+                  <h3 className="text-4xl font-black">5000+</h3>
                   <p className="mt-2 text-blue-100">
-                    Universities Covered
+                    Colleges Covered
                   </p>
                 </motion.div>
 
                 <motion.div variants={fadeUp}>
-                  <h3 className="text-4xl font-black">25+</h3>
+                  <h3 className="text-4xl font-black">23+</h3>
                   <p className="mt-2 text-blue-100">
                     Years of Excellence
                   </p>
