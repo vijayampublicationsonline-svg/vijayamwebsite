@@ -1,18 +1,6 @@
 import Link from "next/link";
-
-import {
-  BookOpen,
-  Mail,
-  Phone,
-  MapPin,
-} from "lucide-react";
-
-import {
-  FaFacebookF,
-  FaInstagram,
-  FaLinkedinIn,
-  FaYoutube,
-} from "react-icons/fa";
+import { BookOpen, Mail, Phone, MapPin } from "lucide-react";
+import { FaFacebookF, FaInstagram, FaLinkedinIn, FaYoutube } from "react-icons/fa";
 
 const quickLinks = [
   { name: "Home", href: "/" },
@@ -23,7 +11,7 @@ const quickLinks = [
 ];
 
 const supportLinks = [
-  { name: "Shipping Policy", href: "/shipping-policy.tsx" },
+  { name: "Shipping Policy", href: "/shipping-policy" }, // Fixed .tsx extension
   { name: "Return Policy", href: "/return-policy" },
   { name: "Privacy Policy", href: "/privacy-policy" },
   { name: "Terms & Conditions", href: "/terms" },
@@ -31,38 +19,38 @@ const supportLinks = [
 ];
 
 export default function Footer() {
-  return (
-    <footer className="border-t bg-slate-900 text-slate-300">
-      <div className="mx-auto max-w-7xl px-6 py-14">
-        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
-          {/* Company */}
-          <div>
-            <div className="mb-4 flex items-center gap-2">
-              <BookOpen className="text-blue-400" size={28} />
+  const currentYear = new Date().getFullYear();
 
-              <h2 className="text-2xl font-bold text-white">
+  return (
+    <footer className="border-t border-slate-800 bg-slate-950 text-slate-300">
+      <div className="mx-auto max-w-7xl px-6 py-16">
+        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
+          
+          {/* Company Section */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-blue-500/10 rounded-lg">
+                <BookOpen className="text-blue-500" size={28} />
+              </div>
+              <h2 className="text-2xl font-bold text-white tracking-tight">
                 Vijayam Publications
               </h2>
             </div>
-
-            <p className="leading-7 text-slate-400">
-              India's trusted online bookstore for Medical, Nursing,
+            <p className="max-w-xs leading-relaxed text-slate-400 text-sm">
+              India's trusted online bookstore for Medical, Nursing, 
               Pharmacy, Engineering, Competitive Exam, and Academic books.
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="mb-5 text-lg font-semibold text-white">
-              Quick Links
-            </h3>
-
-            <ul className="space-y-3">
+            <h3 className="mb-6 text-lg font-semibold text-white">Quick Links</h3>
+            <ul className="flex flex-col gap-4">
               {quickLinks.map((link) => (
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="transition hover:text-blue-400"
+                    className="text-sm transition-colors duration-200 hover:text-blue-400"
                   >
                     {link.name}
                   </Link>
@@ -71,18 +59,15 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Support */}
+          {/* Support Section */}
           <div>
-            <h3 className="mb-5 text-lg font-semibold text-white">
-              Support
-            </h3>
-
-            <ul className="space-y-3">
+            <h3 className="mb-6 text-lg font-semibold text-white">Support</h3>
+            <ul className="flex flex-col gap-4">
               {supportLinks.map((link) => (
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="transition hover:text-blue-400"
+                    className="text-sm transition-colors duration-200 hover:text-blue-400"
                   >
                     {link.name}
                   </Link>
@@ -91,88 +76,54 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Contact */}
+          {/* Contact & Socials */}
           <div>
-            <h3 className="mb-5 text-lg font-semibold text-white">
-              Contact Us
-            </h3>
-
-            <div className="space-y-4">
+            <h3 className="mb-6 text-lg font-semibold text-white">Contact Us</h3>
+            <div className="space-y-4 text-sm">
               <div className="flex items-start gap-3">
-                <MapPin
-                  className="mt-1 text-blue-400"
-                  size={18}
-                />
-
-                <span>
-                  Vijayawada, Andhra Pradesh
-                  <br />
-                  India
-                </span>
+                <MapPin className="text-blue-500 mt-1 shrink-0" size={18} />
+                <span>Vijayawada, Andhra Pradesh<br />India</span>
               </div>
 
               <div className="flex items-center gap-3">
-                <Phone className="text-blue-400" size={18} />
-                <span>
-                   +91 88854 14000 , +91 88854 14666
-                </span>
+                <Phone className="text-blue-500 shrink-0" size={18} />
+                <span>+91 88854 14000, +91 88854 14666</span>
               </div>
 
               <div className="flex items-center gap-3">
-                <Mail className="text-blue-400" size={18} />
+                <Mail className="text-blue-500 shrink-0" size={18} />
                 <span>vijayampublicationsvja@gmail.com</span>
               </div>
 
-              {/* Social Links */}
-              <div className="flex gap-4 pt-4">
-                <Link
-                  href="https://facebook.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded-full bg-slate-800 p-2 transition hover:bg-blue-600"
-                  aria-label="Facebook"
-                >
-                  <FaFacebookF size={18} />
-                </Link>
-
-                <Link
-                  href="https://www.instagram.com/vijayampublications"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded-full bg-slate-800 p-2 transition hover:bg-pink-600"
-                  aria-label="Instagram"
-                >
-                  <FaInstagram size={18} />
-                </Link>
-
-                <Link
-                  href="https://linkedin.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded-full bg-slate-800 p-2 transition hover:bg-sky-700"
-                  aria-label="LinkedIn"
-                >
-                  <FaLinkedinIn size={18} />
-                </Link>
-
-                <Link
-                  href="https://www.youtube.com/@vijayam"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded-full bg-slate-800 p-2 transition hover:bg-red-600"
-                  aria-label="YouTube"
-                >
-                  <FaYoutube size={18} />
-                </Link>
+              {/* Social Icons Grid */}
+              <div className="flex gap-3 pt-6">
+                {[
+                  { icon: <FaFacebookF />, href: "https://facebook.com", color: "hover:bg-blue-600" },
+                  { icon: <FaInstagram />, href: "https://www.instagram.com/vijayampublications", color: "hover:bg-pink-600" },
+                  { icon: <FaLinkedinIn />, href: "https://linkedin.com", color: "hover:bg-sky-700" },
+                  { icon: <FaYoutube />, href: "https://www.youtube.com/@vijayam", color: "hover:bg-red-600" },
+                ].map((social, idx) => (
+                  <Link
+                    key={idx}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`rounded-lg bg-slate-800 p-3 transition-all duration-200 ${social.color}`}
+                    aria-label={social.icon.toString()}
+                  >
+                    {social.icon}
+                  </Link>
+                ))}
               </div>
             </div>
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-12 border-t border-slate-700 pt-6 text-center text-sm text-slate-400">
-          © {new Date().getFullYear()} Vijayam Publications. All rights 
-          reserved.
+        <div className="mt-16 border-t border-slate-800 pt-8">
+          <p className="text-center text-xs text-slate-500">
+            © {currentYear} Vijayam Publications. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>
