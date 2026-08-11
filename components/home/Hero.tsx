@@ -44,12 +44,12 @@ interface Book {
 
 const books: Book[] = [
   { id: 1, title: "Medical Surgical Nursing", image: "/images/s2.jpeg" },
-  { id: 2, title: "Child Health Nursing", image: "/images/s2.jpeg" },
-  { id: 3, title: "Mental Health Nursing", image: "/images/s2.jpeg" },
+  { id: 2, title: "Child Health Nursing", image: "/images/g7.jpeg" },
+  { id: 3, title: "Mental Health Nursing", image: "/images/d5.jpeg" },
   { id: 4, title: "Community Health Nursing", image: "/images/s2.jpeg" },
   { id: 5, title: "Nutrition", image: "/images/s2.jpeg" },
   { id: 6, title: "Anatomy", image: "/images/s2.jpeg" },
-  { id: 7, title: "Microbiology", image: "/images/s2.jpeg" },
+  { id: 7, title: "Microbiology", image: "/images/s4.jpeg" },
   { id: 8, title: "Pharmacology", image: "/images/s2.jpeg" },
 ];
 
@@ -93,7 +93,7 @@ function PremiumCursor() {
           opacity: enlarged ? 0.95 : 0.5,
         }}
         transition={{ type: "spring", stiffness: 180, damping: 16 }}
-        className="absolute -translate-x-1/2 -translate-y-1/2 h-10 w-10 rounded-full border border-[#D4AF37]/80 bg-white/5 backdrop-blur-sm"
+        className="absolute -translate-x-1/2 -translate-y-1/2 h-10 w-10 rounded-full border border-[#D4AF37]/80 bg-black/5 backdrop-blur-sm"
       />
     </div>
   );
