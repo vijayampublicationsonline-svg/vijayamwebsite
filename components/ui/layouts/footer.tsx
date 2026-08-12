@@ -9,6 +9,9 @@ import {
   BookOpen,
   Library,
   LucideIcon,
+  Cookie,
+  Truck,
+  FileText,
 } from "lucide-react";
 
 type PolicyLink = {
@@ -26,8 +29,11 @@ const quickLinks = [
 ];
 
 const policyLinks: PolicyLink[] = [
-  { name: "Privacy Policy", href: "/privacy-policy", icon: ShieldCheck },
-  { name: "Return Policy", href: "/return-policy", icon: RotateCcw },
+  { name: "Privacy Policy", href: "/privacypolicy", icon: ShieldCheck },
+  { name: "Return Policy", href: "/returnpolicy", icon: RotateCcw },
+  { name: "Shipping Policy", href: "/shippingpolicy", icon: Truck },
+  { name: "Cookie Policy", href: "/cookiepolicy", icon: Cookie },
+  { name: "Terms of Service", href: "/termsofservice", icon: FileText },
 ];
 
 export default function Footer() {
@@ -147,12 +153,11 @@ export default function Footer() {
 
           <div className="rounded-[1.5rem] border border-white/10 bg-white/5 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.25)] backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:border-cyan-400/20">
             <div className="space-y-3 text-sm leading-7 text-slate-300">
-              <Link href="/privacy-policy" className="block transition hover:text-cyan-300">
-                Privacy Policy
-              </Link>
-              <Link href="/return-policy" className="block transition hover:text-cyan-300">
-                Return Policy
-              </Link>
+              {policyLinks.map((link) => (
+                <Link key={link.name} href={link.href} className="block transition hover:text-cyan-300">
+                  {link.name}
+                </Link>
+              ))}
             </div>
           </div>
 
@@ -172,12 +177,11 @@ export default function Footer() {
         <div className="mt-10 border-t border-white/10 pt-6 text-sm text-slate-400 md:flex md:items-center md:justify-between">
           <p>© {year} Vijayam Publications. All rights reserved.</p>
           <div className="mt-3 flex flex-wrap gap-4 md:mt-0">
-            <Link href="/privacy-policy" className="transition hover:text-cyan-300">
-              Privacy Policy
-            </Link>
-            <Link href="/return-policy" className="transition hover:text-cyan-300">
-              Return Policy
-            </Link>
+            {policyLinks.map((link) => (
+              <Link key={link.name} href={link.href} className="transition hover:text-cyan-300">
+                {link.name}
+              </Link>
+            ))}
           </div>
         </div>
       </div>
