@@ -36,8 +36,8 @@ const translations: Record<(typeof languages)[number], Record<string, string>> =
     joinAuthor: "Join as an Author",
     aboutUs: "About Us",
     search: "Search ISBN / Book Name",
-    dayMode: "Day Mode",
-    nightMode: "Night Mode",
+    day: "Day Mode",
+    night: "Night Mode",
     login: "Login",
   },
   Telugu: {

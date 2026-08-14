@@ -5,6 +5,7 @@ import Promocopy from "@/components/home/promocopy";
 import Aboutus from "@/components/home/aboutus";
 import Newsletter from "@/components/home/author";
 
+
 export default function HomePage() {
   return (
     <main className="bg-slate-50">
