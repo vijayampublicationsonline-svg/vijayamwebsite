@@ -40,9 +40,6 @@ const offices = [
 
 const heartImage = "/images/heart.png.png";
 
-const featuredImage =
-  "https://static.wixstatic.com/media/1b0992_814c1a77bf5a43488713151ef87fd14c~mv2.jpg/v1/crop/x_247,y_0,w_848,h_792/fill/w_264,h_280,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/INTERNATIONAL%20YOGA%20%20Day%20Theme%20Poster_edi.jpg";
-
 const googleMapsUrl =
   "https://www.google.com/maps/place/Vijayam+Publications/@16.5137418,80.620686,17z/data=!3m1!4b1!4m6!3m5!1s0x3a35efffc8e7808f:0x8da3d2f53a04255f!8m2!3d16.5137418!4d80.620686!16s%2Fg%2F1q62gl18g?entry=ttu&g_ep=EgoyMDI2MDgxMS4wIKXMDSoASAFQAw%3D%3D";
 
@@ -50,84 +47,16 @@ const googleMapsEmbedUrl =
   "https://www.google.com/maps?q=Vijayam%20Publications%2C%2016.5137418%2C80.620686&z=17&output=embed";
 
 const heartColors = [
-  {
-    name: "Red",
-    primary: "#e51d3f",
-    light: "#ff8595",
-    glow: "rgba(239,28,62,.62)",
-    filter: "saturate(1.25) contrast(1.15) brightness(1.16)",
-  },
-  {
-    name: "Blue",
-    primary: "#2478ed",
-    light: "#82c9ff",
-    glow: "rgba(38,126,255,.62)",
-    filter:
-      "hue-rotate(215deg) saturate(1.65) contrast(1.12) brightness(1.2)",
-  },
-  {
-    name: "Emerald",
-    primary: "#10b86c",
-    light: "#81efb9",
-    glow: "rgba(16,203,116,.58)",
-    filter:
-      "hue-rotate(125deg) saturate(1.55) contrast(1.1) brightness(1.2)",
-  },
-  {
-    name: "Gold",
-    primary: "#efa914",
-    light: "#ffe28a",
-    glow: "rgba(255,185,30,.6)",
-    filter:
-      "hue-rotate(55deg) saturate(1.8) contrast(1.08) brightness(1.24)",
-  },
-  {
-    name: "Violet",
-    primary: "#9c4bd5",
-    light: "#dda9ff",
-    glow: "rgba(168,78,231,.62)",
-    filter:
-      "hue-rotate(275deg) saturate(1.65) contrast(1.1) brightness(1.18)",
-  },
-  {
-    name: "Rose",
-    primary: "#f34898",
-    light: "#ffafd4",
-    glow: "rgba(255,72,157,.62)",
-    filter:
-      "hue-rotate(325deg) saturate(1.55) contrast(1.1) brightness(1.2)",
-  },
-  {
-    name: "Orange",
-    primary: "#f16b26",
-    light: "#ffc080",
-    glow: "rgba(255,111,38,.62)",
-    filter:
-      "hue-rotate(28deg) saturate(1.65) contrast(1.1) brightness(1.22)",
-  },
-  {
-    name: "Cyan",
-    primary: "#12b9c7",
-    light: "#8af2f6",
-    glow: "rgba(17,205,219,.6)",
-    filter:
-      "hue-rotate(175deg) saturate(1.6) contrast(1.1) brightness(1.2)",
-  },
-  {
-    name: "Crimson",
-    primary: "#b61037",
-    light: "#f3758c",
-    glow: "rgba(201,18,59,.64)",
-    filter: "saturate(1.7) contrast(1.22) brightness(1.04)",
-  },
-  {
-    name: "Purple",
-    primary: "#6755df",
-    light: "#afa6ff",
-    glow: "rgba(109,88,237,.62)",
-    filter:
-      "hue-rotate(245deg) saturate(1.65) contrast(1.1) brightness(1.19)",
-  },
+  { name: "Red", primary: "#e51d3f", light: "#ff8595", glow: "rgba(239,28,62,.62)", filter: "saturate(1.25) contrast(1.15) brightness(1.16)" },
+  { name: "Blue", primary: "#2478ed", light: "#82c9ff", glow: "rgba(38,126,255,.62)", filter: "hue-rotate(215deg) saturate(1.65) contrast(1.12) brightness(1.2)" },
+  { name: "Emerald", primary: "#10b86c", light: "#81efb9", glow: "rgba(16,203,116,.58)", filter: "hue-rotate(125deg) saturate(1.55) contrast(1.1) brightness(1.2)" },
+  { name: "Gold", primary: "#efa914", light: "#ffe28a", glow: "rgba(255,185,30,.6)", filter: "hue-rotate(55deg) saturate(1.8) contrast(1.08) brightness(1.24)" },
+  { name: "Violet", primary: "#9c4bd5", light: "#dda9ff", glow: "rgba(168,78,231,.62)", filter: "hue-rotate(275deg) saturate(1.65) contrast(1.1) brightness(1.18)" },
+  { name: "Rose", primary: "#f34898", light: "#ffafd4", glow: "rgba(255,72,157,.62)", filter: "hue-rotate(325deg) saturate(1.55) contrast(1.1) brightness(1.2)" },
+  { name: "Orange", primary: "#f16b26", light: "#ffc080", glow: "rgba(255,111,38,.62)", filter: "hue-rotate(28deg) saturate(1.65) contrast(1.1) brightness(1.22)" },
+  { name: "Cyan", primary: "#12b9c7", light: "#8af2f6", glow: "rgba(17,205,219,.6)", filter: "hue-rotate(175deg) saturate(1.6) contrast(1.1) brightness(1.2)" },
+  { name: "Crimson", primary: "#b61037", light: "#f3758c", glow: "rgba(201,18,59,.64)", filter: "saturate(1.7) contrast(1.22) brightness(1.04)" },
+  { name: "Purple", primary: "#6755df", light: "#afa6ff", glow: "rgba(109,88,237,.62)", filter: "hue-rotate(245deg) saturate(1.65) contrast(1.1) brightness(1.19)" },
 ];
 
 const footerStyles = `
@@ -145,16 +74,8 @@ const footerStyles = `
     transition: background .5s ease;
   }
 
-  .vp-footer,
-  .vp-footer * {
-    box-sizing: border-box;
-  }
-
-  .vp-footer a,
-  .vp-footer button {
-    color: inherit;
-    font: inherit;
-  }
+  .vp-footer, .vp-footer * { box-sizing: border-box; }
+  .vp-footer a, .vp-footer button { color: inherit; font: inherit; }
 
   .vp-footer__bg {
     position: absolute;
@@ -165,13 +86,7 @@ const footerStyles = `
       linear-gradient(rgba(255,255,255,.022) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
     background-size: 100px 100px;
-    mask-image: linear-gradient(
-      to bottom,
-      transparent,
-      #000 12%,
-      #000 88%,
-      transparent
-    );
+    mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent);
   }
 
   .vp-footer__bg::after {
@@ -181,13 +96,7 @@ const footerStyles = `
     bottom: -20%;
     left: -35%;
     width: 24%;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(255,255,255,.06),
-      var(--heart-glow),
-      transparent
-    );
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.06), var(--heart-glow), transparent);
     filter: blur(24px);
     transform: skewX(-18deg);
     animation: vpSweep 6s ease-in-out infinite;
@@ -273,9 +182,7 @@ const footerStyles = `
     white-space: nowrap;
   }
 
-  .vp-footer__tagline-line + .vp-footer__tagline-line {
-    margin-top: 7px;
-  }
+  .vp-footer__tagline-line + .vp-footer__tagline-line { margin-top: 7px; }
 
   .vp-heart-scene {
     min-height: 650px;
@@ -304,11 +211,7 @@ const footerStyles = `
     max-width: 90vw;
     margin: auto;
     border-radius: 50%;
-    background: radial-gradient(
-      ellipse,
-      var(--heart-glow),
-      transparent 70%
-    );
+    background: radial-gradient(ellipse, var(--heart-glow), transparent 70%);
     filter: blur(30px);
     opacity: .58;
     pointer-events: none;
@@ -339,9 +242,7 @@ const footerStyles = `
     display: grid;
     place-items: center;
     transform-origin: 50% 58%;
-    animation:
-      vpHeartBeat 1.35s ease-in-out infinite,
-      vpHeartFloat 5s ease-in-out infinite;
+    animation: vpHeartBeat 1.35s ease-in-out infinite, vpHeartFloat 5s ease-in-out infinite;
   }
 
   .vp-heart-image {
@@ -349,10 +250,7 @@ const footerStyles = `
     height: 100%;
     display: block;
     object-fit: contain;
-    filter:
-      var(--heart-image-filter)
-      drop-shadow(0 18px 14px rgba(0,0,0,.72))
-      drop-shadow(0 0 20px var(--heart-glow));
+    filter: var(--heart-image-filter) drop-shadow(0 18px 14px rgba(0,0,0,.72)) drop-shadow(0 0 20px var(--heart-glow));
     transform: scale(.86);
     transition: filter .45s ease, transform .3s ease;
     pointer-events: none;
@@ -360,10 +258,7 @@ const footerStyles = `
   }
 
   .vp-heart-button:hover .vp-heart-image {
-    filter:
-      var(--heart-image-filter)
-      drop-shadow(0 22px 18px rgba(0,0,0,.78))
-      drop-shadow(0 0 36px var(--heart-glow));
+    filter: var(--heart-image-filter) drop-shadow(0 22px 18px rgba(0,0,0,.78)) drop-shadow(0 0 36px var(--heart-glow));
     transform: scale(.91);
   }
 
@@ -450,88 +345,6 @@ const footerStyles = `
     text-shadow: 0 0 13px var(--heart-glow);
   }
 
-  .vp-feature {
-    padding: 74px 0 82px;
-    border-top: 1px solid rgba(242,214,184,.12);
-  }
-
-  .vp-feature__layout {
-    display: grid;
-    grid-template-columns: minmax(270px, .8fr) minmax(0, 1.2fr);
-    gap: clamp(45px, 8vw, 110px);
-    align-items: center;
-  }
-
-  .vp-feature__stage {
-    position: relative;
-    min-height: 390px;
-    display: grid;
-    place-items: center;
-    perspective: 1100px;
-  }
-
-  .vp-feature__orbit {
-    position: absolute;
-    width: 330px;
-    height: 330px;
-    border: 1px solid var(--heart-primary);
-    border-radius: 50%;
-    opacity: .28;
-    animation: vpOrbit 18s linear infinite;
-  }
-
-  .vp-feature__orbit::before {
-    content: "";
-    position: absolute;
-    inset: 26px;
-    border: 1px dashed var(--heart-primary);
-    border-radius: 50%;
-  }
-
-  .vp-feature__card {
-    position: relative;
-    z-index: 2;
-    width: min(264px, 72vw);
-    padding: 10px;
-    overflow: hidden;
-    border: 1px solid color-mix(in srgb, var(--heart-light), transparent 42%);
-    border-radius: 9px;
-    background: #181416;
-    box-shadow:
-      0 38px 65px rgba(0,0,0,.58),
-      0 0 36px var(--heart-glow);
-    transform: rotateY(-7deg) rotateX(3deg) rotateZ(-2deg);
-    animation: vpFloat 5s ease-in-out infinite;
-    transition: transform .45s ease;
-  }
-
-  .vp-feature__card::after {
-    content: "";
-    position: absolute;
-    inset: 10px;
-    background: linear-gradient(
-      115deg,
-      transparent 28%,
-      rgba(255,255,255,.2) 46%,
-      transparent 62%
-    );
-    transform: translateX(-140%);
-    animation: vpShine 3.8s ease-in-out infinite;
-    pointer-events: none;
-  }
-
-  .vp-feature__card:hover {
-    transform: rotate(0) scale(1.055);
-  }
-
-  .vp-feature__image {
-    width: 100%;
-    min-height: 280px;
-    display: block;
-    border-radius: 5px;
-    object-fit: cover;
-  }
-
   .vp-section-eyebrow {
     margin: 0 0 16px;
     color: var(--heart-light);
@@ -579,29 +392,21 @@ const footerStyles = `
     gap: 30px;
   }
 
-  .vp-map__heading .vp-section-title {
-    font-size: clamp(36px, 4.7vw, 62px);
-  }
+  .vp-map__heading .vp-section-title { font-size: clamp(36px, 4.7vw, 62px); }
 
   .vp-map__card {
     position: relative;
     padding: 12px;
     border: 1px solid color-mix(in srgb, var(--heart-light), transparent 62%);
     border-radius: 28px;
-    background:
-      linear-gradient(145deg, rgba(255,255,255,.11), rgba(255,255,255,.025)),
-      #151214;
-    box-shadow:
-      0 38px 80px rgba(0,0,0,.58),
-      0 0 45px color-mix(in srgb, var(--heart-glow), transparent 38%);
+    background: linear-gradient(145deg, rgba(255,255,255,.11), rgba(255,255,255,.025)), #151214;
+    box-shadow: 0 38px 80px rgba(0,0,0,.58), 0 0 45px color-mix(in srgb, var(--heart-glow), transparent 38%);
     transition: transform .4s ease, box-shadow .4s ease;
   }
 
   .vp-map__card:hover {
     transform: translateY(-7px);
-    box-shadow:
-      0 48px 90px rgba(0,0,0,.68),
-      0 0 60px var(--heart-glow);
+    box-shadow: 0 48px 90px rgba(0,0,0,.68), 0 0 60px var(--heart-glow);
   }
 
   .vp-map__frame-wrap {
@@ -636,23 +441,9 @@ const footerStyles = `
     pointer-events: none;
   }
 
-  .vp-map__badge strong,
-  .vp-map__badge span {
-    display: block;
-  }
-
-  .vp-map__badge strong {
-    color: var(--heart-light);
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: 19px;
-  }
-
-  .vp-map__badge span {
-    margin-top: 5px;
-    color: #bcb2ac;
-    font-size: 11px;
-    letter-spacing: .08em;
-  }
+  .vp-map__badge strong, .vp-map__badge span { display: block; }
+  .vp-map__badge strong { color: var(--heart-light); font-family: Georgia, "Times New Roman", serif; font-size: 19px; }
+  .vp-map__badge span { margin-top: 5px; color: #bcb2ac; font-size: 11px; letter-spacing: .08em; }
 
   .vp-map__pin {
     position: absolute;
@@ -674,9 +465,7 @@ const footerStyles = `
     animation: vpPinPulse 2s ease-in-out infinite;
   }
 
-  .vp-map__pin span {
-    transform: rotate(45deg);
-  }
+  .vp-map__pin span { transform: rotate(45deg); }
 
   .vp-map__actions {
     padding: 18px 8px 7px;
@@ -732,20 +521,16 @@ const footerStyles = `
     letter-spacing: .21em;
   }
 
-  .vp-footer__links,
-  .vp-contact-list {
+  .vp-footer__links, .vp-contact-list {
     margin: 0;
     padding: 0;
     display: grid;
     list-style: none;
   }
 
-  .vp-contact-list {
-    gap: 9px;
-  }
+  .vp-contact-list { gap: 9px; }
 
-  .vp-footer__links a,
-  .vp-contact-link {
+  .vp-footer__links a, .vp-contact-link {
     position: relative;
     width: fit-content;
     padding: 9px 27px 9px 0;
@@ -766,8 +551,7 @@ const footerStyles = `
     transition: .3s ease;
   }
 
-  .vp-footer__links a:hover,
-  .vp-contact-link:hover {
+  .vp-footer__links a:hover, .vp-contact-link:hover {
     color: var(--heart-light);
     transform: translateX(5px);
   }
@@ -854,16 +638,8 @@ const footerStyles = `
   }
 
   @keyframes vpTitleReveal {
-    from {
-      opacity: 0;
-      filter: blur(8px);
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      filter: none;
-      transform: none;
-    }
+    from { opacity: 0; filter: blur(8px); transform: translateY(30px); }
+    to { opacity: 1; filter: none; transform: none; }
   }
 
   @keyframes vpHeartBeat {
@@ -884,41 +660,14 @@ const footerStyles = `
     50% { opacity: .82; transform: scale(1.06); }
   }
 
-  @keyframes vpOrbit {
-    to { transform: rotate(360deg); }
-  }
-
-  @keyframes vpFloat {
-    0%, 100% { translate: 0 0; }
-    50% { translate: 0 -14px; }
-  }
-
-  @keyframes vpShine {
-    0%, 42% { transform: translateX(-140%); opacity: 0; }
-    55% { opacity: .7; }
-    72%, 100% { transform: translateX(140%); opacity: 0; }
-  }
-
   @keyframes vpPinPulse {
-    0%, 100% {
-      scale: 1;
-      box-shadow: 0 0 22px var(--heart-glow);
-    }
-    50% {
-      scale: 1.08;
-      box-shadow: 0 0 42px var(--heart-glow);
-    }
+    0%, 100% { scale: 1; box-shadow: 0 0 22px var(--heart-glow); }
+    50% { scale: 1.08; box-shadow: 0 0 42px var(--heart-glow); }
   }
 
   @media (max-width: 1050px) {
-    .vp-footer__main {
-      grid-template-columns: .8fr 1fr 1.7fr;
-    }
-
-    .vp-footer__policies {
-      grid-column: 1 / -1;
-    }
-
+    .vp-footer__main { grid-template-columns: .8fr 1fr 1.7fr; }
+    .vp-footer__policies { grid-column: 1 / -1; }
     .vp-footer__policies .vp-footer__links {
       grid-template-columns: repeat(3, max-content);
       gap: 0 28px;
@@ -933,66 +682,30 @@ const footerStyles = `
       padding-bottom: 55px;
     }
 
-    .vp-feature__layout {
-      grid-template-columns: 1fr;
-    }
+    .vp-map__heading { display: block; }
+    .vp-map__heading .vp-section-text { margin-inline: 0; }
 
-    .vp-feature__copy {
-      text-align: center;
-    }
-
-    .vp-section-text {
-      margin-inline: auto;
-    }
-
-    .vp-map__heading {
-      display: block;
-    }
-
-    .vp-map__heading .vp-section-text {
-      margin-inline: 0;
-    }
-
-    .vp-footer__main {
-      grid-template-columns: 1fr 1fr;
-    }
-
-    .vp-footer__offices,
-    .vp-footer__policies {
-      grid-column: 1 / -1;
-    }
-
-    .vp-footer__policies .vp-footer__links {
-      grid-template-columns: repeat(2, max-content);
-    }
+    .vp-footer__main { grid-template-columns: 1fr 1fr; }
+    .vp-footer__offices, .vp-footer__policies { grid-column: 1 / -1; }
+    .vp-footer__policies .vp-footer__links { grid-template-columns: repeat(2, max-content); }
   }
 
   @media (max-width: 620px) {
-    .vp-footer__shell {
-      width: min(100% - 32px, 1240px);
-    }
+    .vp-footer__shell { width: min(100% - 32px, 1240px); }
 
     .vp-footer__hero {
       padding: 74px 0 45px;
       gap: 72px;
     }
 
-    .vp-footer__title {
-      font-size: clamp(38px, 11.5vw, 58px);
-    }
-
+    .vp-footer__title { font-size: clamp(38px, 11.5vw, 58px); }
     .vp-footer__tagline {
       margin-top: 25px;
       font-size: clamp(22px, 8vw, 35px);
     }
 
-    .vp-footer__tagline-line {
-      white-space: normal;
-    }
-
-    .vp-heart-scene {
-      min-height: 625px;
-    }
+    .vp-footer__tagline-line { white-space: normal; }
+    .vp-heart-scene { min-height: 625px; }
 
     .vp-heart-visual {
       width: min(270px, 82vw);
@@ -1005,47 +718,21 @@ const footerStyles = `
       height: 245px;
     }
 
-    .vp-heart-content {
-      margin-top: 72px;
-    }
-
+    .vp-heart-content { margin-top: 72px; }
     .vp-heart-caption strong {
       font-size: 12px;
       letter-spacing: .18em;
     }
 
-    .vp-heart-dots {
-      gap: 8px;
-    }
-
+    .vp-heart-dots { gap: 8px; }
     .vp-heart-message {
       margin-top: 50px;
       font-size: 14px;
     }
 
-    .vp-feature {
-      padding: 60px 0 72px;
-    }
+    .vp-section-title { font-size: clamp(35px, 11vw, 52px); }
 
-    .vp-feature__stage {
-      min-height: 350px;
-    }
-
-    .vp-feature__orbit {
-      width: 290px;
-      height: 290px;
-      max-width: 90vw;
-      max-height: 90vw;
-    }
-
-    .vp-section-title {
-      font-size: clamp(35px, 11vw, 52px);
-    }
-
-    .vp-map {
-      padding: 65px 0 74px;
-    }
-
+    .vp-map { padding: 65px 0 74px; }
     .vp-map__card {
       padding: 8px;
       border-radius: 21px;
@@ -1076,9 +763,7 @@ const footerStyles = `
       align-items: stretch;
     }
 
-    .vp-map__button {
-      justify-content: center;
-    }
+    .vp-map__button { justify-content: center; }
 
     .vp-footer__main {
       padding: 55px 0;
@@ -1086,14 +771,8 @@ const footerStyles = `
       gap: 44px;
     }
 
-    .vp-footer__offices,
-    .vp-footer__policies {
-      grid-column: auto;
-    }
-
-    .vp-footer__policies .vp-footer__links {
-      grid-template-columns: 1fr;
-    }
+    .vp-footer__offices, .vp-footer__policies { grid-column: auto; }
+    .vp-footer__policies .vp-footer__links { grid-template-columns: 1fr; }
 
     .vp-office-list {
       grid-template-columns: 1fr;
@@ -1108,9 +787,7 @@ const footerStyles = `
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .vp-footer *,
-    .vp-footer *::before,
-    .vp-footer *::after {
+    .vp-footer *, .vp-footer *::before, .vp-footer *::after {
       animation-duration: .01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: .01ms !important;
@@ -1161,23 +838,14 @@ function MedicalHeart({
           <strong>TOUCH THE HEART</strong>
         </button>
 
-        <div
-          className="vp-heart-dots"
-          aria-label={`Heart color ${colorIndex + 1} of 10`}
-        >
+        <div className="vp-heart-dots" aria-label={`Heart color ${colorIndex + 1} of 10`}>
           {heartColors.map((heartColor, index) => (
             <span
               key={heartColor.name}
-              className={`vp-heart-dot ${
-                index === colorIndex ? "active" : ""
-              }`}
+              className={`vp-heart-dot ${index === colorIndex ? "active" : ""}`}
             />
           ))}
         </div>
-
-        <span className="vp-heart-color-count">
-          {colorIndex + 1} of 10 colors · {color.name}
-        </span>
 
         <p className="vp-heart-message">
           Think Nursing. Feel the Pulse. Shape the Future.
@@ -1221,15 +889,9 @@ export default function Footer() {
               </h2>
 
               <p className="vp-footer__tagline">
-                <strong className="vp-footer__tagline-line">
-                  Your Knowledge.
-                </strong>
-                <strong className="vp-footer__tagline-line">
-                  Your Future.
-                </strong>
-                <strong className="vp-footer__tagline-line">
-                  Your Vijayam.
-                </strong>
+                <strong className="vp-footer__tagline-line">Your Knowledge.</strong>
+                <strong className="vp-footer__tagline-line">Your Future.</strong>
+                <strong className="vp-footer__tagline-line">Your Vijayam.</strong>
               </p>
             </div>
 
@@ -1238,37 +900,6 @@ export default function Footer() {
               colorIndex={colorIndex}
               onChangeColor={changeColor}
             />
-          </section>
-
-          <section className="vp-feature" aria-labelledby="feature-title">
-            <div className="vp-feature__layout">
-              <div className="vp-feature__stage">
-                <span className="vp-feature__orbit" aria-hidden="true" />
-
-                <div className="vp-feature__card">
-                  <img
-                    className="vp-feature__image"
-                    src={featuredImage}
-                    alt="International Yoga Day theme poster"
-                    loading="lazy"
-                  />
-                </div>
-              </div>
-
-              <div className="vp-feature__copy">
-                <p className="vp-section-eyebrow">
-                  LEARNING BEYOND THE CLASSROOM
-                </p>
-                <h3 id="feature-title" className="vp-section-title">
-                  Knowledge in motion.
-                  <span>Wellness in life.</span>
-                </h3>
-                <p className="vp-section-text">
-                  Explore the connection between education, healthcare and
-                  holistic well-being through the Vijayam learning community.
-                </p>
-              </div>
-            </div>
           </section>
 
           <section className="vp-map" aria-labelledby="map-title">

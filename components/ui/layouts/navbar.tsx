@@ -46,7 +46,7 @@ const translations: Record<Language, Translation> = {
   Rajasthani: { categories: ["घर", "कोर्स", "अभी खरीदो", "कैटलॉग", "प्रोमो कॉपी", "लेखक बणो", "म्हारे बारे में"], search: "ISBN / किताब रो नांव खोजो", login: "लॉगिन", cart: "कार्ट", dayMode: "दिन मोड", nightMode: "रात मोड", language: "भाषा" },
 };
 
-const links = ["/", "/books", "/categories", "/publishers", "/new-arrivals", "/best-sellers", "/contact"];
+const links = ["/", "/books", "/categories", "/publishers", "/new-arrivals", "/best-sellers", "/about-us"];
 
 export default function Navbar() {
   const router = useRouter();
@@ -61,8 +61,11 @@ export default function Navbar() {
   const categories = text.categories.map((label, index) => ({ label, href: links[index] }));
 
   const applyTheme = (darkMode: boolean) => {
-    document.documentElement.classList.toggle("dark", darkMode);
-    document.documentElement.style.colorScheme = darkMode ? "dark" : "light";
+    const root = document.documentElement;
+    root.classList.toggle("dark", darkMode);
+    root.style.colorScheme = darkMode ? "dark" : "light";
+    root.setAttribute("data-theme", darkMode ? "dark" : "light");
+    window.dispatchEvent(new CustomEvent("vp:theme-change", { detail: { dark: darkMode, at: performance.now() } }));
   };
 
   useEffect(() => {
@@ -79,6 +82,20 @@ export default function Navbar() {
     localStorage.setItem("theme", isDark ? "dark" : "light");
   }, [isDark]);
 
+  const handleThemeToggle = () => {
+    const next = !isDark;
+    if (typeof document.startViewTransition !== "function") {
+      setIsDark(next);
+      return;
+    }
+    const vt = document.startViewTransition(() => {
+      setIsDark(next);
+    });
+    vt?.finished.finally(() => {
+      window.dispatchEvent(new CustomEvent("vp:theme-change", { detail: { dark: next, at: performance.now() } }));
+    });
+  };
+
   const selectLanguage = (language: Language) => {
     setSelectedLanguage(language);
     setLanguageOpen(false);
@@ -94,30 +111,50 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[#D4AF37]/25 bg-[#FFF8E7]/90 shadow-[0_12px_35px_rgba(140,109,31,0.12)] backdrop-blur-2xl transition-colors duration-500 dark:border-[#D4AF37]/20 dark:bg-[#111111]/90">
-      <div className="mx-auto max-w-[1700px] px-4 sm:px-6 lg:px-8">
-        <div className="flex min-h-24 items-center justify-between gap-3 py-4">
+    <>
+      <style>{`
+        .vijayam-navbar-shell { width:min(1680px, calc(100% - 28px)); }
+        .vijayam-navbar-main { min-height:82px; }
+        .vijayam-navbar-controls { display:flex; align-items:center; justify-content:flex-end; gap:10px; min-width:0; }
+        .vijayam-navbar-search { width:clamp(290px, 29vw, 400px); min-width:290px; flex:0 1 400px; }
+        .vijayam-navbar-control { flex:0 0 auto; }
+        @media (min-width: 1280px) and (max-width: 1450px) {
+          .vijayam-navbar-shell { width:min(1420px, calc(100% - 26px)); }
+          .vijayam-navbar-search { width:300px; min-width:300px; flex-basis:300px; }
+          .vijayam-navbar-login { padding-left:16px !important; padding-right:16px !important; }
+        }
+        @media (min-width: 1451px) { .vijayam-navbar-search { width:370px; min-width:330px; } }
+        @media (max-width: 1279px) { .vijayam-navbar-search { display:none !important; } }
+        @media (max-width: 767px) {
+          .vijayam-navbar-shell { width:100%; }
+          .vijayam-navbar-main { min-height:70px; }
+        }
+      `}</style>
+    <header className="sticky top-0 z-50 border-b border-[#D4AF37]/25 bg-[#FFF8E7]/92 shadow-[0_10px_32px_rgba(140,109,31,0.10)] backdrop-blur-2xl transition-colors duration-700 dark:border-[#D4AF37]/20 dark:bg-[#050505]/94">
+      <div className="vijayam-navbar-shell mx-auto px-3 sm:px-5 lg:px-6">
+        <div className="vijayam-navbar-main flex items-center justify-between gap-4 py-3">
           <Link href="/" className="group flex shrink-0 items-center gap-3 text-lg font-black tracking-wide sm:text-xl">
-            <span className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl bg-white p-1.5 shadow-[0_10px_25px_rgba(140,109,31,0.2)] ring-1 ring-[#D4AF37]/30">
+            <span className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl bg-white p-1.5 shadow-[0_10px_25px_rgba(140,109,31,0.2)] ring-1 ring-[#D4AF37]/30 dark:bg-[#111]">
               <img src="/images/vijayam.jpg" alt="Vijayam Publications logo" className="h-full w-full rounded-xl object-cover" />
             </span>
-            <span className="hidden bg-gradient-to-r from-[#8C6D1F] via-[#D4AF37] to-[#8C6D1F] bg-clip-text text-transparent sm:block dark:from-[#F3D27A] dark:via-[#D4AF37] dark:to-[#F3D27A]">Vijayam Publications</span>
+            <span className="hidden bg-gradient-to-r from-[#8C6D1F] via-[#D4AF37] to-[#8C6D1F] bg-clip-text text-transparent sm:block dark:from-[#F8E7A1] dark:via-[#D4AF37] dark:to-[#FFF3BD]">
+              Vijayam Publications
+            </span>
           </Link>
 
-          <div className="flex flex-1 items-center justify-end gap-2 sm:gap-3">
-            <form onSubmit={submitSearch} className="hidden h-12 min-w-[320px] items-center gap-2 rounded-full border border-[#D4AF37]/30 bg-white/65 px-3 text-[#5C5346] lg:flex dark:bg-white/5 dark:text-slate-100">
+          <div className="vijayam-navbar-controls flex-1">
+            <form onSubmit={submitSearch} className="vijayam-navbar-search hidden h-11 items-center gap-2 rounded-full border border-[#D4AF37]/35 bg-white/70 px-3.5 text-[#5C5346] shadow-[0_6px_20px_rgba(140,109,31,0.06)] lg:flex dark:bg-white/5 dark:text-slate-100">
               <button type="button" onClick={() => searchInputRef.current?.focus()} aria-label="Focus search"><Mic size={17} /></button>
               <input ref={searchInputRef} value={search} onChange={(event) => setSearch(event.target.value)} placeholder={text.search} className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-[#5C5346]/60 dark:placeholder:text-slate-400" />
               <button type="submit" aria-label="Search"><Search size={17} /></button>
             </form>
 
-            <div className="relative hidden sm:block">
-              <button onClick={() => setLanguageOpen((open) => !open)} className="flex h-12 items-center gap-2 rounded-full border border-[#D4AF37]/30 bg-white/65 px-4 text-sm font-semibold text-[#5C5346] dark:bg-white/5 dark:text-[#F3D27A]" aria-expanded={languageOpen}>
+            <div className="vijayam-navbar-control relative hidden sm:block">
+              <button onClick={() => setLanguageOpen((open) => !open)} className="flex h-11 items-center gap-2 rounded-full border border-[#D4AF37]/30 bg-white/65 px-3.5 text-sm font-semibold text-[#5C5346] shadow-[0_6px_20px_rgba(140,109,31,0.05)] dark:bg-white/5 dark:text-[#F3D27A]">
                 <Languages size={17} /><span className="max-w-20 truncate">{selectedLanguage}</span><ChevronDown size={16} />
               </button>
               {languageOpen && (
                 <div className="absolute right-0 top-full z-[100] mt-3 w-60 rounded-2xl border border-[#D4AF37]/35 bg-[#FFFDF5] p-2 shadow-[0_20px_45px_rgba(74,53,9,0.28)] dark:bg-[#171717]">
-                  <p className="px-3 pb-2 pt-1 text-xs font-bold uppercase tracking-[0.16em] text-[#8C6D1F] dark:text-[#F3D27A]">Choose language · 11</p>
                   {languages.map((language) => (
                     <button key={language} onClick={() => selectLanguage(language)} className={`w-full rounded-xl px-4 py-2.5 text-left text-sm font-semibold transition hover:bg-[#D4AF37]/15 dark:text-slate-200 ${selectedLanguage === language ? "bg-[#D4AF37]/20 text-[#8C6D1F] dark:text-[#F3D27A]" : "text-[#5C5346]"}`}>
                       {language}
@@ -127,23 +164,29 @@ export default function Navbar() {
               )}
             </div>
 
-            <button onClick={() => setIsDark((dark) => !dark)} className="flex h-12 items-center gap-2 rounded-full border border-[#D4AF37]/35 bg-[#FFF3D6] px-4 text-sm font-semibold text-[#8C6D1F] dark:bg-white/5 dark:text-[#F3D27A]" aria-label={isDark ? "Switch to day mode" : "Switch to night mode"}>
-              {isDark ? <SunMedium size={18} /> : <MoonStar size={18} />}<span className="hidden md:inline">{isDark ? text.dayMode : text.nightMode}</span>
+            <button onClick={handleThemeToggle} className="vijayam-navbar-control flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#D4AF37]/45 bg-[#fff8dc] text-[#5a3903] shadow-[0_0_22px_rgba(212,175,55,0.28)] transition hover:scale-105 dark:bg-[#111] dark:text-[#F3D27A]" aria-label={isDark ? "Switch to day mode" : "Switch to night mode"}>
+              {isDark ? <SunMedium size={21} /> : <MoonStar size={21} />}
             </button>
 
-            <Link href="/login" className="hidden h-12 items-center rounded-2xl bg-gradient-to-r from-[#E8C874] to-[#B08D57] px-5 text-sm font-bold text-[#2B2620] shadow-md transition hover:scale-[1.03] md:flex">{text.login}</Link>
-            <Link href="/cart" className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-[#D4AF37]/30 bg-white/65 text-[#5C5346] dark:bg-white/5 dark:text-[#F3D27A]" aria-label={text.cart}>
+            <Link href="/login" className="vijayam-navbar-login vijayam-navbar-control hidden h-11 shrink-0 items-center rounded-2xl bg-gradient-to-r from-[#E8C874] to-[#B08D57] px-5 text-sm font-bold text-[#2B2620] shadow-[0_8px_18px_rgba(140,109,31,0.16)] transition hover:-translate-y-0.5 md:flex">{text.login}</Link>
+
+            <Link href="/cart" className="vijayam-navbar-control relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#D4AF37]/30 bg-white/65 text-[#5C5346] shadow-[0_6px_18px_rgba(140,109,31,0.06)] dark:bg-white/5 dark:text-[#F3D27A]" aria-label={text.cart}>
               <ShoppingBag size={19} /><span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#8C6D1F] text-[10px] text-white">0</span>
             </Link>
-            <button onClick={() => setMobileMenuOpen((open) => !open)} className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-[#5C5346] xl:hidden dark:text-white" aria-label="Toggle navigation">
+
+            <button onClick={() => setMobileMenuOpen((open) => !open)} className="vijayam-navbar-control flex h-11 w-11 items-center justify-center rounded-full text-[#5C5346] xl:hidden dark:text-white" aria-label="Toggle navigation">
               {mobileMenuOpen ? <X size={25} /> : <Menu size={25} />}
             </button>
           </div>
         </div>
 
         <nav className="hidden pb-4 xl:block">
-          <div className="grid grid-cols-7 gap-3 rounded-3xl border border-[#D4AF37]/20 bg-white/45 p-3 backdrop-blur-xl dark:bg-white/5">
-            {categories.map((item) => <Link key={item.href} href={item.href} className="rounded-2xl border border-[#D4AF37]/15 bg-white/60 px-3 py-3 text-center text-sm font-semibold text-[#5C5346] transition hover:border-[#D4AF37]/60 hover:bg-[#FFF3D6] hover:text-[#8C6D1F] dark:bg-white/5 dark:text-slate-200">{item.label}</Link>)}
+          <div className="grid grid-cols-7 gap-2.5 rounded-3xl border border-[#D4AF37]/20 bg-white/50 p-2.5 shadow-[0_8px_28px_rgba(140,109,31,0.05)] backdrop-blur-xl dark:bg-white/5">
+            {categories.map((item) => (
+              <Link key={item.href} href={item.href} className="flex min-h-10 items-center justify-center rounded-2xl border border-[#D4AF37]/15 bg-white/60 px-2.5 py-2 text-center text-[13px] font-semibold text-[#5C5346] transition duration-300 hover:-translate-y-0.5 hover:border-[#D4AF37]/60 hover:bg-[#FFF3D6] hover:text-[#8C6D1F] dark:bg-white/5 dark:text-slate-200">
+                {item.label}
+              </Link>
+            ))}
           </div>
         </nav>
       </div>
@@ -156,19 +199,18 @@ export default function Navbar() {
               <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder={text.search} className="min-w-0 flex-1 bg-transparent text-sm outline-none dark:text-white" />
               <button type="submit" aria-label="Search"><Search size={18} /></button>
             </form>
-            <label className="flex items-center gap-3 rounded-2xl border border-[#D4AF37]/25 bg-white/60 px-4 py-3 text-sm font-semibold text-[#5C5346] dark:bg-white/5 dark:text-[#F3D27A]">
-              <Languages size={18} /><span>{text.language}</span>
-              <select value={selectedLanguage} onChange={(event) => selectLanguage(event.target.value as Language)} className="ml-auto bg-transparent text-right outline-none dark:bg-[#111111]">
-                {languages.map((language) => <option key={language} value={language}>{language}</option>)}
-              </select>
-            </label>
+
             <div className="grid grid-cols-2 gap-3">
-              {categories.map((item) => <Link key={item.href} href={item.href} onClick={() => setMobileMenuOpen(false)} className="rounded-2xl border border-[#D4AF37]/20 bg-white/60 px-3 py-3 text-center text-sm font-semibold text-[#5C5346] dark:bg-white/5 dark:text-slate-200">{item.label}</Link>)}
+              {categories.map((item) => (
+                <Link key={item.href} href={item.href} onClick={() => setMobileMenuOpen(false)} className="rounded-2xl border border-[#D4AF37]/20 bg-white/60 px-3 py-3 text-center text-sm font-semibold text-[#5C5346] dark:bg-white/5 dark:text-slate-200">
+                  {item.label}
+                </Link>
+              ))}
             </div>
-            <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="flex h-12 items-center justify-center rounded-2xl bg-gradient-to-r from-[#E8C874] to-[#B08D57] px-5 text-sm font-bold text-[#2B2620]">{text.login}</Link>
           </div>
         </div>
       )}
     </header>
+    </>
   );
 }
