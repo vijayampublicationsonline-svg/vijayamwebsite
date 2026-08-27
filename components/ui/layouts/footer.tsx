@@ -20,7 +20,7 @@ const policyLinks = [
 
 const contactDetails = {
   phones: ["+91 8885414000", "+91 8885414666"],
-  email: "support@vijayampublications.com",
+  email: "vijayampublicationsvja@gmail.com",
 };
 
 const offices = [

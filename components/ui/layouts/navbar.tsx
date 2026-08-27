@@ -113,26 +113,23 @@ export default function Navbar() {
   return (
     <>
       <style>{`
-        .vijayam-navbar-shell { width:min(1680px, calc(100% - 28px)); }
-        .vijayam-navbar-main { min-height:82px; }
-        .vijayam-navbar-controls { display:flex; align-items:center; justify-content:flex-end; gap:10px; min-width:0; }
-        .vijayam-navbar-search { width:clamp(290px, 29vw, 400px); min-width:290px; flex:0 1 400px; }
-        .vijayam-navbar-control { flex:0 0 auto; }
-        @media (min-width: 1280px) and (max-width: 1450px) {
-          .vijayam-navbar-shell { width:min(1420px, calc(100% - 26px)); }
-          .vijayam-navbar-search { width:300px; min-width:300px; flex-basis:300px; }
-          .vijayam-navbar-login { padding-left:16px !important; padding-right:16px !important; }
-        }
-        @media (min-width: 1451px) { .vijayam-navbar-search { width:370px; min-width:330px; } }
+        @media (min-width: 1280px) and (max-width: 1450px) { .vijayam-navbar-search { width: 300px !important; min-width: 300px !important; } .vijayam-navbar-login { padding-left: 16px !important; padding-right: 16px !important; } }
+        @media (min-width: 1451px) { .vijayam-navbar-search { width: 370px !important; } }
         @media (max-width: 1279px) { .vijayam-navbar-search { display:none !important; } }
-        @media (max-width: 767px) {
-          .vijayam-navbar-shell { width:100%; }
-          .vijayam-navbar-main { min-height:70px; }
-        }
+        .vijayam-theme-toggle { position:relative; overflow:visible; animation:vijayamPulseGlow 3s ease-in-out infinite; }
+        .vijayam-theme-toggle::before { content:""; position:absolute; inset:-5px; border-radius:50%; background:conic-gradient(from 0deg, rgba(212,175,55,0.5), rgba(140,109,31,0.2), rgba(212,175,55,0.5), rgba(255,243,189,0.1), rgba(212,175,55,0.5)); animation:vijayamToggleSpin 4s linear infinite; z-index:-1; }
+        .vijayam-theme-toggle::after { content:""; position:absolute; inset:-2px; border-radius:50%; background:radial-gradient(circle, rgba(212,175,55,0.35), transparent 70%); animation:vijayamToggleBreathe 2s ease-in-out infinite; z-index:-1; }
+        @keyframes vijayamPulseGlow { 0%,100% { box-shadow:0 0 18px rgba(212,175,55,0.35),0 0 28px rgba(212,175,55,0.22),0 0 36px rgba(212,175,55,0.1); } 50% { box-shadow:0 0 28px rgba(212,175,55,0.5),0 0 40px rgba(212,175,55,0.3),0 0 52px rgba(212,175,55,0.18); } }
+        @keyframes vijayamToggleSpin { to { transform:rotate(360deg); } }
+        @keyframes vijayamToggleBreathe { 0%,100% { opacity:0.5; transform:scale(0.92); } 50% { opacity:0.9; transform:scale(1.08); } }
+        .dark .vijayam-theme-toggle::before { background:conic-gradient(from 0deg, rgba(147,197,255,0.4), rgba(96,165,255,0.2), rgba(212,175,55,0.3), rgba(255,243,189,0.1), rgba(147,197,255,0.4)); }
+        .dark .vijayam-theme-toggle::after { background:radial-gradient(circle, rgba(147,197,255,0.25), transparent 70%); }
+        .dark .vijayam-theme-toggle { animation:vijayamPulseGlowDark 3s ease-in-out infinite; }
+        @keyframes vijayamPulseGlowDark { 0%,100% { box-shadow:0 0 18px rgba(147,197,255,0.3),0 0 28px rgba(96,165,255,0.2),0 0 36px rgba(147,197,255,0.08); } 50% { box-shadow:0 0 28px rgba(147,197,255,0.45),0 0 40px rgba(96,165,255,0.28),0 0 52px rgba(147,197,255,0.15); } }
       `}</style>
     <header className="sticky top-0 z-50 border-b border-[#D4AF37]/25 bg-[#FFF8E7]/92 shadow-[0_10px_32px_rgba(140,109,31,0.10)] backdrop-blur-2xl transition-colors duration-700 dark:border-[#D4AF37]/20 dark:bg-[#050505]/94">
-      <div className="vijayam-navbar-shell mx-auto px-3 sm:px-5 lg:px-6">
-        <div className="vijayam-navbar-main flex items-center justify-between gap-4 py-3">
+      <div className="mx-auto max-w-[1700px] px-4 sm:px-6 lg:px-8">
+        <div className="flex min-h-[76px] items-center justify-between gap-4 py-3">
           <Link href="/" className="group flex shrink-0 items-center gap-3 text-lg font-black tracking-wide sm:text-xl">
             <span className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl bg-white p-1.5 shadow-[0_10px_25px_rgba(140,109,31,0.2)] ring-1 ring-[#D4AF37]/30 dark:bg-[#111]">
               <img src="/images/vijayam.jpg" alt="Vijayam Publications logo" className="h-full w-full rounded-xl object-cover" />
@@ -142,14 +139,14 @@ export default function Navbar() {
             </span>
           </Link>
 
-          <div className="vijayam-navbar-controls flex-1">
-            <form onSubmit={submitSearch} className="vijayam-navbar-search hidden h-11 items-center gap-2 rounded-full border border-[#D4AF37]/35 bg-white/70 px-3.5 text-[#5C5346] shadow-[0_6px_20px_rgba(140,109,31,0.06)] lg:flex dark:bg-white/5 dark:text-slate-100">
+          <div className="flex min-w-0 flex-1 items-center justify-end gap-2 sm:gap-3">
+            <form onSubmit={submitSearch} className="vijayam-navbar-search hidden h-11 w-[min(36vw,390px)] min-w-[290px] max-w-[390px] items-center gap-2 rounded-full border border-[#D4AF37]/35 bg-white/70 px-3.5 text-[#5C5346] shadow-[0_6px_20px_rgba(140,109,31,0.06)] lg:flex dark:bg-white/5 dark:text-slate-100">
               <button type="button" onClick={() => searchInputRef.current?.focus()} aria-label="Focus search"><Mic size={17} /></button>
               <input ref={searchInputRef} value={search} onChange={(event) => setSearch(event.target.value)} placeholder={text.search} className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-[#5C5346]/60 dark:placeholder:text-slate-400" />
               <button type="submit" aria-label="Search"><Search size={17} /></button>
             </form>
 
-            <div className="vijayam-navbar-control relative hidden sm:block">
+            <div className="relative hidden sm:block">
               <button onClick={() => setLanguageOpen((open) => !open)} className="flex h-11 items-center gap-2 rounded-full border border-[#D4AF37]/30 bg-white/65 px-3.5 text-sm font-semibold text-[#5C5346] shadow-[0_6px_20px_rgba(140,109,31,0.05)] dark:bg-white/5 dark:text-[#F3D27A]">
                 <Languages size={17} /><span className="max-w-20 truncate">{selectedLanguage}</span><ChevronDown size={16} />
               </button>
@@ -164,17 +161,17 @@ export default function Navbar() {
               )}
             </div>
 
-            <button onClick={handleThemeToggle} className="vijayam-navbar-control flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#D4AF37]/45 bg-[#fff8dc] text-[#5a3903] shadow-[0_0_22px_rgba(212,175,55,0.28)] transition hover:scale-105 dark:bg-[#111] dark:text-[#F3D27A]" aria-label={isDark ? "Switch to day mode" : "Switch to night mode"}>
-              {isDark ? <SunMedium size={21} /> : <MoonStar size={21} />}
+            <button onClick={handleThemeToggle} className="vijayam-theme-toggle flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 border-[#D4AF37]/55 bg-gradient-to-br from-[#fff8dc] to-[#f0d68a] text-[#5a3903] shadow-[0_0_22px_rgba(212,175,55,0.35)] transition-all duration-300 hover:scale-110 hover:shadow-[0_0_32px_rgba(212,175,55,0.5)] dark:from-[#1a1a3a] dark:to-[#0d0d20] dark:border-[#93c5ff]/40 dark:text-[#F3D27A] dark:shadow-[0_0_22px_rgba(147,197,255,0.3)]" aria-label={isDark ? text.dayMode : text.nightMode}>
+              {isDark ? <SunMedium size={21} strokeWidth={2.5} /> : <MoonStar size={21} strokeWidth={2.5} />}
             </button>
 
-            <Link href="/login" className="vijayam-navbar-login vijayam-navbar-control hidden h-11 shrink-0 items-center rounded-2xl bg-gradient-to-r from-[#E8C874] to-[#B08D57] px-5 text-sm font-bold text-[#2B2620] shadow-[0_8px_18px_rgba(140,109,31,0.16)] transition hover:-translate-y-0.5 md:flex">{text.login}</Link>
+            <Link href="/login" className="vijayam-navbar-login hidden h-11 shrink-0 items-center rounded-2xl bg-gradient-to-r from-[#E8C874] to-[#B08D57] px-5 text-sm font-bold text-[#2B2620] shadow-[0_8px_18px_rgba(140,109,31,0.16)] transition hover:-translate-y-0.5 md:flex">{text.login}</Link>
 
-            <Link href="/cart" className="vijayam-navbar-control relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#D4AF37]/30 bg-white/65 text-[#5C5346] shadow-[0_6px_18px_rgba(140,109,31,0.06)] dark:bg-white/5 dark:text-[#F3D27A]" aria-label={text.cart}>
+            <Link href="/cart" className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#D4AF37]/30 bg-white/65 text-[#5C5346] shadow-[0_6px_18px_rgba(140,109,31,0.06)] dark:bg-white/5 dark:text-[#F3D27A]" aria-label={text.cart}>
               <ShoppingBag size={19} /><span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#8C6D1F] text-[10px] text-white">0</span>
             </Link>
 
-            <button onClick={() => setMobileMenuOpen((open) => !open)} className="vijayam-navbar-control flex h-11 w-11 items-center justify-center rounded-full text-[#5C5346] xl:hidden dark:text-white" aria-label="Toggle navigation">
+            <button onClick={() => setMobileMenuOpen((open) => !open)} className="flex h-11 w-11 items-center justify-center rounded-full text-[#5C5346] xl:hidden dark:text-white" aria-label="Toggle navigation">
               {mobileMenuOpen ? <X size={25} /> : <Menu size={25} />}
             </button>
           </div>
