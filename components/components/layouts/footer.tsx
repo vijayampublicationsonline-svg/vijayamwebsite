@@ -123,10 +123,6 @@ export default function Footer() {
                     <span>Vijayam Publications, Andhra Pradesh, India</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <Phone className="text-cyan-300" size={18} />
-                    <span>+91 8885414000</span>
-                  </div>
-                  <div className="flex items-center gap-3">
                     <Mail className="text-cyan-300" size={18} />
                     <span>vijayampublicationsvja@gmail.com</span>
                   </div>

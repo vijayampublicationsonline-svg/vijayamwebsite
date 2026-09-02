@@ -9,6 +9,8 @@ import {
 
 const coverImage = "/images/book-pbbsc.jpg";
 const appliedAnatomyImage = "/images/appliedanatomy.jpg";
+const eagleLogo = "/images/eagle logo .jpg";
+const wingsImage = "/images/wings.jpg";
 
 type Book = {
  id: number;
@@ -152,6 +154,8 @@ function BookShowcase() {
   const stageRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
   const pausedRef = useRef(false);
   const visibleRef = useRef(true);
   const timerRef = useRef<number | null>(null);
@@ -160,10 +164,10 @@ function BookShowcase() {
   const currentBook = books[activeIndex];
 
   const advanceBook = () => {
-    if (pausedRef.current || !visibleRef.current || reducedMotionRef.current) return;
-    
+    if (pausedRef.current || !visibleRef.current || reducedMotionRef.current || isOpen) return;
+
     setIsTransitioning(true);
-    
+
     setTimeout(() => {
       setActiveIndex((prev) => (prev + 1) % books.length);
       setIsTransitioning(false);
@@ -196,38 +200,73 @@ function BookShowcase() {
     };
 
     document.addEventListener("visibilitychange", onVisChange);
-    motionQuery.addEventListener("change", () => {
-      reducedMotionRef.current = motionQuery.matches;
-    });
+    const onMotionChange = () => { reducedMotionRef.current = motionQuery.matches; };
+    motionQuery.addEventListener("change", onMotionChange);
 
     return () => {
       observer.disconnect();
       document.removeEventListener("visibilitychange", onVisChange);
-      motionQuery.removeEventListener("change", () => {});
+      motionQuery.removeEventListener("change", onMotionChange);
       if (timerRef.current !== null) window.clearInterval(timerRef.current);
     };
-  }, [activeIndex]);
+  }, [activeIndex, isOpen]);
 
-  const togglePause = () => {
-    pausedRef.current = !pausedRef.current;
-    stageRef.current?.classList.toggle("is-paused", pausedRef.current);
+  const handleBookClick = () => {
+    if (isAnimating) return;
+
+    setIsAnimating(true);
+
+    if (!isOpen) {
+      setIsOpen(true);
+      setTimeout(() => setIsAnimating(false), 1000);
+    } else {
+      setIsOpen(false);
+      setTimeout(() => setIsAnimating(false), 800);
+    }
   };
 
   return (
-    <div ref={stageRef} className="book-display-stage" onClick={togglePause} role="button" tabIndex={0} aria-label={`Featured book: ${currentBook.title}. Click to pause or resume.`} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); togglePause(); } }}>
+    <div
+      ref={stageRef}
+      className={`book-display-stage ${isOpen ? "book-is-open" : ""}`}
+      onClick={handleBookClick}
+      role="button"
+      tabIndex={0}
+      aria-label={`Featured book: ${currentBook.title}. Click to ${isOpen ? "close" : "open"} the book.`}
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handleBookClick(); } }}
+    >
       <div className="book-display-frame">
         <div className="book-ambient-light" aria-hidden="true" />
-        
+
         <div className="book-cover-container">
-          <div className={`book-cover-wrapper ${isTransitioning ? 'is-dissolving' : 'is-active'}`}>
-            <div className="book-cover-image">
-              <img src={currentBook.image} alt={currentBook.title} draggable={false} />
+          <div className={`book-scene ${isOpen ? "scene-open" : "scene-closed"}`}>
+            <div className="book-3d">
+              <div className="book-back-cover" aria-hidden="true">
+                <div className="back-cover-surface" />
+              </div>
+
+              <div className="book-pages-stack" aria-hidden="true">
+                <div className="page-edge page-edge-1" />
+                <div className="page-edge page-edge-2" />
+                <div className="page-edge page-edge-3" />
+                <div className="page-edge page-edge-4" />
+                <div className="page-edge page-edge-5" />
+              </div>
+
+              <div className="book-front-cover">
+                <div className={`book-cover-wrapper ${isTransitioning ? "is-dissolving" : "is-active"}`}>
+                  <div className="book-cover-image">
+                    <img src={currentBook.image} alt={currentBook.title} draggable={false} />
+                  </div>
+                  <div className="book-light-pass" aria-hidden="true" />
+                </div>
+              </div>
+
+              <div className="book-spine-edge" aria-hidden="true" />
             </div>
-            <div className="book-spine" aria-hidden="true" />
-            <div className="book-pages" aria-hidden="true" />
-            <div className="book-shadow-base" aria-hidden="true" />
-            <div className="book-light-pass" aria-hidden="true" />
           </div>
+
+          <div className={`book-shadow ${isOpen ? "shadow-deep" : "shadow-normal"}`} aria-hidden="true" />
         </div>
 
         <div className="book-meta" aria-hidden="true">
@@ -236,6 +275,7 @@ function BookShowcase() {
           <span className="book-meta-title">{currentBook.title}</span>
           <span className="book-meta-subtitle">{currentBook.subtitle}</span>
           <span className="book-meta-edition">VIJAYAM EDITION</span>
+          <span className="book-meta-hint">{isOpen ? "Click to close" : "Click to open"}</span>
         </div>
 
         <div className="book-ground-line" aria-hidden="true" />
@@ -246,6 +286,7 @@ function BookShowcase() {
 
 export default function HeroSection() {
   const [isDark, setIsDark] = useState(false);
+  const [showIntro, setShowIntro] = useState(true);
 
   useEffect(() => {
     const update = () => setIsDark(document.documentElement.classList.contains("dark"));
@@ -259,6 +300,11 @@ export default function HeroSection() {
       mo.disconnect();
       window.removeEventListener("vp:theme-change", onTheme);
     };
+  }, []);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setShowIntro(false), 2600);
+    return () => window.clearTimeout(timer);
   }, []);
 
   return (
@@ -296,6 +342,129 @@ export default function HeroSection() {
           --shadow-soft: rgba(0, 0, 0, 0.2);
           --shadow-deep: rgba(0, 0, 0, 0.35);
           background: var(--ivory);
+        }
+
+        .hero-intro {
+          position: fixed;
+          inset: 0;
+          z-index: 100000;
+          display: grid;
+          place-items: center;
+          background:
+            radial-gradient(circle at center, rgba(255, 229, 186, 0.25), transparent 55%),
+            linear-gradient(180deg, #fff8e7, #f5ead2 60%, #efe0c2);
+          animation: introFadeOut 0.6s ease 2s forwards;
+        }
+
+        .hero-page.hero-night .hero-intro {
+          background:
+            radial-gradient(circle at center, rgba(201, 168, 76, 0.18), transparent 55%),
+            linear-gradient(180deg, #111319, #171a22 60%, #1d212b);
+        }
+
+        .intro-wrap {
+          position: relative;
+          width: min(96vw, 820px);
+          height: min(62vw, 420px);
+          display: grid;
+          place-items: center;
+          animation: eagleFloat 2.1s ease-in-out both;
+        }
+
+        .wing {
+          position: absolute;
+          top: 50%;
+          width: 325px;
+          height: 208px;
+          opacity: 0;
+          transform-origin: 100% 52%;
+          filter: drop-shadow(0 16px 30px rgba(80, 52, 14, 0.35));
+          animation:
+            wingReveal 0.45s ease 0.18s forwards,
+            wingFlap 0.72s cubic-bezier(.42,0,.2,1) 0.35s 3,
+            wingGlide 0.95s ease-out 1.75s forwards;
+        }
+
+        .wing img { width: 100%; height: 100%; display: block; object-fit: contain; }
+
+        .wing.left {
+          left: 50%;
+          transform: translate(-99%, -50%) rotate(26deg) scale(0.67);
+        }
+
+        .wing.right {
+          right: 50%;
+          transform: translate(99%, -50%) rotate(-26deg) scale(0.67) scaleX(-1);
+        }
+
+        .hero-page.hero-night .wing {
+          filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.45));
+        }
+
+        .intro-logo {
+          position: relative;
+          z-index: 2;
+          width: 162px;
+          height: 162px;
+          border-radius: 30px;
+          overflow: hidden;
+          border: 2px solid rgba(212, 175, 55, 0.62);
+          box-shadow:
+            0 18px 46px rgba(140, 109, 31, 0.32),
+            0 0 34px rgba(212, 175, 55, 0.42);
+          animation: logoPop 0.9s ease forwards;
+          background: #fff;
+        }
+
+        .intro-logo img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transform: scale(1.03);
+        }
+
+        @keyframes logoPop {
+          0% { opacity: 0; transform: scale(0.65); }
+          65% { opacity: 1; transform: scale(1.11); }
+          100% { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes wingReveal {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+
+        @keyframes wingFlap {
+          0% { transform: translate(-99%, -50%) rotate(26deg) scale(0.67); }
+          50% { transform: translate(-101%, -52%) rotate(8deg) scale(0.73); }
+          100% { transform: translate(-99%, -50%) rotate(26deg) scale(0.67); }
+        }
+        .wing.right {
+          animation-name: wingReveal, wingFlapRight, wingGlideRight;
+        }
+        @keyframes wingFlapRight {
+          0% { transform: translate(99%, -50%) rotate(-26deg) scale(0.67) scaleX(-1); }
+          50% { transform: translate(101%, -52%) rotate(-8deg) scale(0.73) scaleX(-1); }
+          100% { transform: translate(99%, -50%) rotate(-26deg) scale(0.67) scaleX(-1); }
+        }
+
+        @keyframes wingGlide {
+          from { transform: translate(-99%, -50%) rotate(24deg) scale(0.68); opacity: 1; }
+          to { transform: translate(-116%, -58%) rotate(40deg) scale(0.74); opacity: 0.2; }
+        }
+        @keyframes wingGlideRight {
+          from { transform: translate(99%, -50%) rotate(-24deg) scale(0.68) scaleX(-1); opacity: 1; }
+          to { transform: translate(116%, -58%) rotate(-40deg) scale(0.74) scaleX(-1); opacity: 0.2; }
+        }
+
+        @keyframes eagleFloat {
+          0% { transform: translateY(10px) scale(0.985); }
+          35% { transform: translateY(-4px) scale(1); }
+          100% { transform: translateY(0) scale(1); }
+        }
+
+        @keyframes introFadeOut {
+          to { opacity: 0; visibility: hidden; pointer-events: none; }
         }
 
         html.gc-enabled, html.gc-enabled body, html.gc-enabled * { cursor: none !important; }
@@ -342,13 +511,13 @@ export default function HeroSection() {
           inset: 0;
           pointer-events: none;
           z-index: 0;
-          background: 
+          background:
             radial-gradient(ellipse at 65% 45%, rgba(139, 105, 20, 0.03) 0%, transparent 55%),
             radial-gradient(ellipse at 35% 40%, rgba(0, 0, 0, 0.02) 0%, transparent 60%);
           transition: opacity 800ms ease;
         }
         .hero-page.hero-night::before {
-          background: 
+          background:
             radial-gradient(ellipse at 65% 45%, rgba(201, 168, 76, 0.04) 0%, transparent 55%),
             radial-gradient(ellipse at 35% 40%, rgba(0, 0, 0, 0.08) 0%, transparent 60%);
         }
@@ -608,10 +777,101 @@ export default function HeroSection() {
           perspective: 1000px;
         }
 
-        .book-cover-wrapper {
-          position: relative;
+        .book-scene {
           width: 280px;
           height: 400px;
+          position: relative;
+          transform-style: preserve-3d;
+          transition: transform 0.6s ease;
+        }
+
+        .book-3d {
+          width: 100%;
+          height: 100%;
+          position: relative;
+          transform-style: preserve-3d;
+        }
+
+        .book-back-cover {
+          position: absolute;
+          inset: 0;
+          z-index: 0;
+          transform: translateZ(-6px);
+          border-radius: 3px 8px 8px 3px;
+          background: linear-gradient(135deg, #2c2416, #3d3220);
+          box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.3);
+        }
+        .hero-page.hero-night .book-back-cover {
+          background: linear-gradient(135deg, #1a1a1a, #252525);
+        }
+
+        .back-cover-surface {
+          position: absolute;
+          inset: 4px;
+          border-radius: 2px 6px 6px 2px;
+          background: linear-gradient(135deg, rgba(0,0,0,0.6), rgba(0,0,0,0.3));
+        }
+
+        .book-pages-stack {
+          position: absolute;
+          inset: 2px;
+          z-index: 1;
+          transition: transform 1s ease;
+        }
+
+        .scene-open .book-pages-stack {
+          transform: translateX(-6px) rotateY(-15deg);
+        }
+
+        .page-edge {
+          position: absolute;
+          inset: 0;
+          border-radius: 2px 7px 7px 2px;
+          background: linear-gradient(90deg,
+            rgba(245, 240, 230, 0.9) 0%,
+            rgba(235, 228, 218, 0.85) 30%,
+            rgba(220, 210, 195, 0.8) 100%);
+          box-shadow: inset 0 0 1px rgba(0,0,0,0.08);
+          transition: transform 0.8s ease, opacity 0.8s ease;
+        }
+
+        .hero-page.hero-night .page-edge {
+          background: linear-gradient(90deg,
+            rgba(60, 58, 52, 0.9) 0%,
+            rgba(50, 48, 42, 0.85) 30%,
+            rgba(40, 38, 32, 0.8) 100%);
+        }
+
+        .page-edge-1 { transform: translateZ(1px); }
+        .page-edge-2 { transform: translateZ(2px); }
+        .page-edge-3 { transform: translateZ(3px); }
+        .page-edge-4 { transform: translateZ(4px); }
+        .page-edge-5 { transform: translateZ(5px); }
+
+        .scene-open .page-edge-1 { transform: translateZ(1px) translateX(-2px) rotateY(-8deg); }
+        .scene-open .page-edge-2 { transform: translateZ(2px) translateX(-3px) rotateY(-10deg); }
+        .scene-open .page-edge-3 { transform: translateZ(3px) translateX(-4px) rotateY(-12deg); }
+        .scene-open .page-edge-4 { transform: translateZ(4px) translateX(-5px) rotateY(-14deg); }
+        .scene-open .page-edge-5 { transform: translateZ(5px) translateX(-6px) rotateY(-16deg); }
+
+        .book-front-cover {
+          position: absolute;
+          inset: 0;
+          z-index: 2;
+          border-radius: 3px 8px 8px 3px;
+          transform-origin: left center;
+          transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 4px 0 12px rgba(0,0,0,0.15);
+        }
+
+        .scene-open .book-front-cover {
+          transform: rotateY(-30deg);
+        }
+
+        .book-cover-wrapper {
+          position: relative;
+          width: 100%;
+          height: 100%;
           transition: opacity 1.2s cubic-bezier(.22, .61, .36, 1), transform 1.2s cubic-bezier(.22, .61, .36, 1);
         }
 
@@ -632,29 +892,30 @@ export default function HeroSection() {
           height: 100%;
           border-radius: 3px 8px 8px 3px;
           overflow: hidden;
-          box-shadow: 
+          box-shadow:
             0 30px 60px rgba(40, 30, 10, 0.15),
             0 12px 24px rgba(40, 30, 10, 0.1),
             0 0 0 1px rgba(0, 0, 0, 0.05);
-          transition: box-shadow 0.5s ease, transform 0.5s ease;
+          transition: all 0.5s ease;
         }
 
         .hero-page.hero-night .book-cover-image {
-          box-shadow: 
+          box-shadow:
             0 30px 60px rgba(0, 0, 0, 0.35),
             0 12px 24px rgba(0, 0, 0, 0.25),
             0 0 0 1px rgba(255, 255, 255, 0.05);
         }
 
-        .book-display-stage:hover .book-cover-image {
+        .book-display-stage:not(.book-is-open):hover .book-cover-image {
           transform: translateY(-6px);
-          box-shadow: 
+          box-shadow:
             0 40px 80px rgba(40, 30, 10, 0.2),
             0 18px 36px rgba(40, 30, 10, 0.14),
             0 0 0 1px rgba(139, 105, 20, 0.12);
         }
-        .hero-page.hero-night .book-display-stage:hover .book-cover-image {
-          box-shadow: 
+
+        .hero-page.hero-night .book-display-stage:not(.book-is-open):hover .book-cover-image {
+          box-shadow:
             0 40px 80px rgba(0, 0, 0, 0.45),
             0 18px 36px rgba(0, 0, 0, 0.32),
             0 0 0 1px rgba(201, 168, 76, 0.12);
@@ -668,52 +929,17 @@ export default function HeroSection() {
           user-select: none;
         }
 
-        .book-spine {
+        .book-spine-edge {
           position: absolute;
           top: 0;
           left: 0;
           width: 8px;
           height: 100%;
-          background: linear-gradient(90deg, rgba(0,0,0,0.15), rgba(0,0,0,0.04));
+          background: linear-gradient(90deg, rgba(0,0,0,0.3), rgba(0,0,0,0.05));
           border-radius: 3px 0 0 3px;
-          z-index: 1;
+          z-index: 3;
           pointer-events: none;
-        }
-
-        .book-pages {
-          position: absolute;
-          top: 2px;
-          right: -3px;
-          width: 4px;
-          height: calc(100% - 4px);
-          background: linear-gradient(90deg, rgba(255,255,255,0.4), rgba(200,180,140,0.3));
-          border-radius: 0 5px 5px 0;
-          z-index: 0;
-          pointer-events: none;
-        }
-        .hero-page.hero-night .book-pages {
-          background: linear-gradient(90deg, rgba(255,255,255,0.08), rgba(180,160,120,0.15));
-        }
-
-        .book-shadow-base {
-          position: absolute;
-          bottom: -16px;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 85%;
-          height: 20px;
-          background: radial-gradient(ellipse, rgba(40, 30, 10, 0.2) 0%, transparent 70%);
-          border-radius: 50%;
-          pointer-events: none;
-          z-index: -1;
-          transition: transform 0.5s ease, opacity 0.5s ease;
-        }
-        .hero-page.hero-night .book-shadow-base {
-          background: radial-gradient(ellipse, rgba(0, 0, 0, 0.5) 0%, transparent 70%);
-        }
-        .book-display-stage:hover .book-shadow-base {
-          transform: translateX(-50%) scale(0.9);
-          opacity: 0.7;
+          transform: translateX(-8px);
         }
 
         .book-light-pass {
@@ -738,6 +964,39 @@ export default function HeroSection() {
 
         .book-cover-wrapper.is-active .book-light-pass {
           animation: subtleLightPass 12s ease-in-out infinite;
+        }
+
+        .book-shadow {
+          position: absolute;
+          bottom: -20px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 85%;
+          height: 24px;
+          background: radial-gradient(ellipse, rgba(40, 30, 10, 0.18) 0%, transparent 70%);
+          border-radius: 50%;
+          pointer-events: none;
+          z-index: -1;
+          transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .hero-page.hero-night .book-shadow {
+          background: radial-gradient(ellipse, rgba(0, 0, 0, 0.45) 0%, transparent 70%);
+        }
+
+        .book-shadow.shadow-normal {
+          opacity: 1;
+        }
+
+        .book-shadow.shadow-deep {
+          width: 105%;
+          height: 32px;
+          background: radial-gradient(ellipse, rgba(40, 30, 10, 0.28) 0%, rgba(40, 30, 10, 0.1) 40%, transparent 70%);
+          transform: translateX(-50%);
+        }
+
+        .hero-page.hero-night .book-shadow.shadow-deep {
+          background: radial-gradient(ellipse, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.25) 40%, transparent 70%);
         }
 
         @keyframes subtleLightPass {
@@ -792,6 +1051,16 @@ export default function HeroSection() {
           color: var(--gold);
         }
 
+        .book-meta-hint {
+          font-size: 0.6rem;
+          font-weight: 500;
+          letter-spacing: 0.08em;
+          color: var(--muted);
+          opacity: 0.6;
+          transition: opacity 0.5s ease;
+          margin-top: 0.2rem;
+        }
+
         .book-ground-line {
           width: 60px;
           height: 2px;
@@ -831,13 +1100,21 @@ export default function HeroSection() {
           .book-display-stage {
             min-height: 500px;
           }
-          .book-cover-wrapper {
+          .book-scene {
             width: 240px;
             height: 340px;
           }
           .book-ambient-light {
             width: 280px;
             height: 360px;
+          }
+          .wing {
+            width: 258px;
+            height: 164px;
+          }
+          .intro-logo {
+            width: 140px;
+            height: 140px;
           }
         }
 
@@ -862,7 +1139,7 @@ export default function HeroSection() {
           .book-display-stage {
             min-height: 400px;
           }
-          .book-cover-wrapper {
+          .book-scene {
             width: 200px;
             height: 280px;
           }
@@ -873,9 +1150,33 @@ export default function HeroSection() {
           .book-meta-title {
             font-size: 0.85rem;
           }
+          .scene-open .book-front-cover {
+            transform: rotateY(-25deg);
+          }
+          .scene-open .book-pages-stack {
+            transform: translateX(-4px) rotateY(-10deg);
+          }
+          .scene-open .page-edge-1 { transform: translateZ(1px) translateX(-1px) rotateY(-5deg); }
+          .scene-open .page-edge-2 { transform: translateZ(2px) translateX(-2px) rotateY(-6deg); }
+          .scene-open .page-edge-3 { transform: translateZ(3px) translateX(-3px) rotateY(-7deg); }
+          .scene-open .page-edge-4 { transform: translateZ(4px) translateX(-4px) rotateY(-8deg); }
+          .scene-open .page-edge-5 { transform: translateZ(5px) translateX(-5px) rotateY(-9deg); }
+          .intro-logo {
+            width: 116px;
+            height: 116px;
+            border-radius: 24px;
+          }
+          .wing {
+            width: 176px;
+            height: 112px;
+          }
         }
 
         @media (prefers-reduced-motion: reduce) {
+          .hero-intro,
+          .wing,
+          .intro-logo,
+          .intro-wrap { animation: none !important; }
           .book-cover-wrapper { transition: opacity 0.3s ease; }
           .book-cover-wrapper.is-dissolving { transform: none; }
           .book-light-pass { animation: none; opacity: 0; }
@@ -883,16 +1184,42 @@ export default function HeroSection() {
           .hero-btn:hover { transform: none; box-shadow: none; }
           .social-link:hover { transform: none; }
           .book-display-stage:hover .book-cover-image { transform: none; box-shadow: 0 30px 60px rgba(40, 30, 10, 0.15), 0 12px 24px rgba(40, 30, 10, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.05); }
-          .book-display-stage:hover .book-shadow-base { transform: translateX(-50%); opacity: 1; }
+          .book-front-cover,
+          .book-pages-stack,
+          .book-shadow,
+          .page-edge { transition: none; }
+          .scene-open .book-front-cover { transform: rotateY(-20deg); }
+          .scene-open .book-pages-stack { transform: translateX(-3px) rotateY(-8deg); }
+          .scene-open .page-edge-1 { transform: translateZ(1px) translateX(-1px) rotateY(-4deg); }
+          .scene-open .page-edge-2 { transform: translateZ(2px) translateX(-2px) rotateY(-5deg); }
+          .scene-open .page-edge-3 { transform: translateZ(3px) translateX(-3px) rotateY(-6deg); }
+          .scene-open .page-edge-4 { transform: translateZ(4px) translateX(-4px) rotateY(-7deg); }
+          .scene-open .page-edge-5 { transform: translateZ(5px) translateX(-5px) rotateY(-8deg); }
         }
       `}</style>
+
+      {showIntro && (
+        <div className="hero-intro" aria-hidden="true">
+          <div className="intro-wrap">
+            <div className="wing left">
+              <img src={wingsImage} alt="" draggable={false} />
+            </div>
+            <div className="wing right">
+              <img src={wingsImage} alt="" draggable={false} />
+            </div>
+            <div className="intro-logo">
+              <img src={eagleLogo} alt="Eagle logo intro" draggable={false} />
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="hero-inner">
         <div className="hero-copy">
           <span className="hero-eyebrow">Built for the next generation of nurses</span>
-          
+
           <span className="hero-brand">VIJAYAM PUBLICATIONS</span>
-          
+
           <p className="hero-tagline">
             One of the Major Notable Publishers in India,<br />
             Aiming to Publish Good Academic Books in Nursing &amp; Degree.
@@ -916,13 +1243,13 @@ export default function HeroSection() {
 
           <div className="social-links" aria-label="Social media links">
             {socialLinks.map((social) => (
-              <a 
-                className="social-link" 
-                href={social.href} 
-                aria-label={social.label} 
-                title={social.label} 
-                target="_blank" 
-                rel="noopener noreferrer" 
+              <a
+                className="social-link"
+                href={social.href}
+                aria-label={social.label}
+                title={social.label}
+                target="_blank"
+                rel="noopener noreferrer"
                 key={social.name}
               >
                 <SocialIcon name={social.name} />

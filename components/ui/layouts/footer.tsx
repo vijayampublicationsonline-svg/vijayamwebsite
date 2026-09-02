@@ -19,7 +19,7 @@ const policyLinks = [
 ];
 
 const contactDetails = {
-  phones: ["+91 8885414000", "+91 8885414666"],
+  phones: ["+91 8885414000"],
   email: "vijayampublicationsvja@gmail.com",
 };
 
@@ -298,40 +298,6 @@ const footerStyles = `
     letter-spacing: .22em;
   }
 
-  .vp-heart-dots {
-    margin-top: 24px;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-  }
-
-  .vp-heart-dot {
-    width: 7px;
-    height: 7px;
-    border: 1px solid var(--heart-primary);
-    border-radius: 50%;
-    background: var(--heart-primary);
-    opacity: .27;
-    transition: opacity .3s ease, transform .3s ease, box-shadow .3s ease;
-  }
-
-  .vp-heart-dot.active {
-    background: var(--heart-light);
-    border-color: var(--heart-light);
-    opacity: 1;
-    box-shadow: 0 0 13px var(--heart-glow);
-    transform: scale(1.65);
-  }
-
-  .vp-heart-color-count {
-    margin-top: 16px;
-    color: var(--heart-primary);
-    font-size: 9px;
-    font-weight: 800;
-    letter-spacing: .2em;
-    text-transform: uppercase;
-  }
-
   .vp-heart-message {
     max-width: 470px;
     margin: 56px 0 0;
@@ -573,24 +539,47 @@ const footerStyles = `
     gap: 10px;
     font-size: 14px;
     line-height: 1.55;
-    overflow-wrap: anywhere;
+    white-space: nowrap;
+    overflow: visible;
+  }
+
+  .vp-contact-link--email {
+    white-space: nowrap;
+    overflow: visible;
+    text-overflow: unset;
+    width: auto;
+    max-width: none;
+  }
+
+  .vp-footer__offices {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
   }
 
   .vp-office-list {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 36px;
+  }
+
+  .vp-office {
+    text-align: center;
+    max-width: 420px;
   }
 
   .vp-office + .vp-office {
-    padding-left: 30px;
-    border-left: 1px solid rgba(244,218,188,.12);
+    padding-top: 32px;
+    border-top: 1px solid rgba(244,218,188,.14);
   }
 
   .vp-office__heading {
     margin: 0 0 14px;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 9px;
     color: #f0e3d5;
     font-family: Georgia, "Times New Roman", serif;
@@ -718,13 +707,12 @@ const footerStyles = `
       height: 245px;
     }
 
-    .vp-heart-content { margin-top: 72px; }
+    .vp-heart-content { margin-top: 48px; }
     .vp-heart-caption strong {
       font-size: 12px;
       letter-spacing: .18em;
     }
 
-    .vp-heart-dots { gap: 8px; }
     .vp-heart-message {
       margin-top: 50px;
       font-size: 14px;
@@ -775,14 +763,11 @@ const footerStyles = `
     .vp-footer__policies .vp-footer__links { grid-template-columns: 1fr; }
 
     .vp-office-list {
-      grid-template-columns: 1fr;
       gap: 28px;
     }
 
     .vp-office + .vp-office {
-      padding: 27px 0 0;
-      border-top: 1px solid rgba(244,218,188,.12);
-      border-left: 0;
+      padding-top: 28px;
     }
   }
 
@@ -837,15 +822,6 @@ function MedicalHeart({
         >
           <strong>TOUCH THE HEART</strong>
         </button>
-
-        <div className="vp-heart-dots" aria-label={`Heart color ${colorIndex + 1} of 10`}>
-          {heartColors.map((heartColor, index) => (
-            <span
-              key={heartColor.name}
-              className={`vp-heart-dot ${index === colorIndex ? "active" : ""}`}
-            />
-          ))}
-        </div>
 
         <p className="vp-heart-message">
           Think Nursing. Feel the Pulse. Shape the Future.
@@ -993,7 +969,7 @@ export default function Footer() {
 
               <p className="vp-contact-label">EMAIL</p>
               <a
-                className="vp-contact-link"
+                className="vp-contact-link vp-contact-link--email"
                 href={`mailto:${contactDetails.email}`}
               >
                 ✉ {contactDetails.email}
