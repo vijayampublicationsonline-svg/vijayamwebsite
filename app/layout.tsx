@@ -6,7 +6,7 @@ import Navbar from "@/components/ui/layouts/navbar";
 import Footer from "@/components/ui/layouts/footer";
 import AnnouncementBar from "@/components/ui/layouts/AnnouncementBar";
 import Container from "@/components/ui/layouts/container";
-
+import BulgeDistortion from "@/components/home/buldgeDistortion";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],

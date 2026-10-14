@@ -39,9 +39,9 @@ const STATES: DistState[] = [
     phones: ["9381879949"],
   },
   {
-    id: "kerala",
+    id: "Keralam ",
     code: "KL",
-    name: "KERALA",
+    name: "KERALAM",
     number: 5,
   },
   {
@@ -851,3 +851,4 @@ export default function AboutUsPage() {
     </>
   );
 }
+ 

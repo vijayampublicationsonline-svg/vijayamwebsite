@@ -26,6 +26,7 @@ const quickLinks = [
   { name: "Categories", href: "/categories" },
   { name: "Publishers", href: "/publishers" },
   { name: "Contact", href: "/contact" },
+  { name: "Careers", href: "/careers" },
 ];
 
 const policyLinks: PolicyLink[] = [
