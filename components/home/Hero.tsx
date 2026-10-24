@@ -4,13 +4,47 @@ import { useEffect, useRef, useState, type JSX } from "react";
 
 const coverImage = "/images/book-pbbsc.jpg";
 const appliedAnatomyImage = "/images/appliedanatomy.jpg";
-const eagleLogo = "/images/eagle logo .jpg";
 
 type Book = {
   title: string;
   subtitle: string;
   image: string;
 };
+
+function CountUp({ target, delay = 0 }: { target: number; delay?: number }): JSX.Element {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setCount(target);
+      return;
+    }
+
+    const duration = 3800;
+    let frame = 0;
+    let startTime: number | null = null;
+    const introDelay = introHasPlayed ? 0 : 3250;
+    const timer = window.setTimeout(() => {
+      const animate = (time: number) => {
+        if (startTime === null) startTime = time;
+        const progress = Math.min((time - startTime) / duration, 1);
+        const easedProgress = 1 - Math.pow(1 - progress, 3);
+        setCount(Math.round(target * easedProgress));
+
+        if (progress < 1) frame = window.requestAnimationFrame(animate);
+      };
+
+      frame = window.requestAnimationFrame(animate);
+    }, introDelay + delay);
+
+    return () => {
+      window.clearTimeout(timer);
+      window.cancelAnimationFrame(frame);
+    };
+  }, [target, delay]);
+
+  return <>{count.toLocaleString("en-US")}</>;
+}
 
 const books: Book[] = [
   {
@@ -163,25 +197,13 @@ function BrandIntro() {
       <div className="vp-intro-glow" />
 
       <div className="vp-intro-content">
-        <div className="vp-intro-logo">
-          <img
-            src={eagleLogo}
-            alt="Vijayam Publications"
-            width={76}
-            height={76}
-            decoding="async"
-            onError={(event) => {
-              event.currentTarget.style.display = "none";
-            }}
-          />
-        </div>
-
-        <div className="vp-intro-vijayam">
-          VIJAYAM
-        </div>
-
-        <div className="vp-intro-publications">
-          PUBLICATIONS
+        <div className="vp-intro-wordmark" role="img" aria-label="Vijayam Publications">
+          <span className="vp-intro-vijayam">VIJAYAM</span>
+          <span className="vp-intro-publications" aria-hidden="true">
+            {"PUBLICATIONS".split("").map((letter, index) => (
+              <span key={index}>{letter}</span>
+            ))}
+          </span>
         </div>
       </div>
     </div>
@@ -222,17 +244,6 @@ function BookShowcase() {
       switchTimerRef.current = null;
     }, delay);
   };
-
-  useEffect(() => {
-    if (isOpen || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    const timer = window.setInterval(() => {
-      if (switchTimerRef.current !== null) return;
-      setActiveBook((current) => (current + 1) % books.length);
-    }, 8000);
-
-    return () => window.clearInterval(timer);
-  }, [isOpen]);
 
   useEffect(() => () => {
     if (switchTimerRef.current !== null) {
@@ -382,6 +393,7 @@ function BookShowcase() {
 
 export default function HeroSection() {
   const [isDark, setIsDark] = useState(false);
+  const [isWordmarkAccented, setIsWordmarkAccented] = useState(false);
   const [skipIntroDelays] = useState(() => introHasPlayed);
 
   useEffect(() => {
@@ -421,15 +433,23 @@ export default function HeroSection() {
 
             <div className="hero-copy">
               {/* BRAND */}
-              <h1 className="hero-brand" aria-label="Vijayam Publications">
-                <span className="hero-brand-vijayam">
-                  VIJAYAM
-                </span>
-                <span className="hero-brand-publications" aria-hidden="true">
-                  {"PUBLICATIONS".split("").map((letter, index) => (
-                    <span key={index}>{letter}</span>
-                  ))}
-                </span>
+              <h1 className="hero-brand">
+                <button
+                  type="button"
+                  className={`hero-wordmark-toggle ${isWordmarkAccented ? "is-accent" : ""}`}
+                  aria-label="Toggle Vijayam Publications wordmark accent"
+                  aria-pressed={isWordmarkAccented}
+                  onClick={() => setIsWordmarkAccented((accented) => !accented)}
+                >
+                  <span className="hero-brand-vijayam">
+                    VIJAYAM
+                  </span>
+                  <span className="hero-brand-publications" aria-hidden="true">
+                    {"PUBLICATIONS".split("").map((letter, index) => (
+                      <span key={index}>{letter}</span>
+                    ))}
+                  </span>
+                </button>
               </h1>
 
               <h2 className="hero-headline">
@@ -444,6 +464,21 @@ export default function HeroSection() {
                 focused learning — created for students,
                 educators and the future of healthcare.
               </p>
+
+              <ul className="hero-proof-points" aria-label="Vijayam Publications at a glance">
+                <li className="hero-proof-card">
+                  <strong><CountUp target={600} delay={0} /><span>+</span></strong>
+                  <span>Titles published</span>
+                </li>
+                <li className="hero-proof-card">
+                  <strong><CountUp target={24} delay={250} /><span>+</span></strong>
+                  <span>Years of experience</span>
+                </li>
+                <li className="hero-proof-card">
+                  <strong><CountUp target={1000000} delay={500} /><span>+</span></strong>
+                  <span>Students impacted</span>
+                </li>
+              </ul>
 
               {/* MODERN BUTTONS */}
               <div className="hero-actions">
@@ -535,23 +570,200 @@ export default function HeroSection() {
       </div>
 
       <style>{`
+        /* Logo-inspired premium day and night color treatment. */
+        .hero-stage:not(.is-dark) {
+          background: #EAD7AD !important;
+        }
+        .hero-page:not(.hero-dark) {
+          color: #20295B !important;
+          background:
+            radial-gradient(ellipse at 82% 22%, rgba(7, 155, 198, .20), transparent 31%),
+            radial-gradient(ellipse at 8% 88%, rgba(229, 35, 46, .11), transparent 34%),
+            radial-gradient(ellipse at 52% 100%, rgba(227, 201, 21, .18), transparent 42%),
+            linear-gradient(128deg, #FFF8E8 0%, #F8EACB 52%, #EED9AF 100%) !important;
+        }
+        .hero-page:not(.hero-dark)::before {
+          border-color: rgba(32, 41, 91, .16) !important;
+          box-shadow: 0 0 0 80px rgba(7, 155, 198, .035), 0 0 0 160px rgba(227, 201, 21, .035) !important;
+        }
+        .hero-page:not(.hero-dark) .hero-copy .hero-brand-vijayam { color: #D91F32 !important; }
+        .hero-page:not(.hero-dark) .hero-copy .hero-brand-publications { color: #20295B !important; }
+        .hero-page:not(.hero-dark) .hero-headline,
+        .hero-page:not(.hero-dark) .book-meta h2 { color: #20295B !important; }
+        .hero-page:not(.hero-dark) .hero-headline span { color: #A66A00 !important; }
+        .hero-page:not(.hero-dark) .hero-description,
+        .hero-page:not(.hero-dark) .book-meta p,
+        .hero-page:not(.hero-dark) .book-interaction-hint { color: #394560 !important; }
+        .hero-page:not(.hero-dark) .hero-eyebrow,
+        .hero-page:not(.hero-dark) .book-number,
+        .hero-page:not(.hero-dark) .book-meta-label,
+        .hero-page:not(.hero-dark) .book-view-button,
+        .hero-page:not(.hero-dark) .hero-visual-kicker,
+        .hero-page:not(.hero-dark) .hero-visual-note { color: #35447D !important; }
+        .hero-page:not(.hero-dark) .hero-brand,
+        .hero-page:not(.hero-dark) .hero-footer,
+        .hero-page:not(.hero-dark) .book-meta { border-color: rgba(32, 41, 91, .2) !important; }
+        .hero-page:not(.hero-dark) .hero-brand::after { background: #E5232E !important; }
+        .hero-page:not(.hero-dark) .hero-button-primary {
+          color: #FFFFFF !important;
+          background: linear-gradient(135deg, #D91F32, #A8172A) !important;
+          box-shadow: 0 14px 30px rgba(135, 24, 42, .24) !important;
+        }
+        .hero-page:not(.hero-dark) .hero-button-primary:hover {
+          background: linear-gradient(135deg, #C91D27, #8F1424) !important;
+        }
+        .hero-page:not(.hero-dark) .button-arrow {
+          color: #20295B !important;
+          background: linear-gradient(135deg, #FFF2A6, #E3C915) !important;
+        }
+        .hero-page:not(.hero-dark) .hero-button-secondary {
+          color: #20295B !important;
+          background: rgba(255, 252, 243, .78) !important;
+          border-color: rgba(32, 41, 91, .24) !important;
+          box-shadow: 0 8px 22px rgba(32, 41, 91, .07) !important;
+        }
+        .hero-page:not(.hero-dark) .hero-button-secondary:hover {
+          background: #DDF4FA !important;
+          border-color: #079BC6 !important;
+        }
+        .hero-page:not(.hero-dark) .button-mini-arrow { color: #D91F32 !important; }
+        .hero-page:not(.hero-dark) .hero-socials a {
+          color: #20295B !important;
+          background: rgba(255, 252, 243, .76) !important;
+          border-color: rgba(32, 41, 91, .2) !important;
+        }
+        .hero-page:not(.hero-dark) .hero-socials a:hover {
+          color: #D91F32 !important;
+          background: #DDF4FA !important;
+          border-color: #079BC6 !important;
+        }
+        .hero-page:not(.hero-dark) .hero-visual {
+          border-color: rgba(32, 41, 91, .2) !important;
+          background:
+            radial-gradient(ellipse at 50% 22%, #FFFFFF 0%, rgba(255, 248, 232, .96) 48%, transparent 78%),
+            linear-gradient(150deg, #FFF8E8, #E3D09B) !important;
+          box-shadow: 0 30px 72px rgba(32, 41, 91, .16), inset 0 0 0 7px rgba(255, 255, 255, .58) !important;
+        }
+        .hero-page:not(.hero-dark) .hero-visual::before { border-color: rgba(7, 155, 198, .28) !important; }
+        .hero-page:not(.hero-dark) .book-glow {
+          background: radial-gradient(circle, rgba(227, 201, 21, .28), rgba(7, 155, 198, .11) 42%, transparent 72%) !important;
+        }
+        .hero-page:not(.hero-dark) .book-meta h2 { color: #20295B !important; }
+        .hero-page:not(.hero-dark) .book-view-arrow {
+          color: #20295B !important;
+          border-color: rgba(32, 41, 91, .25) !important;
+          background: rgba(7, 155, 198, .1) !important;
+        }
+        .hero-page:not(.hero-dark) .book-dot.active { border-color: #D91F32 !important; }
+        .hero-page:not(.hero-dark) .book-dot.active::after { background: #D91F32 !important; }
+
+        .hero-page.hero-dark {
+          color: #F5F8FF !important;
+          background:
+            radial-gradient(ellipse at 82% 28%, rgba(7, 155, 198, .17), transparent 34%),
+            radial-gradient(ellipse at 12% 88%, rgba(229, 35, 46, .09), transparent 38%),
+            linear-gradient(125deg, #0B1024 0%, #111735 58%, #20294A 100%) !important;
+        }
+        .hero-page.hero-dark .hero-copy .hero-brand-vijayam { color: #FF6970 !important; }
+        .hero-page.hero-dark .hero-copy .hero-brand-publications { color: #F2DE55 !important; }
+        .hero-page.hero-dark .hero-headline,
+        .hero-page.hero-dark .book-meta h2 { color: #F5F8FF !important; }
+        .hero-page.hero-dark .hero-headline span,
+        .hero-page.hero-dark .hero-eyebrow,
+        .hero-page.hero-dark .book-number,
+        .hero-page.hero-dark .book-meta-label,
+        .hero-page.hero-dark .book-view-button,
+        .hero-page.hero-dark .hero-visual-kicker,
+        .hero-page.hero-dark .hero-visual-note { color: #F2DE55 !important; }
+        .hero-page.hero-dark .hero-description,
+        .hero-page.hero-dark .book-meta p,
+        .hero-page.hero-dark .book-interaction-hint,
+        .hero-page.hero-dark .social-label,
+        .hero-page.hero-dark .hero-scroll-indicator { color: #D4DAEA !important; }
+        .hero-page.hero-dark .hero-visual {
+          border-color: rgba(7, 155, 198, .38) !important;
+          background:
+            radial-gradient(ellipse at 50% 24%, #293B70 0%, #20294A 58%, transparent 84%),
+            linear-gradient(155deg, #20294A, #171E36) !important;
+          box-shadow: 0 30px 76px rgba(0, 0, 0, .36), inset 0 0 0 7px rgba(245, 248, 255, .04) !important;
+        }
+        .hero-page.hero-dark .hero-button-primary {
+          color: #FFFFFF !important;
+          background: linear-gradient(135deg, #E5232E, #A81721) !important;
+        }
+        .hero-page.hero-dark .button-arrow { color: #111735 !important; background: #F2DE55 !important; }
+        .hero-page.hero-dark .hero-button-secondary {
+          color: #F5F8FF !important;
+          background: rgba(245, 248, 255, .06) !important;
+          border-color: rgba(112, 197, 224, .32) !important;
+        }
+        .hero-page.hero-dark .hero-socials a {
+          color: #D4DAEA !important;
+          background: rgba(245, 248, 255, .045) !important;
+          border-color: rgba(112, 197, 224, .24) !important;
+        }
+
         /* =====================================================
            ROOT
         ===================================================== */
 
         :root {
-          --vp-black: #101522;
-          --vp-black-soft: #222b3b;
+          /* Logo-led identity: deep globe navy, signature red, cyan and warm yellow. */
+          --vp-brand-primary: #20295B;
+          --vp-brand-primary-hover: #172047;
+          --vp-brand-primary-soft: #35447D;
+          --vp-brand-primary-deep: #111735;
+          --vp-brand-red: #E5232E;
+          --vp-brand-red-hover: #C91D27;
+          --vp-brand-cyan: #079BC6;
+          --vp-brand-cyan-light: #DDF4FA;
+          --vp-brand-yellow: #E3C915;
+          --vp-brand-yellow-light: #FFF4B8;
+          --vp-brand-orange: #F36C21;
+          --vp-brand-green: #65B52E;
 
-          --vp-gold: #b98532;
-          --vp-gold-light: #e6c274;
-          --vp-gold-bright: #f4d994;
-          --vp-gold-dark: #815719;
+          /* Warm, quiet surfaces let the vivid logo colours remain accents. */
+          --vp-brand-gold: var(--vp-brand-yellow);
+          --vp-brand-gold-light: var(--vp-brand-yellow-light);
+          --vp-brand-gold-bright: #FFF9DC;
+          --vp-brand-gold-dark: #796408;
+          --vp-brand-gold-border: #D8C66B;
+          --vp-background: #F8FAFD;
+          --vp-background-warm: #EEF2F8;
+          --vp-surface: #FFFFFF;
+          --vp-surface-soft: #F2F6FA;
+          --vp-surface-raised: #FCFDFE;
+          --vp-surface-hover: #EAF4F8;
+          --vp-text-primary: #20295B;
+          --vp-text-secondary: #38415D;
+          --vp-text-muted: #626A80;
+          --vp-text-inverse: #FFFFFF;
+          --vp-text-on-gold: #20295B;
+          --vp-border-subtle: #E1E6EF;
+          --vp-border-default: #C8D1E0;
+          --vp-border-strong: #8C9AB5;
+          --vp-divider: rgba(32, 41, 91, 0.12);
 
-          --vp-text-soft: #667083;
+          /* Dark theme */
+          --vp-dark-background: #101426;
+          --vp-dark-surface: #171E36;
+          --vp-dark-surface-raised: #20294A;
+          --vp-dark-text-primary: #F5F8FF;
+          --vp-dark-text-secondary: #D4DAEA;
+          --vp-dark-text-muted: #A9B2C9;
+          --vp-dark-border: rgba(112, 197, 224, 0.22);
+          --vp-dark-divider: rgba(212, 218, 234, 0.14);
+          --vp-dark-gold: #F2DE55;
+          --vp-dark-burgundy: #172047;
 
-          --vp-background: #fffdf8;
-          --vp-background-warm: #f7eddd;
+          /* Legacy aliases used throughout the hero */
+          --vp-black: var(--vp-brand-primary);
+          --vp-black-soft: var(--vp-brand-primary-soft);
+          --vp-gold: var(--vp-brand-yellow);
+          --vp-gold-light: var(--vp-brand-yellow-light);
+          --vp-gold-bright: var(--vp-brand-gold-bright);
+          --vp-gold-dark: var(--vp-brand-gold-dark);
+          --vp-text-soft: var(--vp-text-muted);
         }
 
         * {
@@ -3849,6 +4061,1781 @@ export default function HeroSection() {
           .premium-cursor-dot {
             display: none;
           }
+        }
+
+        /* Signature palette: colour-only overrides for the layered art direction. */
+        .hero-stage { background: var(--vp-background); }
+        .hero-page {
+          color: var(--vp-black);
+          background:
+            radial-gradient(ellipse at 90% 15%, rgba(233,209,154,.10), transparent 45%),
+            linear-gradient(110deg, #FBF6EA 0%, #FBF6EA 55%, #F4EBDD 100%);
+        }
+        .hero-page::before {
+          border-color: rgba(213,172,82,.16);
+          box-shadow: 0 0 0 80px rgba(213,172,82,.025), 0 0 0 160px rgba(213,172,82,.018);
+        }
+        .hero-page .hero-copy .hero-brand-vijayam,
+        .hero-headline { color: var(--vp-black); }
+        .hero-page .hero-copy .hero-brand-publications,
+        .hero-headline span,
+        .hero-eyebrow { color: var(--vp-gold-dark); }
+        .hero-brand { border-color: rgba(128,96,43,.24); }
+        .hero-brand::after { background: var(--vp-gold); }
+        .hero-description { color: #514650; }
+        .hero-footer { border-color: rgba(128,96,43,.16); }
+
+        .hero-button-primary {
+          color: #FFFFFF;
+          background: var(--vp-black);
+          box-shadow: 0 10px 24px rgba(72,38,48,.16);
+        }
+        .hero-button-primary:hover {
+          box-shadow: 0 22px 45px rgba(72,38,48,.25), 0 0 0 1px rgba(233,209,154,.2) inset;
+        }
+        .button-arrow {
+          color: var(--vp-black);
+          background: var(--vp-gold-light);
+          box-shadow: 0 5px 15px rgba(213,172,82,.2);
+        }
+        .hero-button-secondary {
+          color: var(--vp-black);
+          background: rgba(255,255,255,.45);
+          border-color: rgba(128,96,43,.25);
+        }
+        .hero-button-secondary:hover {
+          border-color: rgba(128,96,43,.55);
+          box-shadow: 0 16px 35px rgba(213,172,82,.1);
+        }
+        .button-mini-arrow { color: var(--vp-gold-dark); }
+        .hero-button-primary:hover {
+          background: var(--vp-brand-primary-hover);
+        }
+        .hero-button-primary:active {
+          background: var(--vp-brand-primary-deep);
+        }
+        .hero-button-secondary:hover {
+          background: var(--vp-surface-hover);
+        }
+        .hero-button-secondary:active {
+          background: var(--vp-surface-soft);
+        }
+        .social-label, .hero-scroll-indicator { color: var(--vp-text-soft); }
+        .hero-socials a {
+          color: #514650;
+          border-color: rgba(128,96,43,.2);
+        }
+        .hero-socials a:hover {
+          color: var(--vp-gold-dark);
+          border-color: rgba(128,96,43,.45);
+          background: rgba(233,209,154,.16);
+          box-shadow: 0 10px 25px rgba(213,172,82,.12);
+        }
+        .scroll-mouse { border-color: rgba(119,108,112,.45); }
+        .scroll-mouse span { background: var(--vp-gold); }
+
+        .hero-visual {
+          border-color: rgba(213,172,82,.3);
+          background:
+            radial-gradient(ellipse at 50% 25%, #FBF6EA, transparent 75%),
+            linear-gradient(155deg, #F4EBDD, #E9D19A);
+          box-shadow: 0 28px 70px rgba(72,38,48,.10), inset 0 0 0 7px rgba(251,246,234,.45);
+        }
+        .hero-visual::before { border-color: rgba(128,96,43,.18); }
+        .hero-visual-kicker, .hero-visual-note,
+        .book-number, .book-meta-label, .book-view-button { color: var(--vp-gold-dark); }
+        .book-glow {
+          background: radial-gradient(circle, rgba(233,209,154,.22), rgba(233,209,154,.07) 38%, transparent 72%);
+        }
+        .book-hover-aura {
+          background: radial-gradient(circle, rgba(233,209,154,.18), transparent 65%);
+        }
+        .book-floor-shadow { background: rgba(72,38,48,.2); }
+        .book-cover-shell {
+          background: linear-gradient(150deg, #482630 0%, #30232C 48%, #211B23 100%);
+          box-shadow: -14px 22px 35px rgba(72,38,48,.24);
+        }
+        .book-display-stage.is-open .book-cover-shell {
+          box-shadow: -8px 12px 22px rgba(72,38,48,.12);
+        }
+        .book-cover-fallback {
+          background: linear-gradient(140deg, #482630, #30232C);
+          color: var(--vp-gold-light);
+          border-color: var(--vp-gold);
+        }
+        .book-cover-shell::after {
+          color: rgba(128,96,43,.5);
+          background:
+            linear-gradient(90deg, rgba(128,96,43,.18), transparent 12%),
+            repeating-linear-gradient(45deg, #F4EBDD 0 2px, #FBF6EA 2px 6px);
+          border-color: rgba(128,96,43,.4);
+          box-shadow: inset 0 0 0 16px #F4EBDD, inset 0 0 0 17px rgba(128,96,43,.22);
+        }
+        .book-page-stack {
+          background: repeating-linear-gradient(90deg, #E9D19A 0 1px, #FBF6EA 1px 3px);
+          box-shadow: 6px 14px 24px rgba(72,38,48,.18);
+        }
+        /* The paper stays ivory in both themes, with its own dark ink. */
+        .book-interior {
+          color: var(--vp-black);
+          background: linear-gradient(90deg, #E9D19A 0%, #F4EBDD 8%, #FBF6EA 28%, #F4EBDD 100%);
+          border-color: rgba(128,96,43,.35);
+          box-shadow: inset 8px 0 18px rgba(128,96,43,.08);
+        }
+        .book-interior h3, .book-page-imprint { color: var(--vp-black); }
+        .book-page-rule { background: var(--vp-gold); }
+        .book-page-series, .book-page-ornament, .book-page-folio { color: var(--vp-gold-dark); }
+        .book-page-subtitle, .book-page-copy { color: #514650; }
+        .book-interaction-hint { color: var(--vp-text-soft); }
+        .book-meta { border-color: rgba(128,96,43,.2); }
+        .book-meta h2 { color: var(--vp-black); }
+        .book-meta p { color: #514650; }
+        .book-view-arrow {
+          border-color: rgba(128,96,43,.28);
+          background: rgba(233,209,154,.08);
+        }
+        .book-view-button:hover .book-view-arrow { background: rgba(233,209,154,.2); }
+        .book-dot::after { background: rgba(128,96,43,.5); }
+        .book-dot.active { border-color: var(--vp-black); }
+        .book-dot.active::after { background: var(--vp-black); }
+        .hero-button:focus-visible, .hero-socials a:focus-visible,
+        .book-display-stage:focus-visible, .book-view-button:focus-visible,
+        .book-dot:focus-visible { outline-color: var(--vp-gold-dark); }
+
+        .vp-intro {
+          background: radial-gradient(circle at 50% 45%, #482630, #211B23 50%, #17131A 100%);
+        }
+        .vp-intro-glow {
+          background: radial-gradient(circle, rgba(233,209,154,.17), transparent 68%);
+        }
+        .vp-intro-logo {
+          background: radial-gradient(circle at 34% 28%, #E9D19A, #D5AC52 58%, #80602B 100%);
+          box-shadow: 0 0 0 1px rgba(233,209,154,.4), 0 0 60px rgba(233,209,154,.2);
+        }
+        .vp-intro-vijayam { color: var(--vp-gold-light); }
+        .vp-intro-publications { color: var(--vp-background); }
+
+        /* Explicit warm dark-theme surfaces and readable foregrounds. */
+        .hero-stage.is-dark { background: #17131A; }
+        .hero-page.hero-dark {
+          color: var(--vp-background);
+          background: linear-gradient(110deg, #17131A, #211B23);
+        }
+        .hero-dark::before { border-color: rgba(233,209,154,.12); }
+        .hero-page.hero-dark .hero-copy .hero-brand-vijayam,
+        .hero-dark .hero-headline, .hero-dark .book-meta h2 { color: var(--vp-background); }
+        .hero-page.hero-dark .hero-copy .hero-brand-publications,
+        .hero-dark .hero-headline span, .hero-dark .hero-eyebrow,
+        .hero-dark .hero-visual-kicker, .hero-dark .hero-visual-note,
+        .hero-dark .book-number, .hero-dark .book-meta-label,
+        .hero-dark .book-view-button, .hero-dark .button-mini-arrow { color: var(--vp-gold-light); }
+        .hero-dark .hero-description, .hero-dark .social-label,
+        .hero-dark .hero-socials a, .hero-dark .hero-scroll-indicator,
+        .hero-dark .book-meta p, .hero-dark .book-interaction-hint { color: #C8BDC4; }
+        .hero-dark .hero-brand, .hero-dark .hero-footer,
+        .hero-dark .book-meta { border-color: rgba(233,209,154,.2); }
+        .hero-dark .hero-button-primary {
+          color: var(--vp-brand-primary-deep);
+          background: var(--vp-brand-gold-light);
+          box-shadow: 0 10px 24px rgba(23,19,26,.16);
+        }
+        .hero-dark .hero-button-primary:hover {
+          background: var(--vp-brand-gold-bright);
+        }
+        .hero-dark .hero-button-primary:active {
+          background: var(--vp-brand-gold);
+        }
+        .hero-dark .hero-button-secondary:hover {
+          background: rgba(233, 209, 154, 0.1);
+        }
+        .hero-dark .hero-button-primary:hover {
+          box-shadow: 0 22px 45px rgba(23,19,26,.25), 0 0 0 1px rgba(233,209,154,.2) inset;
+        }
+        .hero-dark .hero-button-secondary {
+          color: var(--vp-background);
+          background: rgba(251,246,234,.04);
+          border-color: rgba(233,209,154,.25);
+        }
+        .hero-dark .hero-button-secondary:hover { border-color: rgba(233,209,154,.55); }
+        /* Dark primary CTA is gold, so its arrow chip switches to burgundy to stay visible. */
+        .hero-dark .button-arrow {
+          color: var(--vp-gold-light);
+          background: var(--vp-brand-primary);
+          box-shadow: 0 5px 15px rgba(0,0,0,.25);
+        }
+        /* Brand text selection, scoped to the hero. */
+        .hero-stage ::selection {
+          background: rgba(201,162,74,.32);
+          color: var(--vp-black);
+        }
+        .hero-stage.is-dark ::selection {
+          background: rgba(233,209,154,.28);
+          color: var(--vp-background);
+        }
+        /* Light-mode focus ring: gold-dark keeps 3:1+ contrast on ivory (plain gold does not). */
+        .hero-page:not(.hero-dark) .book-display-stage:focus-visible {
+          outline-color: var(--vp-gold-dark);
+        }
+        .hero-dark .hero-socials a {
+          background: rgba(251,246,234,.04);
+          border-color: rgba(233,209,154,.2);
+        }
+        .hero-dark .hero-socials a:hover {
+          color: var(--vp-gold-light);
+          border-color: rgba(233,209,154,.45);
+          background: rgba(233,209,154,.1);
+        }
+        .hero-dark .scroll-mouse { border-color: rgba(200,189,196,.4); }
+        .hero-dark .hero-visual {
+          background: radial-gradient(ellipse at 50% 28%, #30232C, #211B23 75%);
+          border-color: rgba(233,209,154,.2);
+          box-shadow: 0 32px 80px rgba(23,19,26,.2), inset 0 0 0 7px rgba(233,209,154,.025);
+        }
+        .hero-dark .hero-visual::before { border-color: rgba(233,209,154,.18); }
+        .hero-dark .book-glow {
+          background: radial-gradient(circle, rgba(233,209,154,.12), rgba(233,209,154,.04) 38%, transparent 72%);
+        }
+        .hero-dark .book-view-arrow {
+          border-color: rgba(233,209,154,.28);
+          background: rgba(233,209,154,.08);
+        }
+        .hero-dark .book-view-button:hover .book-view-arrow { background: rgba(233,209,154,.17); }
+        .hero-dark .book-dot::after { background: rgba(233,209,154,.5); }
+        .hero-dark .book-dot.active { border-color: var(--vp-gold-light); }
+        .hero-dark .book-dot.active::after { background: var(--vp-gold-light); }
+        .hero-dark .hero-button:focus-visible, .hero-dark .hero-socials a:focus-visible,
+        .hero-dark .book-display-stage:focus-visible, .hero-dark .book-view-button:focus-visible,
+        .hero-dark .book-dot:focus-visible { outline-color: var(--vp-gold-light); }
+        /* Logo-derived colour finish for the existing hero and intro. */
+        .hero-stage {
+          background: var(--vp-background) !important;
+          color: var(--vp-text-primary);
+        }
+        .hero-stage.is-dark {
+          background: var(--vp-dark-background) !important;
+        }
+        .hero-page {
+          color: var(--vp-text-primary);
+          background:
+            radial-gradient(ellipse at 82% 32%, rgba(7, 155, 198, .08), transparent 30%),
+            linear-gradient(120deg, #FCFDFE 0%, #F8FAFD 58%, #EEF2F8 100%);
+        }
+        .hero-page::before {
+          border-color: rgba(32, 41, 91, .12);
+          box-shadow: 0 0 0 80px rgba(7, 155, 198, .025), 0 0 0 160px rgba(32, 41, 91, .018);
+        }
+        .hero-page.hero-dark {
+          color: var(--vp-dark-text-primary);
+          background:
+            radial-gradient(ellipse at 82% 32%, rgba(7, 155, 198, .12), transparent 32%),
+            linear-gradient(120deg, var(--vp-dark-background), var(--vp-dark-surface));
+        }
+        .hero-page.hero-dark::before {
+          border-color: rgba(112, 197, 224, .18);
+          box-shadow: 0 0 0 80px rgba(7, 155, 198, .035), 0 0 0 160px rgba(32, 41, 91, .08);
+        }
+        .hero-page .hero-copy .hero-brand-vijayam { color: var(--vp-brand-red); }
+        .hero-page .hero-copy .hero-brand-publications { color: var(--vp-brand-primary); }
+        .hero-page.hero-dark .hero-copy .hero-brand-vijayam { color: #FF5961; }
+        .hero-page.hero-dark .hero-copy .hero-brand-publications { color: var(--vp-dark-text-primary); }
+        .hero-brand { border-color: var(--vp-border-default); }
+        .hero-brand::after { background: var(--vp-brand-red); }
+        .hero-dark .hero-brand { border-color: var(--vp-dark-border); }
+        .hero-dark .hero-brand::after { background: var(--vp-brand-cyan); }
+        .hero-headline, .hero-page .hero-headline { color: var(--vp-brand-primary); }
+        .hero-headline span { color: var(--vp-brand-red); }
+        .hero-description { color: var(--vp-text-secondary); }
+        .hero-eyebrow, .book-number, .book-meta-label,
+        .book-view-button, .hero-visual-kicker { color: var(--vp-brand-primary-soft); }
+        .hero-visual-note, .book-interaction-hint, .book-meta p,
+        .social-label, .hero-scroll-indicator { color: var(--vp-text-muted); }
+        .hero-dark .hero-headline,
+        .hero-dark .book-meta h2 { color: var(--vp-dark-text-primary); }
+        .hero-dark .hero-headline span,
+        .hero-dark .hero-eyebrow,
+        .hero-dark .book-number,
+        .hero-dark .book-meta-label,
+        .hero-dark .book-view-button,
+        .hero-dark .hero-visual-kicker { color: var(--vp-dark-gold); }
+        .hero-dark .hero-description,
+        .hero-dark .hero-visual-note,
+        .hero-dark .book-interaction-hint,
+        .hero-dark .book-meta p,
+        .hero-dark .social-label,
+        .hero-dark .hero-scroll-indicator { color: var(--vp-dark-text-secondary); }
+
+        .hero-button-primary {
+          color: var(--vp-text-inverse);
+          background: var(--vp-brand-primary);
+          box-shadow: 0 12px 28px rgba(32, 41, 91, .18);
+        }
+        .hero-button-primary::before {
+          background: linear-gradient(115deg, transparent 15%, rgba(255,255,255,.14) 45%, transparent 65%);
+        }
+        .hero-button-primary:hover {
+          background: var(--vp-brand-primary-hover);
+          box-shadow: 0 18px 36px rgba(23, 32, 71, .24), 0 0 0 1px rgba(7, 155, 198, .22) inset;
+        }
+        .hero-button-primary:active { background: var(--vp-brand-primary-deep); }
+        .button-arrow {
+          color: var(--vp-brand-primary);
+          background: var(--vp-brand-yellow-light);
+          box-shadow: 0 5px 15px rgba(227, 201, 21, .16);
+        }
+        .hero-button-secondary {
+          color: var(--vp-brand-primary);
+          background: rgba(255,255,255,.72);
+          border-color: var(--vp-border-default);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.82);
+        }
+        .hero-button-secondary:hover {
+          color: var(--vp-brand-primary);
+          background: var(--vp-brand-cyan-light);
+          border-color: var(--vp-brand-cyan);
+          box-shadow: 0 12px 26px rgba(7, 155, 198, .10);
+        }
+        .hero-button-secondary:active { background: #C9EAF3; }
+        .button-mini-arrow { color: var(--vp-brand-red); }
+        .hero-dark .hero-button-primary {
+          color: #FFFFFF;
+          background: var(--vp-brand-red);
+          box-shadow: 0 10px 26px rgba(0,0,0,.2);
+        }
+        .hero-dark .hero-button-primary:hover { background: var(--vp-brand-red-hover); }
+        .hero-dark .hero-button-primary:active { background: #A81721; }
+        .hero-dark .button-arrow { color: var(--vp-brand-primary-deep); background: var(--vp-dark-gold); }
+        .hero-dark .hero-button-secondary {
+          color: var(--vp-dark-text-primary);
+          background: rgba(245,248,255,.045);
+          border-color: var(--vp-dark-border);
+        }
+        .hero-dark .hero-button-secondary:hover { background: rgba(7,155,198,.16); border-color: var(--vp-brand-cyan); }
+        .hero-dark .hero-button-secondary:active { background: rgba(7,155,198,.24); }
+
+        .hero-socials a {
+          color: var(--vp-brand-primary-soft);
+          border-color: var(--vp-border-default);
+          background: rgba(255,255,255,.58);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.75);
+        }
+        .hero-socials a:hover {
+          color: var(--vp-brand-red);
+          border-color: rgba(7,155,198,.5);
+          background: var(--vp-brand-cyan-light);
+          box-shadow: 0 8px 20px rgba(7,155,198,.12);
+        }
+        .hero-dark .hero-socials a {
+          color: var(--vp-dark-text-secondary);
+          border-color: var(--vp-dark-border);
+          background: rgba(245,248,255,.04);
+        }
+        .hero-dark .hero-socials a:hover {
+          color: var(--vp-dark-text-primary);
+          border-color: var(--vp-brand-cyan);
+          background: rgba(7,155,198,.16);
+        }
+        .scroll-mouse { border-color: rgba(32,41,91,.32); }
+        .scroll-mouse span { background: var(--vp-brand-cyan); }
+        .hero-dark .scroll-mouse { border-color: rgba(212,218,234,.4); }
+        .hero-dark .scroll-mouse span { background: var(--vp-dark-gold); }
+
+        .hero-visual {
+          border-color: rgba(32,41,91,.16);
+          background:
+            radial-gradient(ellipse at 50% 28%, #FFFFFF, transparent 72%),
+            linear-gradient(155deg, #F2F6FA, #E7EEF6);
+          box-shadow: 0 26px 64px rgba(32,41,91,.09), inset 0 0 0 7px rgba(255,255,255,.48);
+        }
+        .hero-visual::before { border-color: rgba(32,41,91,.12); }
+        .hero-dark .hero-visual {
+          border-color: var(--vp-dark-border);
+          background: radial-gradient(ellipse at 50% 28%, #20294A, #171E36 75%);
+          box-shadow: 0 28px 70px rgba(0,0,0,.22), inset 0 0 0 7px rgba(245,248,255,.025);
+        }
+        .hero-dark .hero-visual::before { border-color: var(--vp-dark-border); }
+        .book-glow { background: radial-gradient(circle, rgba(7,155,198,.16), rgba(227,201,21,.07) 38%, transparent 72%); }
+        .hero-dark .book-glow { background: radial-gradient(circle, rgba(7,155,198,.17), rgba(227,201,21,.055) 38%, transparent 72%); }
+        .book-floor-shadow { background: rgba(24,31,55,.17); }
+        .book-cover-shell {
+          background: linear-gradient(150deg, #20295B, #25345F 52%, #111735);
+          box-shadow: -14px 22px 35px rgba(20,29,67,.22), 0 0 0 1px rgba(255,255,255,.72);
+        }
+        .book-cover-highlight { background: linear-gradient(110deg, transparent 15%, rgba(255,255,255,.2) 45%, transparent 60%); }
+        .book-edge { background: linear-gradient(90deg, rgba(17,23,53,.2), rgba(255,255,255,.4), rgba(17,23,53,.12)); }
+        .book-hover-aura { background: radial-gradient(circle, rgba(7,155,198,.15), transparent 65%); }
+        .book-meta h2 { color: var(--vp-brand-primary); }
+        .book-meta p, .book-interaction-hint { color: var(--vp-text-secondary); }
+        .book-view-button { color: var(--vp-brand-primary); }
+        .book-view-arrow { border-color: rgba(32,41,91,.22); background: rgba(7,155,198,.07); }
+        .book-view-button:hover .book-view-arrow { background: rgba(7,155,198,.16); }
+        .book-dot::after { background: rgba(32,41,91,.34); }
+        .book-dot.active { border-color: var(--vp-brand-red); }
+        .book-dot.active::after { background: var(--vp-brand-red); }
+        .hero-dark .book-meta h2 { color: var(--vp-dark-text-primary); }
+        .hero-dark .book-meta p, .hero-dark .book-interaction-hint { color: var(--vp-dark-text-secondary); }
+        .hero-dark .book-view-button { color: var(--vp-dark-gold); }
+        .hero-dark .book-view-arrow { border-color: var(--vp-dark-border); background: rgba(7,155,198,.10); }
+        .hero-dark .book-view-button:hover .book-view-arrow { background: rgba(7,155,198,.2); }
+        .hero-dark .book-dot::after { background: rgba(212,218,234,.46); }
+        .hero-dark .book-dot.active { border-color: var(--vp-dark-gold); }
+        .hero-dark .book-dot.active::after { background: var(--vp-dark-gold); }
+        .book-interior {
+          color: var(--vp-brand-primary);
+          background: linear-gradient(90deg, #DDEAF0 0%, #F2F7F8 9%, #FCFDFE 30%, #F2F7F8 100%);
+          border-color: rgba(32,41,91,.25);
+          box-shadow: inset 8px 0 18px rgba(32,41,91,.07);
+        }
+        .book-interior h3, .book-page-imprint { color: var(--vp-brand-primary); }
+        .book-page-rule { background: var(--vp-brand-cyan); }
+        .book-page-series, .book-page-ornament, .book-page-folio { color: var(--vp-brand-red); }
+        .book-page-subtitle, .book-page-copy { color: var(--vp-text-secondary); }
+        .book-page-stack { background: repeating-linear-gradient(90deg, #CBD9E7 0 1px, #FCFDFE 1px 3px); }
+        .book-cover-fallback { background: linear-gradient(140deg, #20295B, #111735); color: #FFFFFF; border-color: var(--vp-brand-cyan); }
+        .book-cover-fallback strong { color: #FF5961; }
+        .book-cover-shell::after {
+          color: rgba(32,41,91,.48);
+          background: repeating-linear-gradient(45deg, #E8F0F5 0 2px, #FCFDFE 2px 6px);
+          border-color: rgba(32,41,91,.25);
+          box-shadow: inset 0 0 0 16px #EEF4F7, inset 0 0 0 17px rgba(7,155,198,.18);
+        }
+
+        .hero-button:focus-visible, .hero-socials a:focus-visible,
+        .book-display-stage:focus-visible, .book-view-button:focus-visible,
+        .book-dot:focus-visible {
+          outline: 2px solid var(--vp-brand-cyan);
+          outline-offset: 4px;
+        }
+        .hero-dark .hero-button:focus-visible, .hero-dark .hero-socials a:focus-visible,
+        .hero-dark .book-display-stage:focus-visible, .hero-dark .book-view-button:focus-visible,
+        .hero-dark .book-dot:focus-visible {
+          outline-color: var(--vp-dark-gold);
+        }
+        .book-view-button:disabled { color: var(--vp-text-muted); }
+        .hero-dark .book-view-button:disabled { color: var(--vp-dark-text-muted); }
+        .hero-stage ::selection { background: rgba(7,155,198,.22); color: var(--vp-brand-primary-deep); }
+        .hero-stage.is-dark ::selection { background: rgba(7,155,198,.32); color: #FFFFFF; }
+
+        .vp-intro {
+          background: radial-gradient(circle at 50% 45%, #20295B, #171E36 52%, #101426 100%);
+        }
+        .vp-intro-glow { background: radial-gradient(circle, rgba(7,155,198,.18), rgba(227,201,21,.08) 35%, transparent 70%); }
+        .vp-intro-logo {
+          background: #FFFFFF;
+          box-shadow: 0 0 0 2px rgba(227,201,21,.75), 0 0 40px rgba(7,155,198,.18);
+        }
+        .vp-intro-vijayam { color: #F4D914; }
+        .vp-intro-publications { color: #F5F8FF; }
+
+        /* Premium logo-inspired surfaces: ivory in light mode, deep navy in dark mode. */
+        .hero-stage {
+          background: #F7F4EC !important;
+        }
+        .hero-stage.is-dark {
+          background: #111735 !important;
+        }
+        .hero-page {
+          background:
+            radial-gradient(ellipse at 82% 34%, rgba(7, 155, 198, .055), transparent 32%),
+            radial-gradient(ellipse at 12% 0%, rgba(227, 201, 21, .045), transparent 44%),
+            linear-gradient(125deg, #FFFEFA 0%, #F8F5ED 58%, #F0EBDD 100%);
+        }
+        .hero-page::before {
+          border-color: rgba(32, 41, 91, .10);
+          box-shadow:
+            0 0 0 80px rgba(7, 155, 198, .018),
+            0 0 0 160px rgba(32, 41, 91, .012);
+        }
+        .hero-page.hero-dark {
+          background:
+            radial-gradient(ellipse at 82% 34%, rgba(7, 155, 198, .10), transparent 34%),
+            radial-gradient(ellipse at 12% 0%, rgba(229, 35, 46, .035), transparent 42%),
+            linear-gradient(125deg, #111735 0%, #171E36 58%, #20294A 100%);
+        }
+        .hero-page.hero-dark::before {
+          border-color: rgba(112, 197, 224, .14);
+          box-shadow:
+            0 0 0 80px rgba(7, 155, 198, .025),
+            0 0 0 160px rgba(245, 248, 255, .012);
+        }
+        .hero-visual {
+          border-color: rgba(32, 41, 91, .14);
+          background:
+            radial-gradient(ellipse at 50% 24%, rgba(255, 255, 255, .96), transparent 72%),
+            linear-gradient(155deg, #FBF8F1, #EEE8D9);
+        }
+        .hero-dark .hero-visual {
+          border-color: rgba(112, 197, 224, .2);
+          background:
+            radial-gradient(ellipse at 50% 24%, #25345F, transparent 74%),
+            linear-gradient(155deg, #20294A, #171E36);
+        }
+        .book-glow {
+          background: radial-gradient(circle, rgba(227, 201, 21, .13), rgba(7, 155, 198, .045) 42%, transparent 72%);
+        }
+        .hero-dark .book-glow {
+          background: radial-gradient(circle, rgba(227, 201, 21, .10), rgba(7, 155, 198, .08) 42%, transparent 72%);
+        }
+        /* Rich logo-led backdrop: navy becomes the canvas, with red, cyan and yellow kept as accents. */
+        .hero-stage {
+          background: #111735 !important;
+        }
+        .hero-page {
+          color: #F5F8FF;
+          background:
+            radial-gradient(ellipse at 82% 34%, rgba(7, 155, 198, .20), transparent 32%),
+            radial-gradient(ellipse at 14% 88%, rgba(229, 35, 46, .12), transparent 34%),
+            linear-gradient(125deg, #111735 0%, #20295B 56%, #172047 100%);
+        }
+        .hero-page::before {
+          border-color: rgba(227, 201, 21, .20);
+          box-shadow:
+            0 0 0 80px rgba(7, 155, 198, .045),
+            0 0 0 160px rgba(227, 201, 21, .025);
+        }
+        .hero-page.hero-dark {
+          color: #F5F8FF;
+          background:
+            radial-gradient(ellipse at 82% 34%, rgba(7, 155, 198, .16), transparent 34%),
+            radial-gradient(ellipse at 14% 88%, rgba(229, 35, 46, .09), transparent 36%),
+            linear-gradient(125deg, #0B1024 0%, #111735 58%, #171E36 100%);
+        }
+        .hero-page.hero-dark::before {
+          border-color: rgba(227, 201, 21, .16);
+          box-shadow:
+            0 0 0 80px rgba(7, 155, 198, .035),
+            0 0 0 160px rgba(245, 248, 255, .015);
+        }
+        .hero-page .hero-copy .hero-brand-vijayam,
+        .hero-page.hero-dark .hero-copy .hero-brand-vijayam {
+          color: #FF5961;
+        }
+        .hero-page .hero-copy .hero-brand-publications,
+        .hero-page.hero-dark .hero-copy .hero-brand-publications {
+          color: #F2DE55;
+        }
+        .hero-page .hero-headline,
+        .hero-page.hero-dark .hero-headline,
+        .hero-page.hero-dark .book-meta h2 {
+          color: #F5F8FF;
+        }
+        .hero-page .hero-headline span,
+        .hero-page.hero-dark .hero-headline span {
+          color: #F2DE55;
+        }
+        .hero-page .hero-description,
+        .hero-page.hero-dark .hero-description {
+          color: #D4DAEA;
+        }
+        .hero-page .hero-eyebrow,
+        .hero-page .social-label,
+        .hero-page .hero-scroll-indicator {
+          color: #D4DAEA;
+        }
+        .hero-page .hero-brand,
+        .hero-page .hero-footer {
+          border-color: rgba(245, 248, 255, .18);
+        }
+        .hero-page .hero-brand::after { background: #E5232E; }
+
+        .hero-page .hero-button-primary {
+          color: #FFFFFF;
+          background: #E5232E;
+          box-shadow: 0 12px 30px rgba(0, 0, 0, .24);
+        }
+        .hero-page .hero-button-primary:hover {
+          background: #C91D27;
+          box-shadow: 0 18px 38px rgba(0, 0, 0, .3), 0 0 0 1px rgba(227, 201, 21, .28) inset;
+        }
+        .hero-page .hero-button-primary:active { background: #A81721; }
+        .hero-page .button-arrow {
+          color: #111735;
+          background: #E3C915;
+        }
+        .hero-page .hero-button-secondary {
+          color: #F5F8FF;
+          background: rgba(255, 255, 255, .07);
+          border-color: rgba(245, 248, 255, .28);
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, .12);
+        }
+        .hero-page .hero-button-secondary:hover {
+          color: #FFFFFF;
+          background: rgba(7, 155, 198, .18);
+          border-color: #079BC6;
+        }
+        .hero-page .hero-button-secondary:active { background: rgba(7, 155, 198, .26); }
+        .hero-page .button-mini-arrow { color: #F2DE55; }
+        .hero-page .hero-socials a {
+          color: #D4DAEA;
+          border-color: rgba(245, 248, 255, .2);
+          background: rgba(255, 255, 255, .055);
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1);
+        }
+        .hero-page .hero-socials a:hover {
+          color: #FFFFFF;
+          border-color: #079BC6;
+          background: rgba(7, 155, 198, .18);
+        }
+        .hero-page .scroll-mouse { border-color: rgba(212, 218, 234, .48); }
+        .hero-page .scroll-mouse span { background: #F2DE55; }
+
+        /* A warm editorial product panel provides contrast against the bold navy hero. */
+        .hero-page .hero-visual {
+          border-color: rgba(227, 201, 21, .42);
+          background:
+            radial-gradient(ellipse at 50% 24%, #FFFFFF 0%, rgba(248, 250, 253, .96) 54%, transparent 78%),
+            linear-gradient(155deg, #F8FAFD, #DDF4FA);
+          box-shadow: 0 30px 76px rgba(0, 0, 0, .28), inset 0 0 0 7px rgba(255, 255, 255, .56);
+        }
+        .hero-page .hero-visual::before { border-color: rgba(32, 41, 91, .18); }
+        .hero-page .hero-visual-kicker,
+        .hero-page .hero-visual-note,
+        .hero-page .book-number,
+        .hero-page .book-meta-label,
+        .hero-page .book-view-button { color: #20295B; }
+        .hero-page .book-interaction-hint,
+        .hero-page .book-meta p { color: #38415D; }
+        .hero-page .book-meta h2 { color: #20295B; }
+        .hero-page .book-display-stage:focus-visible,
+        .hero-page .hero-button:focus-visible,
+        .hero-page .hero-socials a:focus-visible,
+        .hero-page .book-view-button:focus-visible,
+        .hero-page .book-dot:focus-visible {
+          outline-color: #F2DE55;
+        }
+        .hero-page.hero-dark .hero-visual {
+          border-color: rgba(7, 155, 198, .34);
+          background:
+            radial-gradient(ellipse at 50% 24%, #25345F, transparent 74%),
+            linear-gradient(155deg, #20294A, #171E36);
+          box-shadow: 0 30px 76px rgba(0, 0, 0, .36), inset 0 0 0 7px rgba(245, 248, 255, .035);
+        }
+        .hero-page.hero-dark .hero-visual::before { border-color: rgba(227, 201, 21, .18); }
+        .hero-page.hero-dark .hero-visual-kicker,
+        .hero-page.hero-dark .hero-visual-note,
+        .hero-page.hero-dark .book-number,
+        .hero-page.hero-dark .book-meta-label,
+        .hero-page.hero-dark .book-view-button { color: #F2DE55; }
+        .hero-page.hero-dark .book-meta h2 { color: #F5F8FF; }
+        .hero-page.hero-dark .book-meta p,
+        .hero-page.hero-dark .book-interaction-hint { color: #D4DAEA; }
+        .hero-page.hero-dark .hero-socials a { color: #D4DAEA; }
+        .hero-page.hero-dark .hero-button-secondary {
+          color: #F5F8FF;
+          background: rgba(245, 248, 255, .045);
+          border-color: rgba(112, 197, 224, .28);
+        }
+        .hero-page.hero-dark .hero-button-secondary:hover {
+          background: rgba(7, 155, 198, .18);
+          border-color: #079BC6;
+        }
+        .hero-page ::selection { background: rgba(227, 201, 21, .34); color: #111735; }
+        .hero-page.hero-dark ::selection { background: rgba(7, 155, 198, .4); color: #FFFFFF; }
+
+        /* Final logo-palette finish: deep globe navy, signature red, cyan and warm yellow. */
+        .hero-stage {
+          background: #101426 !important;
+        }
+        .hero-page {
+          background:
+            radial-gradient(ellipse at 82% 30%, rgba(7, 155, 198, .16), transparent 34%),
+            radial-gradient(ellipse at 12% 90%, rgba(229, 35, 46, .08), transparent 38%),
+            linear-gradient(125deg, #111735 0%, #20295B 58%, #172047 100%);
+        }
+        .hero-page::before {
+          border-color: rgba(227, 201, 21, .18);
+          box-shadow:
+            0 0 0 80px rgba(7, 155, 198, .035),
+            0 0 0 160px rgba(227, 201, 21, .02);
+        }
+        .hero-page .hero-copy .hero-brand-vijayam { color: #FF5961; }
+        .hero-page .hero-copy .hero-brand-publications { color: #F2DE55; }
+        .hero-page .hero-headline,
+        .hero-page .hero-headline span { color: #F5F8FF; }
+        .hero-page .hero-headline span { color: #F2DE55; }
+        .hero-page .hero-description { color: #D4DAEA; }
+        .hero-page .hero-button-primary {
+          color: #FFFFFF;
+          background: #E5232E;
+          box-shadow: 0 12px 30px rgba(0, 0, 0, .24);
+        }
+        .hero-page .hero-button-primary:hover { background: #C91D27; }
+        .hero-page .hero-button-primary:active { background: #A81721; }
+        .hero-page .button-arrow {
+          color: #111735;
+          background: #E3C915;
+        }
+        .hero-page .hero-button-secondary {
+          color: #F5F8FF;
+          background: rgba(255, 255, 255, .07);
+          border-color: rgba(245, 248, 255, .26);
+        }
+        .hero-page .hero-button-secondary:hover {
+          background: rgba(7, 155, 198, .18);
+          border-color: #079BC6;
+        }
+        .hero-page .hero-visual {
+          border-color: rgba(227, 201, 21, .34);
+          background:
+            radial-gradient(ellipse at 50% 24%, #FFFFFF 0%, #F8FAFD 56%, transparent 80%),
+            linear-gradient(155deg, #F2F6FA, #DDF4FA);
+          box-shadow: 0 30px 76px rgba(0, 0, 0, .28), inset 0 0 0 7px rgba(255, 255, 255, .56);
+        }
+        .hero-page.hero-dark {
+          background:
+            radial-gradient(ellipse at 82% 30%, rgba(7, 155, 198, .12), transparent 36%),
+            linear-gradient(125deg, #0B1024 0%, #111735 58%, #171E36 100%);
+        }
+        .hero-page.hero-dark .hero-visual {
+          border-color: rgba(7, 155, 198, .3);
+          background: radial-gradient(ellipse at 50% 24%, #25345F, #171E36 76%);
+        }
+        .hero-page .hero-button:focus-visible,
+        .hero-page .hero-socials a:focus-visible,
+        .hero-page .book-display-stage:focus-visible,
+        .hero-page .book-view-button:focus-visible,
+        .hero-page .book-dot:focus-visible {
+          outline-color: #F2DE55;
+        }
+
+        /* Theme finish: luminous ivory in daylight, rich brand navy at night. */
+        .hero-page:not(.hero-dark) {
+          color: #20295B;
+          background:
+            radial-gradient(ellipse at 82% 28%, rgba(7, 155, 198, .11), transparent 34%),
+            radial-gradient(ellipse at 12% 88%, rgba(227, 201, 21, .09), transparent 38%),
+            linear-gradient(125deg, #FFFEFA 0%, #F8F5ED 58%, #EEE8D9 100%);
+        }
+        .hero-page:not(.hero-dark)::before {
+          border-color: rgba(32, 41, 91, .12);
+          box-shadow: 0 0 0 80px rgba(7, 155, 198, .025), 0 0 0 160px rgba(32, 41, 91, .018);
+        }
+        .hero-page:not(.hero-dark) .hero-copy .hero-brand-vijayam { color: #E5232E; }
+        .hero-page:not(.hero-dark) .hero-copy .hero-brand-publications { color: #20295B; }
+        .hero-page:not(.hero-dark) .hero-headline,
+        .hero-page:not(.hero-dark) .book-meta h2 { color: #20295B; }
+        .hero-page:not(.hero-dark) .hero-headline span { color: #C91D27; }
+        .hero-page:not(.hero-dark) .hero-description,
+        .hero-page:not(.hero-dark) .book-meta p,
+        .hero-page:not(.hero-dark) .book-interaction-hint { color: #46516C; }
+        .hero-page:not(.hero-dark) .hero-eyebrow,
+        .hero-page:not(.hero-dark) .book-number,
+        .hero-page:not(.hero-dark) .book-meta-label,
+        .hero-page:not(.hero-dark) .book-view-button,
+        .hero-page:not(.hero-dark) .hero-visual-kicker,
+        .hero-page:not(.hero-dark) .hero-visual-note { color: #35447D; }
+        .hero-page:not(.hero-dark) .hero-visual {
+          border-color: rgba(32, 41, 91, .18);
+          background:
+            radial-gradient(ellipse at 50% 24%, #FFFFFF 0%, #F8FAFD 58%, transparent 82%),
+            linear-gradient(155deg, #F2F6FA, #DDF4FA);
+          box-shadow: 0 28px 70px rgba(17, 23, 53, .14), inset 0 0 0 7px rgba(255, 255, 255, .65);
+        }
+        .hero-page:not(.hero-dark) .hero-button-primary {
+          color: #FFFFFF;
+          background: linear-gradient(135deg, #20295B, #35447D);
+          box-shadow: 0 12px 28px rgba(32, 41, 91, .22);
+        }
+        .hero-page:not(.hero-dark) .hero-button-primary:hover { background: #172047; }
+        .hero-page:not(.hero-dark) .button-arrow { color: #20295B; background: #E3C915; }
+        .hero-page:not(.hero-dark) .hero-button-secondary {
+          color: #20295B;
+          background: rgba(255, 255, 255, .76);
+          border-color: rgba(32, 41, 91, .2);
+        }
+        .hero-page:not(.hero-dark) .hero-socials a {
+          color: #35447D;
+          background: rgba(255, 255, 255, .62);
+          border-color: rgba(32, 41, 91, .18);
+        }
+        .hero-page:not(.hero-dark) .hero-brand,
+        .hero-page:not(.hero-dark) .hero-footer,
+        .hero-page:not(.hero-dark) .book-meta { border-color: rgba(32, 41, 91, .16); }
+        .hero-page:not(.hero-dark) .hero-brand::after { background: #E5232E; }
+        .hero-page:not(.hero-dark) .hero-button:focus-visible,
+        .hero-page:not(.hero-dark) .hero-socials a:focus-visible,
+        .hero-page:not(.hero-dark) .book-display-stage:focus-visible,
+        .hero-page:not(.hero-dark) .book-view-button:focus-visible,
+        .hero-page:not(.hero-dark) .book-dot:focus-visible { outline-color: #079BC6; }
+
+        .hero-page.hero-dark {
+          color: #F5F8FF;
+          background:
+            radial-gradient(ellipse at 82% 28%, rgba(7, 155, 198, .16), transparent 36%),
+            radial-gradient(ellipse at 12% 88%, rgba(229, 35, 46, .08), transparent 38%),
+            linear-gradient(125deg, #0B1024 0%, #111735 58%, #20294A 100%);
+        }
+        .hero-page.hero-dark .hero-copy .hero-brand-vijayam { color: #FF6970; }
+        .hero-page.hero-dark .hero-copy .hero-brand-publications { color: #F2DE55; }
+        .hero-page.hero-dark .hero-headline,
+        .hero-page.hero-dark .book-meta h2 { color: #F5F8FF; }
+        .hero-page.hero-dark .hero-headline span { color: #F2DE55; }
+        .hero-page.hero-dark .hero-description,
+        .hero-page.hero-dark .book-meta p,
+        .hero-page.hero-dark .book-interaction-hint,
+        .hero-page.hero-dark .social-label,
+        .hero-page.hero-dark .hero-scroll-indicator { color: #D4DAEA; }
+        .hero-page.hero-dark .hero-eyebrow,
+        .hero-page.hero-dark .book-number,
+        .hero-page.hero-dark .book-meta-label,
+        .hero-page.hero-dark .book-view-button,
+        .hero-page.hero-dark .hero-visual-kicker,
+        .hero-page.hero-dark .hero-visual-note { color: #F2DE55; }
+        .hero-page.hero-dark .hero-visual {
+          border-color: rgba(7, 155, 198, .34);
+          background:
+            radial-gradient(ellipse at 50% 24%, #25345F 0%, #20294A 58%, transparent 84%),
+            linear-gradient(155deg, #20294A, #171E36);
+          box-shadow: 0 30px 76px rgba(0, 0, 0, .34), inset 0 0 0 7px rgba(245, 248, 255, .04);
+        }
+        .hero-page.hero-dark .hero-button-primary {
+          color: #FFFFFF;
+          background: #E5232E;
+          box-shadow: 0 12px 30px rgba(0, 0, 0, .26);
+        }
+        .hero-page.hero-dark .hero-button-primary:hover { background: #C91D27; }
+        .hero-page.hero-dark .button-arrow { color: #111735; background: #F2DE55; }
+        .hero-page.hero-dark .hero-button-secondary {
+          color: #F5F8FF;
+          background: rgba(245, 248, 255, .06);
+          border-color: rgba(112, 197, 224, .3);
+        }
+        .hero-page.hero-dark .hero-socials a {
+          color: #D4DAEA;
+          background: rgba(245, 248, 255, .045);
+          border-color: rgba(112, 197, 224, .24);
+        }
+        .hero-page.hero-dark .hero-brand,
+        .hero-page.hero-dark .hero-footer,
+        .hero-page.hero-dark .book-meta { border-color: rgba(112, 197, 224, .22); }
+        .hero-page.hero-dark .hero-brand::after { background: #079BC6; }
+        .hero-page.hero-dark .hero-button:focus-visible,
+        .hero-page.hero-dark .hero-socials a:focus-visible,
+        .hero-page.hero-dark .book-display-stage:focus-visible,
+        .hero-page.hero-dark .book-view-button:focus-visible,
+        .hero-page.hero-dark .book-dot:focus-visible { outline-color: #F2DE55; }
+        .hero-stage { background: #F4F1E8 !important; }
+        .hero-stage.is-dark { background: #0B1024 !important; }
+
+        /* Sharper signature yellow and cleaner, ring-free surfaces. */
+        :root {
+          --vp-brand-yellow: #FFD400 !important;
+          --vp-brand-yellow-light: #FFF0A3 !important;
+          --vp-dark-gold: #FFE34D !important;
+        }
+        .hero-page::before,
+        .hero-page::after,
+        .hero-visual::before {
+          content: none !important;
+          display: none !important;
+        }
+        .book-dot.active {
+          border-color: transparent !important;
+        }
+        .hero-page:not(.hero-dark) .button-arrow {
+          color: #20295B !important;
+          background: linear-gradient(135deg, #FFE34D, #FFC400) !important;
+          box-shadow: 0 5px 18px rgba(255, 196, 0, .28) !important;
+        }
+        .hero-page.hero-dark .button-arrow {
+          color: #111735 !important;
+          background: linear-gradient(135deg, #FFF06A, #FFD400) !important;
+        }
+        .hero-page:not(.hero-dark) .book-glow {
+          background: radial-gradient(circle, rgba(255, 196, 0, .23), rgba(7, 155, 198, .09) 42%, transparent 72%) !important;
+        }
+        .hero-page.hero-dark .book-glow {
+          background: radial-gradient(circle, rgba(255, 212, 0, .16), rgba(7, 155, 198, .08) 42%, transparent 72%) !important;
+        }
+
+        /* Night theme: luminous sky-blue accents against premium navy. */
+        .hero-page.hero-dark {
+          background:
+            radial-gradient(ellipse at 78% 25%, rgba(125, 211, 252, .2), transparent 34%),
+            radial-gradient(ellipse at 12% 88%, rgba(7, 155, 198, .12), transparent 38%),
+            linear-gradient(125deg, #091327 0%, #102342 56%, #142A4A 100%);
+        }
+        .hero-page.hero-dark::before {
+          border-color: rgba(125, 211, 252, .16);
+          box-shadow:
+            0 0 0 80px rgba(125, 211, 252, .025),
+            0 0 0 160px rgba(7, 155, 198, .018);
+        }
+        .hero-page.hero-dark .hero-visual {
+          border-color: rgba(125, 211, 252, .32);
+          background:
+            radial-gradient(ellipse at 50% 24%, #294B70 0%, #1A3151 58%, transparent 84%),
+            linear-gradient(155deg, #1B3555, #122541);
+          box-shadow: 0 30px 76px rgba(0, 0, 0, .34), inset 0 0 0 7px rgba(191, 231, 255, .045);
+        }
+        .hero-page.hero-dark .hero-visual-kicker,
+        .hero-page.hero-dark .hero-visual-note,
+        .hero-page.hero-dark .book-number,
+        .hero-page.hero-dark .book-meta-label {
+          color: #BFE7FF;
+        }
+        .hero-page.hero-dark .book-glow {
+          background: radial-gradient(circle, rgba(125, 211, 252, .24), rgba(7, 155, 198, .12) 42%, transparent 72%) !important;
+        }
+        .hero-page.hero-dark .hero-socials a:hover,
+        .hero-page.hero-dark .hero-button-secondary:hover {
+          border-color: #7DD3FC;
+          background: rgba(125, 211, 252, .14);
+        }
+        .hero-page.hero-dark .hero-button:focus-visible,
+        .hero-page.hero-dark .hero-socials a:focus-visible,
+        .hero-page.hero-dark .book-display-stage:focus-visible,
+        .hero-page.hero-dark .book-view-button:focus-visible,
+        .hero-page.hero-dark .book-dot:focus-visible {
+          outline-color: #BFE7FF;
+        }
+
+        /* Sky-blue signature accents for a richer night-mode finish. */
+        .hero-page.hero-dark {
+          background:
+            radial-gradient(ellipse at 76% 18%, rgba(56, 189, 248, .26), transparent 35%),
+            radial-gradient(ellipse at 12% 86%, rgba(14, 165, 233, .14), transparent 38%),
+            linear-gradient(125deg, #071326 0%, #0D1F3A 52%, #12345A 100%) !important;
+        }
+        .hero-page.hero-dark .hero-headline span,
+        .hero-page.hero-dark .hero-eyebrow,
+        .hero-page.hero-dark .hero-visual-kicker,
+        .hero-page.hero-dark .hero-visual-note,
+        .hero-page.hero-dark .book-number,
+        .hero-page.hero-dark .book-meta-label,
+        .hero-page.hero-dark .book-view-button,
+        .hero-page.hero-dark .button-mini-arrow {
+          color: #BFE7FF !important;
+        }
+        .hero-page.hero-dark .hero-brand-publications { color: #FFE34D !important; }
+        .hero-page.hero-dark .hero-visual {
+          border-color: rgba(125, 211, 252, .42) !important;
+          background:
+            radial-gradient(ellipse at 50% 22%, #31577D 0%, #1B3B60 54%, transparent 82%),
+            linear-gradient(155deg, #173557, #102642) !important;
+          box-shadow: 0 30px 76px rgba(0, 0, 0, .38), inset 0 0 0 7px rgba(191, 231, 255, .06) !important;
+        }
+        .hero-page.hero-dark .book-glow {
+          background: radial-gradient(circle, rgba(125, 211, 252, .32), rgba(14, 165, 233, .14) 42%, transparent 72%) !important;
+        }
+        .hero-page.hero-dark .hero-button-secondary:hover,
+        .hero-page.hero-dark .hero-socials a:hover {
+          border-color: #7DD3FC !important;
+          background: rgba(56, 189, 248, .18) !important;
+        }
+        .hero-page.hero-dark .book-view-arrow {
+          border-color: rgba(125, 211, 252, .4) !important;
+          background: rgba(56, 189, 248, .14) !important;
+        }
+
+        /* Brighter daylight yellow and unmistakable sky-blue night accents. */
+        .hero-page:not(.hero-dark) .hero-headline span,
+        .hero-page:not(.hero-dark) .book-page-series,
+        .hero-page:not(.hero-dark) .book-page-ornament,
+        .hero-page:not(.hero-dark) .book-page-folio {
+          color: #D9A900 !important;
+        }
+        .hero-page:not(.hero-dark) .button-arrow {
+          color: #20295B !important;
+          background: linear-gradient(135deg, #FFF06A, #FFD400) !important;
+          box-shadow: 0 5px 18px rgba(255, 212, 0, .34) !important;
+        }
+        .hero-page:not(.hero-dark) .book-glow {
+          background: radial-gradient(circle, rgba(255, 212, 0, .28), rgba(7, 155, 198, .1) 42%, transparent 72%) !important;
+        }
+        .hero-page.hero-dark .hero-headline span,
+        .hero-page.hero-dark .hero-eyebrow,
+        .hero-page.hero-dark .hero-visual-kicker,
+        .hero-page.hero-dark .hero-visual-note,
+        .hero-page.hero-dark .book-number,
+        .hero-page.hero-dark .book-meta-label,
+        .hero-page.hero-dark .book-view-button,
+        .hero-page.hero-dark .button-mini-arrow {
+          color: #7DD3FC !important;
+        }
+        .hero-page.hero-dark .hero-visual {
+          border-color: rgba(56, 189, 248, .52) !important;
+          background:
+            radial-gradient(ellipse at 50% 22%, #24547D 0%, #173B60 54%, transparent 82%),
+            linear-gradient(155deg, #15385B, #0D2442) !important;
+          box-shadow: 0 30px 76px rgba(0, 0, 0, .4), inset 0 0 0 7px rgba(125, 211, 252, .08) !important;
+        }
+        .hero-page.hero-dark .book-glow {
+          background: radial-gradient(circle, rgba(56, 189, 248, .36), rgba(14, 165, 233, .16) 42%, transparent 72%) !important;
+        }
+        .hero-page.hero-dark .hero-button-secondary:hover,
+        .hero-page.hero-dark .hero-socials a:hover {
+          border-color: #38BDF8 !important;
+          background: rgba(56, 189, 248, .22) !important;
+        }
+        .hero-page.hero-dark .book-view-arrow {
+          border-color: rgba(125, 211, 252, .56) !important;
+          background: rgba(56, 189, 248, .2) !important;
+        }
+
+        /* Refined night finish: deep sky-blue light with crisp, restrained highlights. */
+        .hero-page.hero-dark {
+          background:
+            radial-gradient(ellipse at 78% 22%, rgba(56, 189, 248, .25), transparent 36%),
+            radial-gradient(ellipse at 8% 82%, rgba(14, 165, 233, .12), transparent 40%),
+            linear-gradient(132deg, #06142B 0%, #0A2342 48%, #102F50 100%) !important;
+        }
+        .hero-page.hero-dark .hero-headline span,
+        .hero-page.hero-dark .hero-eyebrow,
+        .hero-page.hero-dark .hero-visual-kicker,
+        .hero-page.hero-dark .hero-visual-note,
+        .hero-page.hero-dark .book-number,
+        .hero-page.hero-dark .book-meta-label,
+        .hero-page.hero-dark .book-view-button,
+        .hero-page.hero-dark .button-mini-arrow {
+          color: #9ADFFF !important;
+        }
+        .hero-page.hero-dark .hero-visual {
+          border-color: rgba(125, 211, 252, .48) !important;
+          background:
+            radial-gradient(ellipse at 50% 18%, rgba(67, 133, 177, .92), transparent 66%),
+            linear-gradient(155deg, #153B60 0%, #102D4D 54%, #0B203A 100%) !important;
+          box-shadow:
+            0 30px 76px rgba(0, 0, 0, .38),
+            0 0 36px rgba(56, 189, 248, .10),
+            inset 0 0 0 7px rgba(191, 231, 255, .055) !important;
+        }
+        .hero-page.hero-dark .book-glow {
+          background: radial-gradient(circle, rgba(56, 189, 248, .38), rgba(14, 165, 233, .18) 42%, transparent 72%) !important;
+        }
+        .hero-page.hero-dark .hero-button-secondary,
+        .hero-page.hero-dark .hero-socials a {
+          border-color: rgba(125, 211, 252, .36) !important;
+          background: rgba(125, 211, 252, .07) !important;
+        }
+        .hero-page.hero-dark .hero-button-secondary:hover,
+        .hero-page.hero-dark .hero-socials a:hover {
+          border-color: #7DD3FC !important;
+          background: rgba(56, 189, 248, .2) !important;
+          box-shadow: 0 10px 28px rgba(14, 165, 233, .16) !important;
+        }
+        .hero-page.hero-dark .book-view-arrow {
+          border-color: rgba(125, 211, 252, .48) !important;
+          background: rgba(56, 189, 248, .14) !important;
+        }
+        .hero-page.hero-dark .hero-button:focus-visible,
+        .hero-page.hero-dark .hero-socials a:focus-visible,
+        .hero-page.hero-dark .book-display-stage:focus-visible,
+        .hero-page.hero-dark .book-view-button:focus-visible,
+        .hero-page.hero-dark .book-dot:focus-visible {
+          outline-color: #9ADFFF !important;
+        }
+
+        /* A crisp centered wordmark and brighter, polished daylight gold. */
+        .hero-page .hero-copy .hero-brand {
+          align-items: center !important;
+        }
+        .hero-page .hero-copy .hero-brand-publications {
+          width: 80% !important;
+          justify-content: space-between !important;
+          align-self: center !important;
+          margin: clamp(12px, 1vw, 18px) 0 0 !important;
+        }
+        .hero-page:not(.hero-dark) .hero-brand {
+          border-color: rgba(32, 41, 91, .2) !important;
+        }
+        .hero-page:not(.hero-dark) .hero-brand::after {
+          background: linear-gradient(90deg, #FFE34D, #FFC400) !important;
+          box-shadow: 0 0 16px rgba(255, 196, 0, .42);
+        }
+        .hero-page:not(.hero-dark) .hero-headline span {
+          color: #B88600 !important;
+        }
+        .hero-page:not(.hero-dark) .button-arrow {
+          color: #20295B !important;
+          background: linear-gradient(135deg, #FFF36A 0%, #FFD400 55%, #FFB800 100%) !important;
+          box-shadow: 0 6px 20px rgba(255, 196, 0, .38) !important;
+        }
+        .hero-page:not(.hero-dark) .book-glow {
+          background: radial-gradient(circle, rgba(255, 212, 0, .34), rgba(255, 184, 0, .14) 38%, rgba(7, 155, 198, .08) 58%, transparent 74%) !important;
+        }
+        .hero-page:not(.hero-dark) .book-page-rule {
+          background: linear-gradient(90deg, #FFC400, #FFE34D) !important;
+        }
+        @media (max-width: 600px) {
+          .hero-page .hero-copy .hero-brand-publications {
+            width: 80% !important;
+          }
+        }
+        .hero-page .hero-copy .hero-brand-publications {
+          font-weight: 900 !important;
+          -webkit-text-stroke: .35px currentColor;
+        }
+        .hero-page .social-label {
+          color: #F2DE55 !important;
+          font-size: .66rem;
+          font-weight: 800 !important;
+          letter-spacing: .2em;
+          text-shadow: 0 0 14px rgba(242, 222, 85, .18);
+        }
+        .hero-page.hero-dark .social-label {
+          color: #BFE7FF !important;
+          text-shadow: 0 0 14px rgba(125, 211, 252, .2);
+        }
+        /* Premium night direction: ink-blue depth, luminous sky-blue accents, and quiet gold. */
+        .hero-stage.is-dark {
+          background: #050D1B !important;
+        }
+        .hero-page.hero-dark {
+          color: #F4F9FF !important;
+          background:
+            radial-gradient(ellipse at 78% 18%, rgba(56, 189, 248, .22), transparent 34%),
+            radial-gradient(ellipse at 8% 82%, rgba(14, 165, 233, .13), transparent 38%),
+            radial-gradient(ellipse at 92% 92%, rgba(255, 212, 0, .055), transparent 30%),
+            linear-gradient(132deg, #050D1B 0%, #091B33 48%, #102B4A 100%) !important;
+        }
+        .hero-page.hero-dark .hero-copy .hero-brand-vijayam {
+          color: #FF6672 !important;
+          text-shadow: 0 8px 30px rgba(255, 72, 99, .16);
+        }
+        .hero-page.hero-dark .hero-copy .hero-brand-publications {
+          color: #FFE34D !important;
+          text-shadow: 0 0 18px rgba(255, 227, 77, .13);
+        }
+        .hero-page.hero-dark .hero-brand {
+          border-color: rgba(154, 223, 255, .22) !important;
+        }
+        .hero-page.hero-dark .hero-brand::after {
+          background: linear-gradient(90deg, #38BDF8, #BFE7FF) !important;
+          box-shadow: 0 0 18px rgba(56, 189, 248, .45);
+        }
+        .hero-page.hero-dark .hero-headline,
+        .hero-page.hero-dark .book-meta h2 {
+          color: #F4F9FF !important;
+        }
+        .hero-page.hero-dark .hero-headline span,
+        .hero-page.hero-dark .hero-eyebrow,
+        .hero-page.hero-dark .hero-visual-kicker,
+        .hero-page.hero-dark .hero-visual-note,
+        .hero-page.hero-dark .book-number,
+        .hero-page.hero-dark .book-meta-label,
+        .hero-page.hero-dark .book-view-button,
+        .hero-page.hero-dark .button-mini-arrow {
+          color: #9ADFFF !important;
+        }
+        .hero-page.hero-dark .hero-description,
+        .hero-page.hero-dark .book-meta p,
+        .hero-page.hero-dark .book-interaction-hint,
+        .hero-page.hero-dark .social-label,
+        .hero-page.hero-dark .hero-scroll-indicator {
+          color: #D5E5F3 !important;
+        }
+        .hero-page.hero-dark .social-label {
+          font-weight: 900 !important;
+          letter-spacing: .22em !important;
+          text-shadow: 0 0 16px rgba(125, 211, 252, .3) !important;
+        }
+        .hero-page.hero-dark .hero-footer,
+        .hero-page.hero-dark .book-meta {
+          border-color: rgba(125, 211, 252, .2) !important;
+        }
+        .hero-page.hero-dark .hero-button-primary {
+          color: #061426 !important;
+          background: linear-gradient(135deg, #BFE7FF 0%, #38BDF8 55%, #0EA5E9 100%) !important;
+          box-shadow: 0 12px 32px rgba(14, 165, 233, .24), inset 0 1px 0 rgba(255, 255, 255, .42) !important;
+        }
+        .hero-page.hero-dark .hero-button-primary:hover {
+          background: linear-gradient(135deg, #D8F2FF 0%, #7DD3FC 55%, #38BDF8 100%) !important;
+          box-shadow: 0 18px 42px rgba(14, 165, 233, .34), 0 0 0 1px rgba(191, 231, 255, .42) inset !important;
+        }
+        .hero-page.hero-dark .button-arrow {
+          color: #071326 !important;
+          background: linear-gradient(135deg, #FFF27A, #FFD400) !important;
+          box-shadow: 0 4px 18px rgba(255, 212, 0, .34) !important;
+        }
+        .hero-page.hero-dark .hero-button-secondary {
+          color: #EAF7FF !important;
+          background: linear-gradient(135deg, rgba(125, 211, 252, .10), rgba(125, 211, 252, .035)) !important;
+          border-color: rgba(125, 211, 252, .3) !important;
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, .09), 0 8px 22px rgba(0, 0, 0, .12) !important;
+        }
+        .hero-page.hero-dark .hero-button-secondary:hover,
+        .hero-page.hero-dark .hero-socials a:hover {
+          color: #FFFFFF !important;
+          border-color: #7DD3FC !important;
+          background: rgba(56, 189, 248, .18) !important;
+          box-shadow: 0 10px 28px rgba(14, 165, 233, .17) !important;
+        }
+        .hero-page.hero-dark .hero-socials a {
+          color: #CFEAFF !important;
+          background: rgba(125, 211, 252, .055) !important;
+          border-color: rgba(125, 211, 252, .22) !important;
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08) !important;
+        }
+        .hero-page.hero-dark .scroll-mouse { border-color: rgba(154, 223, 255, .55) !important; }
+        .hero-page.hero-dark .scroll-mouse span { background: #7DD3FC !important; }
+        .hero-page.hero-dark .hero-visual {
+          border-color: rgba(125, 211, 252, .46) !important;
+          background:
+            radial-gradient(ellipse at 50% 15%, rgba(76, 151, 198, .46), transparent 56%),
+            linear-gradient(155deg, #173B5D 0%, #102B48 54%, #0A1C33 100%) !important;
+          box-shadow: 0 30px 80px rgba(0, 0, 0, .4), 0 0 42px rgba(56, 189, 248, .11), inset 0 0 0 1px rgba(191, 231, 255, .12), inset 0 1px 0 rgba(255, 255, 255, .14) !important;
+        }
+        .hero-page.hero-dark .book-glow {
+          background: radial-gradient(circle, rgba(125, 211, 252, .34), rgba(14, 165, 233, .17) 42%, rgba(255, 212, 0, .07) 58%, transparent 74%) !important;
+        }
+        .hero-page.hero-dark .book-cover-shell {
+          box-shadow: -14px 24px 42px rgba(0, 0, 0, .38), 0 0 0 1px rgba(191, 231, 255, .22) !important;
+        }
+        .hero-page.hero-dark .book-hover-aura {
+          background: radial-gradient(circle, rgba(56, 189, 248, .28), transparent 68%) !important;
+        }
+        .hero-page.hero-dark .book-meta h2 { color: #F4F9FF !important; }
+        .hero-page.hero-dark .book-view-arrow {
+          color: #BFE7FF !important;
+          border-color: rgba(125, 211, 252, .4) !important;
+          background: rgba(56, 189, 248, .12) !important;
+        }
+        .hero-page.hero-dark .book-dot::after { background: rgba(191, 231, 255, .58) !important; }
+        .hero-page.hero-dark .book-dot.active::after { background: #7DD3FC !important; }
+        .hero-page.hero-dark .book-dot.active { border-color: #7DD3FC !important; }
+        .hero-page.hero-dark .hero-button:focus-visible,
+        .hero-page.hero-dark .hero-socials a:focus-visible,
+        .hero-page.hero-dark .book-display-stage:focus-visible,
+        .hero-page.hero-dark .book-view-button:focus-visible,
+        .hero-page.hero-dark .book-dot:focus-visible {
+          outline-color: #BFE7FF !important;
+          box-shadow: 0 0 0 4px rgba(56, 189, 248, .22) !important;
+        }
+        .hero-page.hero-dark ::selection { background: rgba(56, 189, 248, .38); color: #FFFFFF; }
+
+        /* Keep daylight gold vivid and intentional without compromising readability. */
+        .hero-page:not(.hero-dark) .button-arrow {
+          background: linear-gradient(135deg, #FFF27A, #FFD400 58%, #FFB800) !important;
+          box-shadow: 0 6px 20px rgba(255, 196, 0, .38) !important;
+        }
+        .hero-page:not(.hero-dark) .hero-brand-publications {
+          font-weight: 900 !important;
+          -webkit-text-stroke: .35px currentColor;
+        }
+        .hero-page:not(.hero-dark) .social-label {
+          color: #8A6A00 !important;
+          font-weight: 900 !important;
+          letter-spacing: .22em !important;
+        }
+        .hero-page:not(.hero-dark) .book-glow {
+          background: radial-gradient(circle, rgba(255, 212, 0, .3), rgba(7, 155, 198, .09) 46%, transparent 74%) !important;
+        }
+
+        /* Match the publisher line to the VIJAYAM serif wordmark. */
+        .hero-page .hero-copy .hero-brand-publications {
+          align-self: flex-start !important;
+          width: 84% !important;
+          margin: clamp(12px, 1vw, 18px) 0 0 !important;
+          font-family: Georgia, "Times New Roman", serif !important;
+          font-size: clamp(.72rem, 1.1vw, .98rem) !important;
+          font-weight: 700 !important;
+          letter-spacing: .08em !important;
+          -webkit-text-stroke: 0 !important;
+        }
+        @media (max-width: 600px) {
+          .hero-page .hero-copy .hero-brand-publications {
+            width: 84% !important;
+            font-size: .66rem !important;
+          }
+        }
+
+        /* Handwritten signature wordmark, aligned to the width of VIJAYAM. */
+        .hero-page .hero-copy .hero-brand-vijayam {
+          font-family: "Kalam", "Segoe Print", "Bradley Hand", "Comic Sans MS", cursive !important;
+          font-weight: 700;
+          letter-spacing: .015em;
+          line-height: 1.12;
+          transform: rotate(-1deg);
+          transform-origin: left center;
+          text-shadow: 0 5px 18px rgba(32, 41, 91, .12);
+        }
+        .hero-page .hero-copy .hero-brand-publications {
+          display: flex !important;
+          align-self: flex-start !important;
+          justify-content: space-between !important;
+          width: 84% !important;
+          margin: clamp(12px, 1vw, 18px) 0 0 !important;
+          padding: 0 !important;
+          font-family: "Kalam", "Segoe Print", "Bradley Hand", "Comic Sans MS", cursive !important;
+          font-size: clamp(.82rem, 1.25vw, 1.05rem) !important;
+          font-weight: 700 !important;
+          letter-spacing: .01em !important;
+          line-height: 1.5 !important;
+          text-align: left !important;
+          text-shadow: 0 2px 10px rgba(32, 41, 91, .1);
+          -webkit-text-stroke: 0 !important;
+        }
+        .hero-page:not(.hero-dark) .hero-copy .hero-brand-vijayam {
+          text-shadow: 0 5px 18px rgba(32, 41, 91, .12);
+        }
+        .hero-page.hero-dark .hero-copy .hero-brand-vijayam {
+          text-shadow: 0 5px 22px rgba(56, 189, 248, .2);
+        }
+        .hero-page.hero-dark .hero-copy .hero-brand-publications {
+          text-shadow: 0 2px 12px rgba(255, 227, 77, .16);
+        }
+        @media (max-width: 600px) {
+          .hero-page .hero-copy .hero-brand-publications {
+            width: 84% !important;
+            font-size: .72rem !important;
+          }
+        }
+
+        /* Signature lockup: handwritten, bold, and aligned beneath the V. */
+        .hero-page .hero-copy .hero-brand {
+          align-items: flex-start !important;
+        }
+        .hero-page .hero-copy .hero-brand-vijayam {
+          font-family: "Kalam", "Segoe Print", "Bradley Hand", "Comic Sans MS", cursive !important;
+          font-weight: 700 !important;
+          letter-spacing: .015em;
+        }
+        .hero-page .hero-copy .hero-brand-publications {
+          display: flex !important;
+          align-self: flex-start !important;
+          justify-content: space-between !important;
+          width: 80% !important;
+          margin: clamp(10px, 1vw, 16px) 0 0 !important;
+          font-family: "Kalam", "Segoe Print", "Bradley Hand", "Comic Sans MS", cursive !important;
+          font-size: clamp(.82rem, 1.25vw, 1.05rem) !important;
+          font-weight: 700 !important;
+          letter-spacing: .01em !important;
+          line-height: 1.5 !important;
+          -webkit-text-stroke: .25px currentColor !important;
+          text-shadow: 0 2px 10px rgba(32, 41, 91, .12);
+        }
+        @media (max-width: 600px) {
+          .hero-page .hero-copy .hero-brand-publications {
+            width: 80% !important;
+            font-size: .72rem !important;
+          }
+        }
+
+        /* Accessible, compact signature lockup with a quiet accent toggle. */
+        .hero-page .hero-copy .hero-wordmark-toggle {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          max-width: 100%;
+          padding: 0;
+          border: 0;
+          color: inherit;
+          background: transparent;
+          font: inherit;
+          text-align: left;
+          cursor: pointer;
+          touch-action: manipulation;
+          -webkit-tap-highlight-color: transparent;
+          transition: transform 240ms ease;
+        }
+        .hero-page .hero-copy .hero-wordmark-toggle:hover {
+          transform: translateY(-2px);
+        }
+        .hero-page .hero-copy .hero-wordmark-toggle:focus-visible {
+          outline: 2px solid #079BC6;
+          outline-offset: 6px;
+          border-radius: 3px;
+        }
+        .hero-page .hero-copy .hero-wordmark-toggle .hero-brand-vijayam,
+        .hero-page .hero-copy .hero-wordmark-toggle .hero-brand-publications {
+          font-family: "Kalam", "Segoe Print", "Bradley Hand", "Comic Sans MS", cursive !important;
+          transition: color 280ms ease, text-shadow 280ms ease;
+        }
+        .hero-page .hero-copy .hero-wordmark-toggle .hero-brand-publications {
+          display: flex !important;
+          justify-content: center !important;
+          align-self: center !important;
+          width: auto !important;
+          max-width: 100%;
+          gap: .025em;
+          margin: clamp(8px, .8vw, 12px) 0 0 !important;
+          padding: 0 !important;
+          font-size: clamp(.9rem, 1.35vw, 1.12rem) !important;
+          font-weight: 700 !important;
+          letter-spacing: .015em !important;
+          line-height: 1.35 !important;
+          white-space: nowrap;
+        }
+        .hero-page .hero-copy .hero-wordmark-toggle .hero-brand-publications > span {
+          flex: 0 0 auto;
+        }
+        .hero-page:not(.hero-dark) .hero-wordmark-toggle.is-accent .hero-brand-vijayam {
+          color: #079BC6 !important;
+          text-shadow: 0 5px 18px rgba(7, 155, 198, .2);
+        }
+        .hero-page:not(.hero-dark) .hero-wordmark-toggle.is-accent .hero-brand-publications {
+          color: #C91D27 !important;
+          text-shadow: 0 2px 10px rgba(201, 29, 39, .12);
+        }
+        .hero-page.hero-dark .hero-wordmark-toggle.is-accent .hero-brand-vijayam {
+          color: #BFE7FF !important;
+          text-shadow: 0 5px 22px rgba(56, 189, 248, .24);
+        }
+        .hero-page.hero-dark .hero-wordmark-toggle.is-accent .hero-brand-publications {
+          color: #FFE34D !important;
+          text-shadow: 0 2px 12px rgba(255, 227, 77, .18);
+        }
+        .hero-page.hero-dark .hero-wordmark-toggle:focus-visible {
+          outline-color: #BFE7FF;
+        }
+        @media (max-width: 600px) {
+          .hero-page .hero-copy .hero-wordmark-toggle .hero-brand-publications {
+            font-size: .8rem !important;
+            margin-top: 8px !important;
+          }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .hero-page .hero-copy .hero-wordmark-toggle,
+          .hero-page .hero-copy .hero-wordmark-toggle .hero-brand-vijayam,
+          .hero-page .hero-copy .hero-wordmark-toggle .hero-brand-publications {
+            transition: none;
+          }
+        }
+        .hero-page .hero-copy .hero-wordmark-toggle {
+          width: max-content;
+          align-items: flex-start;
+          transition: transform 420ms cubic-bezier(.2,.8,.2,1);
+        }
+        .hero-page .hero-copy .hero-wordmark-toggle .hero-brand-vijayam {
+          font-weight: 800 !important;
+        }
+        .hero-page .hero-copy .hero-wordmark-toggle .hero-brand-publications {
+          align-self: flex-start !important;
+          justify-content: space-between !important;
+          width: 90% !important;
+          margin-left: 0 !important;
+          font-size: clamp(1rem, 1.45vw, 1.25rem) !important;
+          font-weight: 900 !important;
+          letter-spacing: .025em !important;
+        }
+        .hero-page:not(.hero-dark) .hero-wordmark-toggle .hero-brand-publications {
+          color: #9A7200 !important;
+        }
+        .hero-page.hero-dark .hero-wordmark-toggle .hero-brand-publications {
+          color: #D7BF40 !important;
+        }
+        .hero-page .hero-copy .hero-wordmark-toggle .hero-brand-vijayam,
+        .hero-page .hero-copy .hero-wordmark-toggle .hero-brand-publications {
+          transition: color 420ms cubic-bezier(.2,.8,.2,1), text-shadow 420ms cubic-bezier(.2,.8,.2,1);
+        }
+        .hero-page:not(.hero-dark) .hero-wordmark-toggle.is-accent .hero-brand-vijayam {
+          text-shadow: 0 6px 24px rgba(7, 155, 198, .34) !important;
+        }
+        .hero-page.hero-dark .hero-wordmark-toggle.is-accent .hero-brand-vijayam {
+          text-shadow: 0 6px 28px rgba(56, 189, 248, .38) !important;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .hero-page .hero-copy .hero-wordmark-toggle,
+          .hero-page .hero-copy .hero-wordmark-toggle .hero-brand-vijayam,
+          .hero-page .hero-copy .hero-wordmark-toggle .hero-brand-publications {
+            transition: none;
+          }
+        }
+
+        /* Proof points: compact editorial metric cards under the brand story. */
+        .hero-proof-points {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 10px;
+          max-width: 570px;
+          margin: 26px 0 0;
+          padding: 0;
+          list-style: none;
+        }
+        .hero-proof-card {
+          min-width: 0;
+          padding: 15px 14px 13px;
+          border: 1px solid rgba(32, 41, 91, .14);
+          border-radius: 16px;
+          background: linear-gradient(145deg, rgba(255,255,255,.82), rgba(238,242,248,.58));
+          box-shadow: 0 10px 26px rgba(17, 23, 53, .07), inset 0 1px 0 rgba(255,255,255,.88);
+          transition: transform 280ms cubic-bezier(.2,.8,.2,1), border-color 280ms ease, box-shadow 280ms ease;
+        }
+        .hero-proof-card:hover {
+          transform: translateY(-4px);
+          border-color: rgba(7, 155, 198, .42);
+          box-shadow: 0 16px 32px rgba(17, 23, 53, .12), 0 0 22px rgba(7, 155, 198, .08);
+        }
+        .hero-proof-card strong {
+          display: block;
+          color: #20295B;
+          font: 700 clamp(1.15rem, 2vw, 1.7rem)/1.05 Georgia, "Times New Roman", serif;
+          letter-spacing: -.045em;
+          white-space: nowrap;
+        }
+        .hero-proof-card strong span { color: #D91F32; }
+        .hero-proof-card > span {
+          display: block;
+          margin-top: 7px;
+          color: #58627B;
+          font: 700 .58rem/1.45 Arial, sans-serif;
+          letter-spacing: .075em;
+          text-transform: uppercase;
+        }
+        .hero-page.hero-dark .hero-proof-card {
+          border-color: rgba(125, 211, 252, .22);
+          background: linear-gradient(145deg, rgba(21, 51, 79, .82), rgba(9, 27, 49, .74));
+          box-shadow: 0 12px 28px rgba(0, 0, 0, .2), inset 0 1px 0 rgba(191, 231, 255, .1);
+        }
+        .hero-page.hero-dark .hero-proof-card:hover {
+          border-color: rgba(125, 211, 252, .58);
+          box-shadow: 0 16px 34px rgba(0, 0, 0, .28), 0 0 24px rgba(56, 189, 248, .12);
+        }
+        .hero-page.hero-dark .hero-proof-card strong { color: #F4F9FF; }
+        .hero-page.hero-dark .hero-proof-card strong span { color: #7DD3FC; }
+        .hero-page.hero-dark .hero-proof-card > span { color: #B8CDE0; }
+
+        /* Keep PUBLICATIONS beneath the V, slightly inset, and within 90% width. */
+        .hero-page .hero-copy .hero-wordmark-toggle .hero-brand-publications {
+          width: 88% !important;
+          margin-left: 5% !important;
+          font-size: clamp(1.08rem, 1.55vw, 1.34rem) !important;
+          font-weight: 900 !important;
+          -webkit-text-stroke: .45px currentColor !important;
+          transition: color 650ms cubic-bezier(.2,.8,.2,1), text-shadow 650ms cubic-bezier(.2,.8,.2,1);
+        }
+        .hero-page:not(.hero-dark) .hero-wordmark-toggle.is-accent .hero-brand-vijayam {
+          color: #079BC6 !important;
+          text-shadow: 0 7px 28px rgba(7, 155, 198, .32) !important;
+        }
+        .hero-page:not(.hero-dark) .hero-wordmark-toggle.is-accent .hero-brand-publications {
+          color: #C91D27 !important;
+          text-shadow: 0 2px 14px rgba(201, 29, 39, .2) !important;
+        }
+        @media (max-width: 600px) {
+          .hero-proof-points { gap: 7px; margin-top: 22px; }
+          .hero-proof-card { padding: 12px 9px 11px; border-radius: 13px; }
+          .hero-proof-card strong { font-size: clamp(.62rem, 3.2vw, .95rem); }
+          .hero-proof-card > span { font-size: .5rem; letter-spacing: .04em; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .hero-proof-card { transition: none; }
+        }
+
+        /* A flowing red-to-blue signature makes the wordmark memorable. */
+        .hero-page .hero-wordmark-toggle .hero-brand-vijayam {
+          color: transparent !important;
+          background: linear-gradient(100deg, #E5232E 8%, #FF5961 34%, #079BC6 66%, #20295B 92%, #E5232E 100%);
+          background-size: 260% 100%;
+          background-clip: text;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          animation: vp-wordmark-color-flow 8s ease-in-out infinite alternate !important;
+        }
+        .hero-page.hero-dark .hero-wordmark-toggle .hero-brand-vijayam {
+          background-image: linear-gradient(100deg, #FF5961 8%, #FF8290 34%, #38BDF8 66%, #BFE7FF 92%, #FF5961 100%);
+        }
+        @keyframes vp-wordmark-color-flow {
+          from { background-position: 0% 50%; }
+          to { background-position: 100% 50%; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .hero-page .hero-wordmark-toggle .hero-brand-vijayam {
+            animation: none !important;
+            background-position: 50% 50%;
+          }
+        }
+
+        /* Refined impact stats: an editorial strip instead of chunky metric cards. */
+        .hero-proof-points {
+          width: min(100%, 590px);
+          max-width: 590px;
+          gap: 0;
+          margin-top: 30px;
+          padding: 17px 0;
+          border-top: 1px solid rgba(154, 190, 217, .24);
+          border-bottom: 1px solid rgba(154, 190, 217, .24);
+        }
+        .hero-proof-card {
+          position: relative;
+          padding: 4px 18px 5px;
+          border: 0;
+          border-radius: 0;
+          background: transparent;
+          box-shadow: none;
+          transition: transform 280ms cubic-bezier(.2,.8,.2,1);
+        }
+        .hero-proof-card + .hero-proof-card {
+          border-left: 1px solid rgba(154, 190, 217, .24);
+        }
+        .hero-proof-card:hover {
+          transform: translateY(-2px);
+          border-color: rgba(154, 190, 217, .24);
+          box-shadow: none;
+        }
+        .hero-proof-card strong {
+          color: #F5F8FF;
+          font: 700 clamp(1.35rem, 2.2vw, 1.9rem)/1 Georgia, "Times New Roman", serif;
+          letter-spacing: -.035em;
+          font-variant-numeric: tabular-nums lining-nums;
+          text-shadow: 0 2px 18px rgba(56, 189, 248, .14);
+        }
+        .hero-proof-card strong span {
+          padding-left: 2px;
+          color: #9ADFFF;
+          font-size: .78em;
+        }
+        .hero-proof-card > span {
+          margin-top: 9px;
+          color: #C6D3E3;
+          font: 700 .58rem/1.45 Arial, sans-serif;
+          letter-spacing: .105em;
+        }
+        .hero-page:not(.hero-dark) .hero-proof-points {
+          border-color: rgba(32, 41, 91, .16);
+        }
+        .hero-page:not(.hero-dark) .hero-proof-card + .hero-proof-card {
+          border-left-color: rgba(32, 41, 91, .16);
+        }
+        .hero-page:not(.hero-dark) .hero-proof-card strong {
+          color: #20295B;
+          text-shadow: 0 2px 16px rgba(7, 155, 198, .1);
+        }
+        .hero-page:not(.hero-dark) .hero-proof-card strong span {
+          color: #D91F32;
+        }
+        .hero-page:not(.hero-dark) .hero-proof-card > span {
+          color: #58627B;
+        }
+        .hero-page.hero-dark .hero-proof-points {
+          border-color: rgba(125, 211, 252, .22);
+        }
+        .hero-page.hero-dark .hero-proof-card + .hero-proof-card {
+          border-left-color: rgba(125, 211, 252, .22);
+        }
+        .hero-page.hero-dark .hero-proof-card strong span {
+          color: #7DD3FC;
+        }
+        .hero-page.hero-dark .hero-proof-card > span {
+          color: #C6D9EA;
+        }
+        @media (max-width: 600px) {
+          .hero-proof-points {
+            margin-top: 24px;
+            padding: 14px 0;
+          }
+          .hero-proof-card {
+            padding: 3px 7px 4px;
+          }
+          .hero-proof-card strong {
+            font-size: clamp(.95rem, 4.5vw, 1.25rem);
+          }
+          .hero-proof-card > span {
+            margin-top: 7px;
+            font-size: .46rem;
+            letter-spacing: .045em;
+          }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .hero-proof-card { transition: none; }
+        }
+
+        /* Quiet, precise metrics keep attention on the numbers—not the cards. */
+        .hero-proof-points {
+          margin-top: 26px;
+          padding: 19px 0 17px;
+        }
+        .hero-proof-card {
+          padding: 4px clamp(8px, 1.4vw, 18px) 5px;
+          transition: none;
+        }
+        .hero-proof-card:hover {
+          transform: none;
+        }
+        .hero-proof-card strong {
+          font-size: clamp(1.2rem, 1.9vw, 1.65rem);
+          line-height: 1.08;
+          font-variant-numeric: tabular-nums lining-nums;
+        }
+        .hero-proof-card > span {
+          margin-top: 8px;
+          font-size: .6rem;
+          letter-spacing: .09em;
+          line-height: 1.5;
+        }
+        @media (max-width: 600px) {
+          .hero-proof-points {
+            margin-top: 22px;
+            padding: 15px 0 13px;
+          }
+          .hero-proof-card {
+            padding-inline: 6px;
+          }
+          .hero-proof-card strong {
+            font-size: clamp(.84rem, 4vw, 1.1rem);
+          }
+          .hero-proof-card > span {
+            font-size: .47rem;
+            letter-spacing: .035em;
+          }
+        }
+        /* The opening signature mirrors the hero wordmark's scale and alignment. */
+        .vp-intro-content {
+          width: min(100%, 760px);
+          padding-inline: 24px;
+          text-align: left;
+          animation: vp-signature-enter 1.15s cubic-bezier(.16, 1, .3, 1) both;
+        }
+        .vp-intro-wordmark {
+          position: relative;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          width: max-content;
+          max-width: 100%;
+          margin: 0 auto;
+          padding-bottom: clamp(18px, 2.2vw, 30px);
+          border-bottom: 1px solid rgba(191, 231, 255, .24);
+        }
+        .vp-intro-wordmark::after {
+          content: "";
+          position: absolute;
+          bottom: -2px;
+          left: 0;
+          width: 48px;
+          height: 3px;
+          border-radius: 999px;
+          background: linear-gradient(90deg, #38BDF8, #FFE34D);
+          box-shadow: 0 0 18px rgba(56, 189, 248, .38);
+        }
+        .vp-intro-vijayam {
+          display: block;
+          color: transparent;
+          background: linear-gradient(100deg, #FF5961 8%, #FF8290 34%, #38BDF8 66%, #BFE7FF 92%, #FF5961 100%);
+          background-size: 260% 100%;
+          background-clip: text;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          font-family: "Kalam", "Segoe Print", "Bradley Hand", "Comic Sans MS", cursive;
+          font-size: clamp(3rem, 5.8vw, 7rem);
+          font-weight: 800;
+          line-height: 1.12;
+          letter-spacing: .015em;
+          white-space: nowrap;
+          animation: vp-wordmark-color-flow 8s ease-in-out infinite alternate;
+        }
+        .vp-intro-publications {
+          display: flex;
+          justify-content: space-between;
+          align-self: flex-start;
+          width: 88%;
+          margin: clamp(10px, 1vw, 16px) 0 0 5%;
+          color: #FFE34D;
+          font-family: "Kalam", "Segoe Print", "Bradley Hand", "Comic Sans MS", cursive;
+          font-size: clamp(1.08rem, 1.55vw, 1.34rem);
+          font-weight: 800;
+          line-height: 1.5;
+          letter-spacing: .025em;
+          text-shadow: 0 2px 14px rgba(255, 227, 77, .18);
+        }
+        .vp-intro-publications > span { flex: 0 0 auto; }
+        @keyframes vp-signature-enter {
+          from { opacity: 0; transform: translateY(20px) scale(.96); filter: blur(8px); }
+          to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .vp-intro-content { animation: none; }
+          .vp-intro-vijayam { animation: none; }
         }
       `}</style>
     </>

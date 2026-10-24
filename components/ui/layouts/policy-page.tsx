@@ -99,7 +99,7 @@ export default function PolicyPage({ slug }: PolicyPageProps) {
             </div>
 
             <div className="mt-12 border-t border-white/10 pt-6">
-              <p className="text-xs uppercase tracking-[0.22em] text-cyan-300">
+              <p className="text-xs uppercase tracking-[0.18em] text-cyan-300">
                 Other policies
               </p>
               <div className="mt-4 flex flex-wrap gap-3">

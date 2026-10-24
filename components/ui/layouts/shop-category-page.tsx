@@ -92,7 +92,7 @@ const books: Book[] = [
   { id: 30, title: "Mental Health Nursing II", author: "Dr. K. Anitha", category: "Bridge Courses", course: "Healthcare Bridge", bookType: "Study Material", semester: "Semester 1", subject: "Healthcare Skills", price: 299, mrp: 399, color: "#0f766e", accent: "#99f6e4", edition: "2025 Edition", isbn: "978-93-90627-71-9", pages: 232, year: 2025, format: "Paperback", language: "English", rating: 4.8, reviews: 82, description: "Practical bridge lessons for patient care, first aid, hygiene, ward behaviour, safety habits, and vocational healthcare readiness." },
   { id: 31, title: "Nursing Management and Leadership", author: "Prof. R. Nisha", category: "Bridge Courses", course: "Degree Bridge", bookType: "Text Book", semester: "Semester 1", subject: "Academic Foundation", price: 379, mrp: 499, color: "#7e22ce", accent: "#e9d5ff", edition: "2025 Edition", isbn: "978-93-90627-72-6", pages: 304, year: 2025, format: "Paperback", language: "English", rating: 4.6, reviews: 58, description: "A polished starter text for degree learners with study skills, basic concepts, academic writing, reasoning, and exam preparation habits." },
   { id: 32, title: "Midwifery / Obstetrics and Gynecology Nursing I", author: "Prof. S. Devi", category: "Bridge Courses", course: "Communication Bridge", bookType: "Study Material", semester: "Semester 1", subject: "English Communication", price: 329, mrp: 449, color: "#be123c", accent: "#fecdd3", edition: "2025 Edition", isbn: "978-93-90627-73-3", pages: 248, year: 2025, format: "Paperback", language: "English", rating: 4.7, reviews: 71, description: "Youth-friendly communication practice with vocabulary, grammar refreshers, classroom speaking tasks, interviews, and confidence-building exercises." },
-  { id: 32, title: "Midwifery  Case Book", author: "Prof. S. Devi", category: "Bridge Courses", course: "Communication Bridge", bookType: "Study Material", semester: "Semester 1", subject: "English Communication", price: 329, mrp: 449, color: "#be123c", accent: "#fecdd3", edition: "2025 Edition", isbn: "978-93-90627-73-3", pages: 248, year: 2025, format: "Paperback", language: "English", rating: 4.7, reviews: 71, description: "Youth-friendly communication practice with vocabulary, grammar refreshers, classroom speaking tasks, interviews, and confidence-building exercises." },
+  { id: 33, title: "Midwifery Case Book", author: "Prof. S. Devi", category: "Bridge Courses", course: "Communication Bridge", bookType: "Study Material", semester: "Semester 1", subject: "English Communication", price: 329, mrp: 449, color: "#be123c", accent: "#fecdd3", edition: "2025 Edition", isbn: "978-93-90627-74-0", pages: 248, year: 2025, format: "Paperback", language: "English", rating: 4.7, reviews: 71, description: "Youth-friendly communication practice with vocabulary, grammar refreshers, classroom speaking tasks, interviews, and confidence-building exercises." },
 
 ];
 
@@ -1804,63 +1804,6 @@ function ShopCategoryPage({ category }: { category?: ShopCategory }) {
         @media(max-width:620px){.shop-page.section-degree .wrap{width:min(100% - 22px,1360px)}.degree-collection-hero{padding:30px 22px;border-radius:22px}.degree-collection-hero h2{font-size:43px}.degree-quick-find,.degree-navigation,.degree-academic-map,.degree-book-results,.degree-more-books,.degree-complete-collection,.degree-premium-showcase{padding:18px;border-radius:20px}.degree-quick-grid,.degree-subject-grid-main,.degree-life-row,.degree-classification-ribbon{grid-template-columns:1fr}.degree-result-grid,.degree-more-grid,.degree-showcase-grid{grid-template-columns:1fr}.degree-book-card{min-height:0}.degree-book-cover-btn{min-height:230px}.degree-results-head{flex-direction:column}.degree-section-head h3,.degree-category-title h3,.degree-results-head h3,.degree-more-books h3,.degree-complete-collection h3,.degree-showcase-head h3{font-size:26px}}
       `}</style>
 
-      <style>{`
-        /* Subtle premium title tilt and motion for book titles */
-        .card .copy h3,
-        .degree-book-card h4,
-        .degree-show-copy strong,
-        .degree-mini-book b,
-        .cart-line h3{
-          transform-origin:left center;
-          transform:perspective(900px) rotateZ(-.45deg) skewX(-.8deg);
-          text-wrap:balance;
-          transition:transform .32s cubic-bezier(.16,1,.3,1),color .32s ease,text-shadow .32s ease,letter-spacing .32s ease;
-          will-change:transform;
-        }
-        .card:has(.media:hover) .copy h3,
-        .card:has(.media:focus-visible) .copy h3,
-        .degree-book-card:hover h4,
-        .degree-show-book:hover .degree-show-copy strong,
-        .degree-mini-book:hover b{
-          transform:perspective(900px) rotateZ(-1.15deg) skewX(-1.2deg) translateX(3px);
-          color:var(--deep);
-          letter-spacing:-.035em;
-          text-shadow:0 10px 22px color-mix(in srgb,var(--green) 16%,transparent);
-        }
-        .degree-show-copy strong,
-        .degree-book-card h4{
-          position:relative;
-        }
-        .degree-show-copy strong:after,
-        .degree-book-card h4:after{
-          position:absolute;
-          left:0;
-          bottom:-5px;
-          width:34px;
-          height:1px;
-          background:linear-gradient(90deg,var(--gold),transparent);
-          opacity:.42;
-          transform:scaleX(.72);
-          transform-origin:left center;
-          transition:transform .32s cubic-bezier(.16,1,.3,1),opacity .32s ease;
-          content:"";
-        }
-        .degree-show-book:hover .degree-show-copy strong:after,
-        .degree-book-card:hover h4:after{
-          opacity:.78;
-          transform:scaleX(1.25);
-        }
-        @media(prefers-reduced-motion:reduce){
-          .card .copy h3,
-          .degree-book-card h4,
-          .degree-show-copy strong,
-          .degree-mini-book b,
-          .cart-line h3{
-            transform:none!important;
-            transition:none!important;
-          }
-        }
-      `}</style>
 
       <style>{`
         /* Premium Degree Classification Board */
@@ -2727,6 +2670,168 @@ function ShopCategoryPage({ category }: { category?: ShopCategory }) {
           .shop-page.section-degree .degree-simple-hero{grid-template-columns:1fr;padding-top:38px}.shop-page.section-degree .degree-simple-hero:after{width:120px}.degree-flow-context{align-items:flex-start;flex-direction:column;padding:16px 22px}.degree-shelf-summary{grid-template-columns:1fr 1fr}.degree-shelf-summary span{min-height:68px}.degree-shelf-summary b{font-size:18px}
         }
         @media(max-width:420px){.degree-shelf-summary{grid-template-columns:1fr}}
+      `}</style>
+
+      <style>{`
+        /* Consistent finishing details: restrained surfaces, clear interaction states, accessible motion. */
+        .shop-page button:focus-visible,
+        .shop-page input:focus-visible,
+        .shop-page select:focus-visible{
+          outline:3px solid color-mix(in srgb,var(--green) 42%,white);
+          outline-offset:3px;
+        }
+        .shop-page .card .copy h3,
+        .shop-page .degree-book-card h4,
+        .shop-page .degree-show-copy strong,
+        .shop-page .degree-mini-book b{
+          text-wrap:pretty;
+        }
+        .shop-page .card,
+        .shop-page .degree-book-card,
+        .shop-page .degree-show-book{
+          box-shadow:0 12px 30px rgba(35,31,24,.07);
+        }
+        .shop-page .card:has(.media:hover),
+        .shop-page .card:has(.media:focus-visible),
+        .shop-page .degree-book-card:hover,
+        .shop-page .degree-show-book:hover{
+          box-shadow:0 20px 42px rgba(35,31,24,.12);
+        }
+        @media(prefers-reduced-motion:reduce){
+          .shop-page *,
+          .shop-page *:before,
+          .shop-page *:after{
+            scroll-behavior:auto!important;
+            animation-duration:.01ms!important;
+            animation-iteration-count:1!important;
+            transition-duration:.01ms!important;
+          }
+        }
+      `}</style>
+
+      <style>{`
+        /* Responsive finishing pass: preserve usable navigation and reading space at every width. */
+        @media (max-width: 760px){
+          .wrap{width:min(100% - 28px,1360px)}
+          .sidebar{overflow:visible;white-space:normal}
+          .sidebar .group{display:block;width:auto;margin:0 0 12px;vertical-align:initial}
+          .category-list{display:flex;gap:8px;overflow-x:auto;margin:0;padding:2px 2px 10px;overscroll-behavior-x:contain;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
+          .category-btn{display:flex;flex:0 0 auto;align-items:center;gap:12px;width:max-content;max-width:min(78vw,320px);min-height:44px;padding:9px 12px;border:1px solid #ded7ca;border-radius:12px;background:#fffdf9;box-shadow:none}
+          .category-btn:hover,.category-btn.active{transform:none}
+          .category-btn strong{font-size:12px;white-space:normal}
+          .category-btn span{font-size:10px}
+          .nursing-programme-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+          .degree-flow-progress span{letter-spacing:.08em}
+          .book-grid,.degree-simple-books,.degree-result-grid,.degree-more-grid{min-width:0}
+          .search input{font-size:16px}
+        }
+        @media (max-width:480px){
+          .wrap,.shop-page.section-degree .wrap{width:calc(100% - 20px)}
+          .topbar-inner{gap:9px;padding:9px}
+          .brand{min-height:42px}
+          .search{min-height:46px}
+          .cart-btn{min-height:46px}
+          .side-head h1{font-size:23px}
+          .nursing-catalogue{padding:20px 16px}
+          .nursing-programme-grid{grid-template-columns:1fr}
+          .nursing-programme{min-height:130px}
+          .degree-flow-progress{grid-template-columns:repeat(5,minmax(0,1fr));padding:16px 8px;gap:2px}
+          .degree-flow-progress:before{left:8px;right:8px}
+          .degree-flow-progress:after{left:8px;max-width:calc(100% - 16px)}
+          .degree-flow-progress span{font-size:8px;letter-spacing:.04em}
+          .degree-choice-card{min-width:0}
+          .degree-confirmation{padding:14px}
+          .degree-simple-actions{gap:7px}
+          .degree-simple-actions button{min-height:42px}
+          .degree-book-meta-row{margin-bottom:10px}
+        }
+        @media(prefers-reduced-motion:reduce){
+          .category-btn,.nursing-programme,.degree-choice-card,.degree-subject-simple,.degree-simple-book{scroll-behavior:auto!important;transition:none!important}
+        }
+      `}</style>
+
+      <style>{`
+        /* Clean, editorial shop UI */
+        .shop-page{
+          --green:#17685b;--deep:#173b34;--gold:#b89455;--paper:#fffdf9;--line:#e8e2d8;--ink:#202722;
+          padding-bottom:40px;
+          background:#f8f7f3!important;
+          color:var(--ink);
+        }
+        .shop-page:before,.shop-page:after{display:none!important}
+        .wrap{width:min(1280px,calc(100% - 40px))}
+        .catalogue-masthead{display:none!important}
+        .topbar{margin-bottom:20px;padding:10px 0;background:rgba(248,247,243,.94);border-radius:0;box-shadow:none}
+        .topbar:after{height:1px;background:var(--line);filter:none;opacity:1}
+        .topbar-inner{grid-template-columns:210px minmax(220px,1fr) auto;gap:12px;padding:10px;border:1px solid var(--line);border-radius:14px;background:#fff;box-shadow:0 6px 20px rgba(32,39,34,.045)}
+        .brand{min-width:0;padding:5px 10px;border:0;border-right:1px solid var(--line);border-radius:0;background:transparent;box-shadow:none}
+        .brand:after{display:none}.brand-copy strong{color:var(--deep);-webkit-text-fill-color:var(--deep)}
+        .premium-icon.compact{width:34px;height:34px;border-radius:9px;box-shadow:none}.premium-icon.compact:before,.premium-icon.compact:after{display:none}.premium-icon.compact svg{width:19px;height:19px}
+        .search{min-height:44px;border:1px solid var(--line);border-radius:10px;background:#fff;box-shadow:none}
+        .cart-btn{min-height:44px;border-radius:10px;background:var(--deep);box-shadow:none}
+        .layout{grid-template-columns:250px minmax(0,1fr);gap:24px}
+        .sidebar{top:78px;padding:18px;border:1px solid var(--line);border-radius:14px;background:#fff;box-shadow:0 8px 24px rgba(32,39,34,.04)}
+        .side-head{padding-bottom:12px;border-bottom:1px solid var(--line)}
+        .side-head h1{color:var(--deep);font-size:24px;font-weight:500;-webkit-text-fill-color:var(--deep)}
+        .side-head h1:after{display:none}
+        .group{padding:13px 0;border-color:var(--line)}
+        .category-list{gap:3px}
+        .category-btn{min-height:0;padding:10px 9px 10px 12px;border:0;border-left:2px solid transparent;border-radius:7px;background:transparent;box-shadow:none}
+        .category-btn:before,.category-btn:after{display:none}
+        .category-btn:hover,.category-btn.active{transform:none;border-color:var(--gold);background:#f7f5ef;box-shadow:none}
+        .category-btn strong{font-size:12px;font-weight:700;color:var(--ink)}
+        .category-btn span{background:transparent;color:#777c75;font-size:10px}
+        .hero{min-height:0;margin-bottom:18px;padding:25px 28px;border:1px solid var(--line);border-radius:14px;background:#fff;box-shadow:0 8px 24px rgba(32,39,34,.04)}
+        .hero:before,.hero:after,.hero .premium-icon{display:none}
+        .eyebrow{color:var(--green);font-size:9px;letter-spacing:.15em}
+        .hero h2{color:var(--deep);background:none;-webkit-text-fill-color:var(--deep);font-size:clamp(30px,4vw,44px);font-weight:500;letter-spacing:-.04em}
+        .hero p{color:#69736c;font-size:13px;line-height:1.6}
+        .toolbar{min-height:0;margin:0 0 14px;padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:none}
+        .filters{gap:6px}.chip{min-height:34px;padding:0 10px;border:1px solid var(--line);border-radius:8px;background:#fff;color:#49534c;font-size:9px;box-shadow:none}
+        .chip:hover{transform:none;box-shadow:none}.chip.active{border-color:var(--deep);background:var(--deep);box-shadow:none}
+        .sort{min-height:36px;border-radius:8px;border-color:var(--line);background:#fff;box-shadow:none}
+        .summary{margin-bottom:14px;padding:0 0 10px;border-bottom:1px solid var(--line);color:#727a74}
+        .book-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+        .card,.book-grid .card:first-child{display:flex;min-height:0;grid-column:auto;flex-direction:column;border:1px solid var(--line);border-radius:14px;background:#fff;box-shadow:0 8px 22px rgba(32,39,34,.05);overflow:hidden}
+        .card:before,.card:after{display:none}
+        .card:has(.media:hover),.card:has(.media:focus-visible){transform:translateY(-3px);border-color:#d8d0c2;box-shadow:0 14px 30px rgba(32,39,34,.09)}
+        .media,.book-grid .card:first-child .media{flex:0 0 228px;height:auto;min-height:228px;padding:28px 14px;border:0;border-bottom:1px solid var(--line);border-radius:0;background:#f4f1eb;perspective:none}
+        .media:before{inset:12px;border:1px solid rgba(255,255,255,.75);border-radius:9px;box-shadow:none}
+        .media:after{width:120px;bottom:21px}
+        .media .book-cover,.book-grid .card:first-child .media .book-cover{width:132px;transform:rotate(-2deg);filter:none}
+        .media:hover .book-cover,.media:focus-visible .book-cover{transform:rotate(-1deg) translateY(-4px) scale(1.025)}
+        .badge,.save{top:12px;border-radius:6px;font-size:8px;box-shadow:none}.badge{left:12px}.save{right:12px}
+        .copy,.book-grid .card:first-child .copy{display:flex;min-height:0;flex:1;flex-direction:column;padding:16px;background:#fff}
+        .meta{padding:0;border:0;background:transparent;color:var(--green);font-size:8px;letter-spacing:.1em}
+        .card .copy h3,.book-grid .card:first-child h3{min-height:0;margin:9px 0 5px;color:var(--ink);font-size:19px;font-weight:500;line-height:1.15;letter-spacing:-.02em;-webkit-line-clamp:2}
+        .author{min-height:0;color:#767d77;font-size:11px;line-height:1.45}
+        .card-facts{gap:8px;margin-top:12px}.card-facts>span{min-height:40px;border-top:1px solid #eee9e1}.card-facts small{font-size:7px}.card-facts b{font-size:10px}
+        .card-glance,.book-grid .card:first-child .card-glance{min-height:0;margin-top:auto;padding-top:13px;border-top:1px solid #eee9e1}
+        .details-hint{font-size:8px}.details-hint b{width:22px;height:22px}
+        .price{color:var(--deep);font-size:25px}.off{border-radius:5px;background:#edf4f0;color:#276a58;box-shadow:none}
+        .card-cart{min-height:0;margin-top:12px;padding-top:12px;border-top:1px solid #eee9e1}
+        .card-cart .add{min-height:39px;border-radius:8px;background:var(--deep);box-shadow:none;font-size:9px}
+        .card-cart .add:hover{transform:translateY(-1px);box-shadow:0 8px 16px rgba(23,59,52,.14)}
+        .nursing-catalogue{margin-bottom:18px;padding:24px;border:1px solid var(--line);border-radius:14px;background:#fff;box-shadow:0 8px 24px rgba(32,39,34,.04)}
+        .nursing-catalogue:before{display:none}.nursing-catalogue-head{margin-bottom:16px;padding-bottom:14px;border-color:var(--line)}
+        .nursing-catalogue h2{color:var(--deep);font-size:clamp(25px,3vw,36px)}
+        .nursing-programme-grid{gap:10px}.nursing-programme{min-height:130px;border-color:var(--line);border-radius:11px;box-shadow:none}.nursing-programme:hover,.nursing-programme.active{transform:translateY(-2px);box-shadow:0 10px 22px rgba(32,39,34,.08)}
+        .degree-discovery>.degree-student-flow~section{display:none!important}
+        .degree-student-flow>.degree-flow-more,.degree-student-flow>.degree-flow-complete{display:none!important}
+        .degree-simple-hero{padding:36px 0 22px}.degree-simple-hero h2{font-size:clamp(38px,6vw,64px)}
+        .degree-flow-panel{border-color:var(--line);border-radius:18px;box-shadow:0 10px 28px rgba(32,39,34,.05)}
+        .degree-flow-panel:before{display:none}
+        .degree-flow-context,.degree-flow-progress{background:#fbfaf7}
+        .degree-choice-card,.degree-subject-simple,.degree-simple-book{border-color:var(--line);border-radius:13px;box-shadow:0 6px 18px rgba(32,39,34,.04)}
+        .degree-choice-card:hover,.degree-subject-simple:hover,.degree-simple-book:hover{transform:translateY(-2px);box-shadow:0 12px 24px rgba(32,39,34,.08)}
+        .degree-simple-book{min-height:0}
+        .degree-simple-cover{min-height:190px}
+        .degree-simple-actions .add{background:var(--degree-cta);box-shadow:none}
+        .empty{min-height:220px;border-color:var(--line);border-radius:14px;box-shadow:none}
+        @media(max-width:1000px){.layout{grid-template-columns:220px minmax(0,1fr);gap:18px}.book-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+        @media(max-width:760px){.wrap{width:calc(100% - 28px)}.layout{grid-template-columns:1fr;gap:16px}.sidebar{position:static;max-height:none}.book-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.topbar-inner{grid-template-columns:1fr auto}.brand{border-right:0}.search{grid-column:1/-1;grid-row:2}}
+        @media(max-width:520px){.wrap{width:calc(100% - 20px)}.topbar-inner{grid-template-columns:1fr}.search{grid-column:auto;grid-row:auto}.cart-btn{width:100%}.book-grid{grid-template-columns:1fr}.card{width:100%}.media{min-height:250px;flex-basis:250px}.hero{padding:22px}.nursing-catalogue{padding:19px}.nursing-programme-grid{grid-template-columns:1fr}}
+        @media(prefers-reduced-motion:reduce){.shop-page *,.shop-page *:before,.shop-page *:after{animation:none!important;transition:none!important}}
       `}</style>
 
       <div className="wrap">
