@@ -4520,6 +4520,111 @@ function ShopCategoryPage({ category }: { category?: ShopCategory }) {
         @media(prefers-reduced-motion:reduce){.checkout-field input,.checkout-page .payment-option,.checkout-form,.checkout-summary{transition:none!important}}
       `}</style>
 
+      <style>{`
+        /* A quieter logo-led checkout: readable glass, restrained colour, and tactile depth. */
+        .shop-page .checkout-page{
+          --checkout-deep:#101f57;--checkout-ink:#17274c;--checkout-muted:#52627e;
+          background:radial-gradient(ellipse at 0 0,rgba(18,59,145,.13),transparent 46%),radial-gradient(ellipse at 100% 20%,rgba(36,150,75,.08),transparent 40%),radial-gradient(ellipse at 80% 100%,rgba(244,213,50,.11),transparent 42%),#f4f7fc!important;
+          font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+        }
+        .shop-page .checkout-header{
+          grid-template-columns:1fr auto 1fr;min-height:110px;padding:18px 0;
+          background:rgba(244,247,252,.88);border-color:rgba(18,59,145,.12);
+          box-shadow:none;backdrop-filter:blur(24px);
+        }
+        .shop-page .checkout-brand{gap:18px}
+        .shop-page .checkout-brand>.checkout-brand-mark{
+          display:flex;align-items:center;justify-content:center;width:172px;height:78px;
+          padding:0;border:1px solid rgba(18,59,145,.08);border-radius:14px;
+          background:#fff;box-shadow:0 10px 26px rgba(16,31,87,.08);transform:none;
+        }
+        .shop-page .checkout-brand-mark:before{display:none}
+        .shop-page .checkout-brand-mark img{width:100%;height:100%;padding:8px;object-fit:contain;filter:none}
+        .shop-page .checkout-brand:hover .checkout-brand-mark{transform:none;box-shadow:0 10px 26px rgba(16,31,87,.08)}
+        .shop-page .checkout-brand strong{font-family:Georgia,'Times New Roman',serif;font-size:19px;font-weight:600;letter-spacing:-.025em}
+        .shop-page .checkout-brand small{margin-top:5px;color:#52627e;font-size:9px;letter-spacing:.12em}
+        .shop-page .checkout-progress{margin:28px auto 34px;font-size:11px;letter-spacing:.025em}
+        .shop-page .checkout-progress .current{color:#123b91}
+        .shop-page .checkout-layout{gap:30px;grid-template-columns:minmax(0,1.4fr) minmax(320px,.85fr)}
+        .shop-page .checkout-form,.shop-page .checkout-summary{
+          border:1px solid rgba(255,255,255,.95);border-radius:26px;
+          background:linear-gradient(135deg,rgba(255,255,255,.86),rgba(255,255,255,.65));
+          box-shadow:0 24px 64px -28px rgba(16,31,87,.25),0 5px 16px rgba(16,31,87,.035),inset 0 1px 0 #fff,0 0 0 1px rgba(18,59,145,.06);
+          backdrop-filter:blur(28px) saturate(1.15);transform:none;
+        }
+        .shop-page .checkout-form:hover,.shop-page .checkout-summary:hover{transform:none;border-color:#fff}
+        .shop-page .checkout-form{padding:42px}
+        .shop-page .checkout-form:before{height:3px;opacity:.9}
+        .shop-page .checkout-summary{top:130px;padding:28px}
+        .shop-page .checkout-heading h1{font-family:Georgia,'Times New Roman',serif;font-size:clamp(34px,3.8vw,48px);font-weight:500;line-height:1.1;letter-spacing:-.045em}
+        .shop-page .checkout-heading>p,.shop-page .checkout-summary-heading p{font-size:10px;letter-spacing:.18em;color:#123b91}
+        .shop-page .checkout-heading>span{font-size:14px;line-height:1.7;color:#52627e}
+        .shop-page .checkout-section-title h2{font-size:23px}
+        .shop-page .checkout-section-title p{font-size:12px;color:#52627e}
+        .shop-page .checkout-fields{gap:18px 16px}
+        .shop-page .checkout-field{font-size:12px;letter-spacing:0;font-weight:650;color:#263e77}
+        .shop-page .checkout-field input{
+          min-height:52px;border:1px solid rgba(18,59,145,.19);border-radius:12px;
+          background:rgba(255,255,255,.85);font-size:15px;color:#101f57;
+          box-shadow:inset 0 2px 4px rgba(16,31,87,.025);transform:none;
+        }
+        .shop-page .checkout-field input::placeholder{color:#6e7b91;opacity:1}
+        .shop-page .checkout-field input:focus{transform:none;background:#fff;border-color:#123b91;box-shadow:0 0 0 4px rgba(18,59,145,.1)}
+        .shop-page .payment-option{min-height:82px;padding:16px;border-radius:15px;background:rgba(255,255,255,.7)}
+        .shop-page .payment-option.selected{border-color:#123b91;background:linear-gradient(110deg,#edf3ff,rgba(255,255,255,.93));box-shadow:0 10px 26px -12px rgba(18,59,145,.25)}
+        .shop-page .payment-option:focus-within{outline:3px solid rgba(18,59,145,.3);outline-offset:3px}
+        .shop-page .payment-option input:checked+.payment-radio{border-color:#123b91}
+        .shop-page .payment-option input:checked+.payment-radio:after{background:#123b91}
+        .shop-page .payment-copy strong{font-size:14px}
+        .shop-page .payment-copy small{font-size:12px;line-height:1.5}
+        .shop-page .checkout-submit{
+          min-height:56px;border-radius:13px!important;color:#fff!important;
+          background:linear-gradient(135deg,#164aa8,#101f57)!important;
+          font-size:14px!important;letter-spacing:.025em!important;font-weight:750!important;
+          box-shadow:0 14px 26px -9px rgba(18,59,145,.38),inset 0 1px 0 rgba(255,255,255,.25);
+        }
+        .shop-page .checkout-submit:hover{background:linear-gradient(135deg,#2056b5,#14276a)!important}
+        .shop-page .checkout-item>div strong{font-size:13px;line-height:1.5}
+        .shop-page .checkout-item>div small,.shop-page .checkout-item>b{font-size:11px}
+        .shop-page .checkout-totals>div,.shop-page .checkout-totals>div b{font-size:13px}
+        .shop-page .checkout-totals .checkout-estimate b{font-size:30px;color:#101f57;font-weight:600;text-shadow:none}
+        .shop-page .checkout-savings{margin-bottom:16px;border-color:rgba(36,150,75,.2);color:#23663b}
+        .shop-page .invoice-download{min-height:48px;border-radius:12px;background:rgba(255,255,255,.85);border-color:rgba(18,59,145,.23);font-size:11px;color:#123b91}
+        .shop-page .invoice-download span{background:#123b91}
+        .shop-page .checkout-secure-note,.shop-page .checkout-integration-note,.shop-page .invoice-note,.shop-page .checkout-help p,.shop-page .checkout-totals>p{font-size:11px;line-height:1.65;color:#52627e}
+        .shop-page .checkout-help{background:rgba(255,255,255,.6);border-color:rgba(18,59,145,.1)}
+        @media(max-width:960px){
+          .shop-page .checkout-layout{gap:20px;grid-template-columns:minmax(0,1fr) 310px}
+          .shop-page .checkout-form{padding:28px}
+          .shop-page .checkout-brand strong{font-size:16px}
+          .shop-page .checkout-brand>.checkout-brand-mark{width:135px;height:68px}
+        }
+        @media(max-width:760px){
+          .shop-page .checkout-header{grid-template-columns:1fr auto;gap:12px;min-height:0;padding:12px 0}
+          .shop-page .checkout-brand{grid-column:1/-1;grid-row:1;justify-self:center;gap:12px}
+          .shop-page .checkout-back{grid-column:1;grid-row:2}
+          .shop-page .checkout-close{grid-column:2;grid-row:2}
+          .shop-page .checkout-layout{grid-template-columns:minmax(0,1fr)}
+          .shop-page .checkout-summary{position:static;grid-row:auto;padding:22px}
+          .shop-page .checkout-form{padding:28px 22px}
+          .shop-page .checkout-field input{font-size:16px}
+          .shop-page .checkout-progress{gap:6px;font-size:9px;margin:20px auto 24px}
+          .shop-page .checkout-brand small{font-size:8px;letter-spacing:.06em}
+        }
+        @media(max-width:420px){
+          .shop-page .checkout-brand{gap:9px}
+          .shop-page .checkout-brand>.checkout-brand-mark{width:110px;height:60px}
+          .shop-page .checkout-brand strong{font-size:14px}
+          .shop-page .checkout-brand small{max-width:165px;line-height:1.5}
+          .shop-page .checkout-fields{grid-template-columns:minmax(0,1fr)}
+          .shop-page .checkout-form,.shop-page .checkout-summary{padding:22px 17px;border-radius:20px}
+          .shop-page .checkout-progress span{font-size:8px}
+        }
+        @media(prefers-reduced-transparency:reduce){
+          .shop-page .checkout-form,.shop-page .checkout-summary,.shop-page .checkout-header{background:#fff;backdrop-filter:none}
+        }
+      `}</style>
+
       {checkoutOpen && (
         <section className="checkout-page" aria-label="Secure checkout">
           <header className="checkout-header">
