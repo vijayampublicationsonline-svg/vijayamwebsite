@@ -30,6 +30,7 @@ const STATES: DistState[] = [
     code: "TN",
     name: "TAMIL NADU",
     number: 3,
+    phones: ["9381879949"],
   },
   {
     id: "karnataka",

@@ -20,6 +20,12 @@ function validEmail(value: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 }
 
+function validMobile(value: string) {
+  const normalized = value.trim();
+  const digits = normalized.replace(/\D/g, "");
+  return /^\+?[0-9\s()-]+$/.test(normalized) && digits.length >= 8 && digits.length <= 15;
+}
+
 function useNavigation() {
   const [route, setRoute] = useState<Route>(getRoute);
 
@@ -75,60 +81,10 @@ function Wordmark({ navigate }: { navigate: (route: Route) => void }) {
       onClick={() => navigate("/")}
       aria-label="Vijayam Publications home"
     >
+      <img src="/images/eagle%20logo%20.jpg" alt="Vijayam Publications eagle logo" />
       <span>VIJAYAM</span>
       <small>PUBLICATIONS</small>
     </button>
-  );
-}
-
-function EyeIcon({ open }: { open: boolean }) {
-  if (!open) {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path
-          d="M3 3l18 18"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-        />
-        <path
-          d="M10.6 10.8a2.2 2.2 0 003.1 3.1"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-        />
-        <path
-          d="M9.9 5.6A10.8 10.8 0 0112 5.4c5.2 0 8.9 3.7 10 6.6a1 1 0 010 .7 12 12 0 01-4.1 5.1M6.1 8.1A12.2 12.2 0 002 12a1 1 0 000 .7c.8 2.1 3.1 4.8 6.4 6.1"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    );
-  }
-
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path
-        d="M2 12.3a1 1 0 010-.6C3.1 8.8 6.8 5 12 5s8.9 3.8 10 6.7a1 1 0 010 .6C20.9 15.2 17.2 19 12 19S3.1 15.2 2 12.3z"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinejoin="round"
-      />
-      <circle
-        cx="12"
-        cy="12"
-        r="3"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-      />
-    </svg>
   );
 }
 
@@ -210,7 +166,7 @@ function PasswordField({
 
   return (
     <div className="field">
-      <label htmlFor={id}>{label}</label>
+      {label && <label htmlFor={id}>{label}</label>}
       <div className="password-wrap">
         <input
           ref={inputRef}
@@ -226,10 +182,25 @@ function PasswordField({
         <button
           type="button"
           className="password-toggle"
-          onClick={() => setVisible((current) => !current)}
           aria-label={visible ? "Hide password" : "Show password"}
+          aria-pressed={visible}
+          onClick={() => setVisible((current) => !current)}
         >
-          <EyeIcon open={visible} />
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            {visible ? (
+              <>
+                <path d="M3 3l18 18" />
+                <path d="M10.6 10.6a2 2 0 002.8 2.8" />
+                <path d="M9.9 5.2A10.8 10.8 0 0112 5c5 0 8.3 4.3 9 7-.3 1.1-1.1 2.3-2.2 3.4" />
+                <path d="M6.2 6.2C4.4 7.4 3.3 9.2 3 12c.5 2 2.2 4.1 4.6 5.5A10 10 0 0012 19c1 0 2-.2 2.9-.5" />
+              </>
+            ) : (
+              <>
+                <path d="M2.5 12s3.3-6 9.5-6 9.5 6 9.5 6-3.3 6-9.5 6-9.5-6-9.5-6z" />
+                <circle cx="12" cy="12" r="2.5" />
+              </>
+            )}
+          </svg>
         </button>
       </div>
       {error && <p className="field-message field-message-error">{error}</p>}
@@ -254,9 +225,11 @@ function SubmitButton({
 function AuthLayout({
   children,
   navigate,
+  wide = false,
 }: {
   children: React.ReactNode;
   navigate: (route: Route) => void;
+  wide?: boolean;
 }) {
   return (
     <main className="auth-page">
@@ -267,7 +240,7 @@ function AuthLayout({
         </button>
       </header>
 
-      <div className="auth-shell">
+      <div className={`auth-shell${wide ? " auth-shell-wide" : ""}`}>
         <section className="editorial-side">
           <p className="kicker">WELCOME</p>
           <h1>Welcome back.</h1>
@@ -310,7 +283,6 @@ function LoginPage({ navigate }: { navigate: (route: Route) => void }) {
   const [passwordError, setPasswordError] = useState("");
 
   const [notice, setNotice] = useState("");
-  const [loading, setLoading] = useState(false);
 
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -337,13 +309,9 @@ function LoginPage({ navigate }: { navigate: (route: Route) => void }) {
       return;
     }
 
-    setLoading(true);
-    window.setTimeout(() => {
-      setLoading(false);
-      setNotice(
-        "Signed in state is ready to connect to your authentication service."
-      );
-    }, 700);
+    setNotice(
+      "Your details are valid, but sign-in needs a secure authentication service. This page does not send or save your password."
+    );
   };
 
   return (
@@ -353,7 +321,7 @@ function LoginPage({ navigate }: { navigate: (route: Route) => void }) {
         <h2>Welcome back.</h2>
         <p className="form-intro">Continue where you left off.</p>
 
-        <form className="auth-form" onSubmit={submit} noValidate>
+        <form className="auth-form" onSubmit={submit} noValidate autoComplete="off">
           <InputField
             id="login-email"
             label="Email address"
@@ -373,13 +341,6 @@ function LoginPage({ navigate }: { navigate: (route: Route) => void }) {
           <div className="field-stack">
             <div className="field-row">
               <label htmlFor="login-password">Password</label>
-              <LinkButton
-                href="/forgot-password"
-                navigate={navigate}
-                className="text-link"
-              >
-                Forgot password?
-              </LinkButton>
             </div>
             <PasswordField
               id="login-password"
@@ -392,6 +353,7 @@ function LoginPage({ navigate }: { navigate: (route: Route) => void }) {
               error={passwordError}
               inputRef={passwordRef}
               label=""
+              autoComplete="new-password"
             />
           </div>
 
@@ -404,196 +366,269 @@ function LoginPage({ navigate }: { navigate: (route: Route) => void }) {
             <span>Keep me signed in</span>
           </label>
 
-          <SubmitButton loading={loading}>Sign in</SubmitButton>
+          <SubmitButton>Sign in</SubmitButton>
 
-          {notice && <p className="field-message field-message-success">{notice}</p>}
+          {notice && <p className="field-message field-message-error" role="alert">{notice}</p>}
         </form>
 
-        <p className="switch-row">
-          New to Vijayam?{" "}
+        <nav className="login-links" aria-label="Account options">
+          <p className="switch-row">
+            New to Vijayam?{" "}
+            <LinkButton
+              href="/register"
+              navigate={navigate}
+              className="text-link strong"
+            >
+              Create an account
+            </LinkButton>
+          </p>
           <LinkButton
-            href="/register"
+            href="/forgot-password"
             navigate={navigate}
-            className="text-link strong"
+            className="text-link login-forgot-link"
           >
-            Create an account
+            Forgot password?
           </LinkButton>
-        </p>
+        </nav>
       </div>
     </AuthLayout>
   );
 }
 
 function RegisterPage({ navigate }: { navigate: (route: Route) => void }) {
-  const nameRef = useRef<HTMLInputElement | null>(null);
+  const firstNameRef = useRef<HTMLInputElement | null>(null);
+  const lastNameRef = useRef<HTMLInputElement | null>(null);
   const emailRef = useRef<HTMLInputElement | null>(null);
+  const mobileRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
+  const confirmRef = useRef<HTMLInputElement | null>(null);
+  const termsRef = useRef<HTMLInputElement | null>(null);
+  const updatesConsentRef = useRef<HTMLInputElement | null>(null);
 
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
+  const [mobile, setMobile] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [audience, setAudience] = useState("");
+  const [referral, setReferral] = useState("");
   const [terms, setTerms] = useState(false);
-
+  const [updatesConsent, setUpdatesConsent] = useState(false);
+  const [offers, setOffers] = useState<string[]>([]);
   const [notice, setNotice] = useState("");
 
-  const hasMinLength = password.length >= 8;
-  const hasUpper = /[A-Z]/.test(password);
-  const hasNumber = /\d/.test(password);
-  const hasSpecial = /[^A-Za-z0-9]/.test(password);
-
-  const score = [hasMinLength, hasUpper, hasNumber, hasSpecial].filter(Boolean).length;
+  const toggleOffer = (value: string) => {
+    setOffers((current) =>
+      current.includes(value)
+        ? current.filter((item) => item !== value)
+        : [...current, value]
+    );
+  };
 
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setNotice("");
 
-    if (!name.trim()) {
-      setNotice("Please enter your full name.");
-      requestAnimationFrame(() => nameRef.current?.focus());
+    if (!firstName.trim()) {
+      setNotice("Please enter your first name.");
+      requestAnimationFrame(() => firstNameRef.current?.focus());
       return;
     }
-
+    if (!lastName.trim()) {
+      setNotice("Please enter your last name.");
+      requestAnimationFrame(() => lastNameRef.current?.focus());
+      return;
+    }
     if (!validEmail(email)) {
       setNotice("Please enter a valid email address.");
       requestAnimationFrame(() => emailRef.current?.focus());
       return;
     }
-
-    if (!hasMinLength) {
-      setNotice("Please enter at least 8 characters.");
+    if (!validMobile(mobile)) {
+      setNotice("Please enter a valid mobile number with 8–15 digits.");
+      requestAnimationFrame(() => mobileRef.current?.focus());
+      return;
+    }
+    if (password.trim().length < 8) {
+      setNotice("Please enter a password with at least 8 non-space characters.");
       requestAnimationFrame(() => passwordRef.current?.focus());
       return;
     }
-
+    if (password !== confirmPassword) {
+      setNotice("Your passwords do not match.");
+      requestAnimationFrame(() => confirmRef.current?.focus());
+      return;
+    }
+    if (!audience) {
+      setNotice("Please select your area of study.");
+      return;
+    }
     if (!terms) {
-      setNotice("Please accept the terms and privacy policy.");
+      setNotice("Please agree to the Terms of Use and Privacy Policy.");
+      requestAnimationFrame(() => termsRef.current?.focus());
+      return;
+    }
+    if (!updatesConsent) {
+      setNotice("Please agree to essential account, order and payment updates.");
+      requestAnimationFrame(() => updatesConsentRef.current?.focus());
       return;
     }
 
-    setNotice("Account details are ready to connect to your backend.");
+    setNotice(
+      "All required details are valid. Account creation still needs a secure server endpoint; this page does not store your password."
+    );
   };
 
   return (
-    <AuthLayout navigate={navigate}>
-      <div className="form-wrap">
-        <p className="form-kicker">REGISTER</p>
-        <h2>Create your account.</h2>
-        <p className="form-intro">Keep your books, notes and progress together.</p>
+    <AuthLayout navigate={navigate} wide>
+      <div className="register-heading">
+        <p className="register-breadcrumb">Home <span>/</span> <b>Sign up</b></p>
+        <p className="form-kicker">JOIN VIJAYAM</p>
+        <h2>Create your account</h2>
+        <p className="form-intro">A better study experience starts here. Keep your books, notes and progress together.</p>
+      </div>
 
-        <form className="auth-form" onSubmit={submit} noValidate>
-          <InputField
-            id="register-name"
-            label="Full name"
-            value={name}
-            onChange={(value) => {
-              setName(value);
-              setNotice("");
-            }}
-            placeholder="Your full name"
-            autoComplete="name"
-            inputRef={nameRef}
-          />
-
-          <InputField
-            id="register-email"
-            label="Email address"
-            value={email}
-            onChange={(value) => {
-              setEmail(value);
-              setNotice("");
-            }}
-            placeholder="you@example.com"
-            type="email"
-            autoComplete="email"
-            inputRef={emailRef}
-          />
-
-          <PasswordField
-            id="register-password"
-            label="Password"
-            value={password}
-            onChange={(value) => {
-              setPassword(value);
-              setNotice("");
-            }}
-            placeholder="Use 8+ characters"
-            autoComplete="new-password"
-            inputRef={passwordRef}
-          />
-
-          <div className="security-panel" aria-live="polite">
-            <div className="strength">
-              <div className="strength-top">
-                <span>Password strength</span>
-                <b>
-                  {score === 0
-                    ? "Not set"
-                    : score === 1
-                    ? "Weak"
-                    : score === 2
-                    ? "Fair"
-                    : score === 3
-                    ? "Good"
-                    : "Strong"}
-                </b>
-              </div>
-              <div className="strength-bars">
-                {[1, 2, 3, 4].map((n) => (
-                  <i key={n} className={n <= score ? "active" : ""} />
-                ))}
-              </div>
+      <div className="form-wrap register-card">
+        <form className="auth-form register-form" onSubmit={submit} noValidate>
+          <div className="register-main-grid">
+            <div className="register-column">
+              <InputField
+                id="register-first-name"
+                label="First name *"
+                value={firstName}
+                onChange={(value) => { setFirstName(value); setNotice(""); }}
+                placeholder="Enter your first name"
+                autoComplete="given-name"
+                inputRef={firstNameRef}
+              />
+              <InputField
+                id="register-last-name"
+                label="Last name *"
+                value={lastName}
+                onChange={(value) => { setLastName(value); setNotice(""); }}
+                placeholder="Enter your last name"
+                autoComplete="family-name"
+                inputRef={lastNameRef}
+              />
+              <InputField
+                id="register-email"
+                label="Email address *"
+                value={email}
+                onChange={(value) => { setEmail(value); setNotice(""); }}
+                placeholder="Enter your email address"
+                type="email"
+                autoComplete="email"
+                inputRef={emailRef}
+              />
+              <InputField
+                id="register-mobile"
+                label="Mobile *"
+                value={mobile}
+                onChange={(value) => { setMobile(value); setNotice(""); }}
+                placeholder="Enter your phone number"
+                type="tel"
+                autoComplete="tel"
+                inputRef={mobileRef}
+              />
             </div>
 
-            <ul className="password-rules">
-              <li className={hasMinLength ? "ok" : ""}>
-                <CheckIcon />
-                <span>At least 8 characters</span>
-              </li>
-              <li className={hasUpper ? "ok" : ""}>
-                <CheckIcon />
-                <span>One uppercase letter</span>
-              </li>
-              <li className={hasNumber ? "ok" : ""}>
-                <CheckIcon />
-                <span>One number</span>
-              </li>
-              <li className={hasSpecial ? "ok" : ""}>
-                <CheckIcon />
-                <span>One special character</span>
-              </li>
-            </ul>
+            <div className="register-column register-column-right">
+              <PasswordField
+                id="register-password"
+                label="Password *"
+                value={password}
+                onChange={(value) => { setPassword(value); setNotice(""); }}
+                placeholder="Create a password (8+ characters)"
+                autoComplete="new-password"
+                inputRef={passwordRef}
+              />
+              <PasswordField
+                id="register-confirm-password"
+                label="Confirm password *"
+                value={confirmPassword}
+                onChange={(value) => { setConfirmPassword(value); setNotice(""); }}
+                placeholder="Re-enter your password"
+                autoComplete="new-password"
+                inputRef={confirmRef}
+              />
+
+              <fieldset className="audience-field">
+                <legend>We’d like to know more about you *</legend>
+                <div className="audience-options">
+                  {["Nursing", "Degree", "Vocational", "Bridge Course"].map((option) => (
+                    <label key={option}>
+                      <input
+                        type="radio"
+                        name="study-area"
+                        value={option}
+                        checked={audience === option}
+                        onChange={(event) => { setAudience(event.target.value); setNotice(""); }}
+                      />
+                      {option}
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+
+              <InputField
+                id="register-referral"
+                label="Referral code"
+                value={referral}
+                onChange={setReferral}
+                placeholder="Enter referral code (optional)"
+              />
+
+              <label className="check-row register-check">
+                <input ref={termsRef} type="checkbox" checked={terms} onChange={(event) => setTerms(event.target.checked)} />
+                <span>I agree to the <a href="#terms">Terms of Use</a> and <a href="#privacy">Privacy Policy</a> *</span>
+              </label>
+            </div>
           </div>
 
-          <label className="check-row">
-            <input
-              type="checkbox"
-              checked={terms}
-              onChange={(event) => setTerms(event.target.checked)}
-            />
-            <span>I agree to the Terms and Privacy Policy.</span>
-          </label>
+          <section className="communication-section">
+            <h3>Communication preferences</h3>
+            <div className="communication-grid">
+              <div className="communication-block">
+                <label className="check-row">
+                  <input ref={updatesConsentRef} type="checkbox" checked={updatesConsent} onChange={(event) => setUpdatesConsent(event.target.checked)} />
+                  <span>I agree to receive essential account, order and payment updates. *</span>
+                </label>
+                <label className="check-row optional-update">
+                  <input type="checkbox" checked={offers.includes("WhatsApp updates")} onChange={() => toggleOffer("WhatsApp updates")} />
+                  <span>Optional service updates via WhatsApp</span>
+                </label>
+              </div>
+              <div className="communication-block">
+                <p>Offers and study resources <span>(optional)</span></p>
+                <div className="offer-options">
+                  {["Email", "SMS", "WhatsApp"].map((option) => (
+                    <label className="check-row" key={option}>
+                      <input type="checkbox" checked={offers.includes(option)} onChange={() => toggleOffer(option)} />
+                      <span>{option}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
 
-          <SubmitButton>Create account</SubmitButton>
-
-          {notice && (
-            <p
-              className={`field-message ${
-                notice.includes("ready")
-                  ? "field-message-success"
-                  : "field-message-error"
-              }`}
-            >
-              {notice}
+          <div className="register-submit">
+            <SubmitButton>Create account</SubmitButton>
+            {notice && (
+              <p
+                className={`field-message ${notice.includes("All required details are valid") ? "field-message-success" : "field-message-error"}`}
+                role={notice.includes("All required details are valid") ? "status" : "alert"}
+              >
+                {notice}
+              </p>
+            )}
+            <p className="switch-row">
+              Already have an account?{" "}
+              <LinkButton href="/login" navigate={navigate} className="text-link strong">Sign in</LinkButton>
             </p>
-          )}
+          </div>
         </form>
-
-        <p className="switch-row">
-          Already have an account?{" "}
-          <LinkButton href="/login" navigate={navigate} className="text-link strong">
-            Sign in
-          </LinkButton>
-        </p>
       </div>
     </AuthLayout>
   );
@@ -614,7 +649,9 @@ function ForgotPasswordPage({ navigate }: { navigate: (route: Route) => void }) 
       return;
     }
 
-    setNotice("Reset request is ready to connect to your email service.");
+    setNotice(
+      "Your email is valid, but password reset needs a secure email service connected to the app."
+    );
   };
 
   return (
@@ -645,11 +682,8 @@ function ForgotPasswordPage({ navigate }: { navigate: (route: Route) => void }) 
 
           {notice && (
             <p
-              className={`field-message ${
-                notice.includes("ready")
-                  ? "field-message-success"
-                  : "field-message-error"
-              }`}
+              className="field-message field-message-error"
+              role="alert"
             >
               {notice}
             </p>
@@ -961,6 +995,8 @@ function AuthStyles() {
         position: relative;
       }
 
+      .password-wrap input { padding-right: 52px; }
+
       .password-toggle {
         position: absolute;
         right: 9px;
@@ -1179,6 +1215,17 @@ function AuthStyles() {
         color: #6B6F67;
       }
 
+      .login-links {
+        display: grid;
+        justify-items: center;
+        gap: 10px;
+        margin-top: 20px;
+        padding-top: 17px;
+        border-top: 1px solid var(--eagle-line);
+      }
+      .login-links .switch-row { margin: 0; }
+      .login-forgot-link { font-size: 13px; }
+
       .reset-links {
         margin-top: 18px;
         display: flex;
@@ -1251,6 +1298,343 @@ function AuthStyles() {
           font-size: 11px;
           min-height: 52px;
         }
+      }
+
+      /* Eagle-brand refresh */
+      :root {
+        --eagle-navy: #14245B;
+        --eagle-blue: #0878C9;
+        --eagle-cyan: #10B8D7;
+        --eagle-red: #E6202A;
+        --eagle-gold: #F4C414;
+        --eagle-ink: #17234F;
+        --eagle-muted: #586584;
+        --eagle-line: #D6E3F3;
+      }
+
+      html, body { background: #F2F7FC; }
+      body { color: var(--eagle-ink); }
+      .auth-page {
+        background:
+          radial-gradient(ellipse at 10% 12%, rgba(16,184,215,.13), transparent 32%),
+          radial-gradient(ellipse at 92% 86%, rgba(230,32,42,.08), transparent 30%),
+          linear-gradient(135deg, #F5FAFF 0%, #EAF3FC 52%, #FFF9E8 100%);
+      }
+      .auth-header, .auth-footer { border-color: var(--eagle-line); }
+      .wordmark {
+        display: grid;
+        grid-template-columns: 54px auto;
+        grid-template-rows: auto auto;
+        column-gap: 11px;
+        align-items: center;
+      }
+      .wordmark img {
+        grid-column: 1;
+        grid-row: 1 / 3;
+        width: 54px;
+        height: 54px;
+        object-fit: contain;
+        border-radius: 50%;
+        background: #fff;
+        box-shadow: 0 4px 14px rgba(20,36,91,.12);
+      }
+      .wordmark span { color: var(--eagle-navy); font-weight: 800; }
+      .wordmark small { color: var(--eagle-blue); font-weight: 700; }
+      .header-link, .back-link, .auth-footer, .support-copy,
+      .meta-line, .kicker, .form-kicker, .form-intro,
+      .switch-row, .check-row { color: var(--eagle-muted); }
+      .editorial-side {
+        border-color: var(--eagle-line);
+        padding-top: 28px;
+      }
+      .kicker, .form-kicker { color: var(--eagle-red); font-weight: 800; }
+      .editorial-side h1, .form-wrap h2 { color: var(--eagle-navy); }
+      .editorial-side h1 { font-weight: 750; letter-spacing: -.045em; }
+      .intro { color: var(--eagle-blue); font-weight: 650; }
+      .meta-line { color: var(--eagle-blue); font-weight: 750; }
+      .form-wrap {
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(20,36,91,.12);
+        border-radius: 24px;
+        background: linear-gradient(150deg, rgba(255,255,255,.98), rgba(247,251,255,.96));
+        box-shadow: 0 28px 72px rgba(20,36,91,.16), 0 6px 18px rgba(8,120,201,.06);
+      }
+      .form-wrap::before {
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, var(--eagle-navy) 0 24%, var(--eagle-blue) 24% 48%, var(--eagle-cyan) 48% 68%, var(--eagle-gold) 68% 84%, var(--eagle-red) 84%);
+      }
+      .form-wrap:hover {
+        border-color: rgba(8,120,201,.3);
+        box-shadow: 0 32px 82px rgba(20,36,91,.19), 0 8px 22px rgba(8,120,201,.08);
+      }
+      .form-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 11px;
+        border: 1px solid rgba(244,196,20,.42);
+        border-radius: 999px;
+        background: linear-gradient(110deg, rgba(244,196,20,.14), rgba(16,184,215,.08));
+        letter-spacing: .14em;
+      }
+      .form-wrap h2 { letter-spacing: -.04em; }
+      .form-intro { color: #65718D; }
+      .field input, .password-wrap input {
+        background: linear-gradient(180deg, #FFFFFF, #FBFDFF);
+        box-shadow: inset 0 1px 2px rgba(20,36,91,.025);
+      }
+      .field input:hover, .password-wrap input:hover {
+        border-color: rgba(8,120,201,.45);
+      }
+      .field > label, .field-row > label { color: var(--eagle-navy); font-weight: 650; }
+      .field input, .password-wrap input {
+        border-color: #C9D8EB;
+        border-radius: 10px;
+        color: var(--eagle-ink);
+      }
+      .field input:focus, .password-wrap input:focus {
+        border-color: var(--eagle-blue);
+        box-shadow: 0 0 0 4px rgba(8,120,201,.12);
+      }
+      .field input[aria-invalid="true"], .password-wrap input[aria-invalid="true"] { border-color: var(--eagle-red); }
+      .text-link, .text-link.strong { color: var(--eagle-blue); font-weight: 650; }
+      .text-link:hover, .header-link:hover, .back-link:hover, .password-toggle:hover { color: var(--eagle-red); }
+      .password-toggle:hover { background: rgba(16,184,215,.12); }
+      .check-row input { accent-color: var(--eagle-blue); }
+      .submit-button {
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(244,196,20,.35);
+        border-radius: 11px;
+        background: linear-gradient(110deg, var(--eagle-navy) 0%, #173E83 56%, var(--eagle-blue) 100%);
+        box-shadow: 0 10px 22px rgba(20,36,91,.2), inset 0 1px 0 rgba(255,255,255,.18);
+        letter-spacing: .025em;
+      }
+      .submit-button:hover:not(:disabled) {
+        background: linear-gradient(110deg, #101C4A 0%, #12336F 56%, #0565AC 100%);
+        box-shadow: 0 13px 26px rgba(20,36,91,.25), 0 0 0 3px rgba(244,196,20,.12);
+      }
+      .submit-button:focus-visible, .password-toggle:focus-visible, .text-link:focus-visible {
+        outline: 3px solid rgba(244,196,20,.75);
+        outline-offset: 3px;
+      }
+      .strength-top b, .password-rules li.ok, .password-rules li.ok svg { color: var(--eagle-blue); }
+      .strength-bars i.active { background: linear-gradient(90deg, var(--eagle-cyan), var(--eagle-blue)); }
+      .security-panel { border-color: var(--eagle-line); background: #F7FBFF; }
+      .field-message-success { color: #087B69; }
+      .field-message-error { color: var(--eagle-red); }
+
+      @media (max-width: 760px) {
+        .editorial-side { padding-top: 0; }
+        .wordmark { grid-template-columns: 46px auto; }
+        .wordmark img { width: 46px; height: 46px; }
+      }
+
+      /* Wide, editorial registration form inspired by the reference layout */
+      .auth-shell-wide {
+        display: block;
+        padding-top: 34px;
+      }
+      .auth-shell-wide .editorial-side { display: none; }
+      .auth-shell-wide .form-side { display: block; }
+      .register-heading { margin: 0 auto 22px; max-width: 1240px; }
+      .register-breadcrumb {
+        margin: 0 0 22px;
+        color: var(--eagle-muted);
+        font-size: 14px;
+      }
+      .register-breadcrumb span { margin: 0 10px; color: #A8B6CA; }
+      .register-breadcrumb b { color: var(--eagle-navy); }
+      .register-heading .form-kicker { margin-bottom: 12px; }
+      .register-heading h2 {
+        margin: 0;
+        color: var(--eagle-navy);
+        font-size: clamp(34px, 4vw, 46px);
+        font-weight: 650;
+        letter-spacing: -.045em;
+      }
+      .register-heading .form-intro { margin: 9px 0 0; }
+      .register-card {
+        width: 100%;
+        max-width: none;
+        padding: 34px 40px;
+        border-color: rgba(20,36,91,.14);
+        border-radius: 18px;
+        background: linear-gradient(140deg, rgba(241,246,252,.98), rgba(249,251,254,.98) 58%, rgba(255,250,235,.76));
+        box-shadow: 0 24px 60px rgba(20,36,91,.12), 0 5px 18px rgba(8,120,201,.06);
+      }
+      .register-card::before { margin-bottom: 28px; }
+      .register-main-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: clamp(28px, 5vw, 72px);
+      }
+      .register-column { display: grid; align-content: start; gap: 18px; }
+      .register-column-right {
+        border-left: 1px solid #B9C9DD;
+        padding-left: clamp(28px, 5vw, 72px);
+      }
+      .register-card .field { gap: 8px; }
+      .register-card .field input,
+      .register-card .password-wrap input { height: 48px; }
+      .register-card .field > label { font-size: 15px; }
+      .audience-field {
+        min-width: 0;
+        margin: 0;
+        padding: 0;
+        border: 0;
+      }
+      .audience-field legend {
+        margin-bottom: 11px;
+        color: var(--eagle-navy);
+        font-size: 15px;
+        font-weight: 650;
+      }
+      .audience-options { display: flex; flex-wrap: wrap; gap: 10px 15px; }
+      .audience-options label {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: #3E4A67;
+        font-size: 14px;
+        cursor: pointer;
+      }
+      .audience-options input {
+        width: 16px;
+        height: 16px;
+        margin: 0;
+        accent-color: var(--eagle-blue);
+      }
+      .register-check { align-items: flex-start; line-height: 1.5; }
+      .register-check input { flex: 0 0 16px; }
+      .register-check a { color: var(--eagle-blue); text-decoration: none; font-weight: 650; }
+      .register-check a:hover { color: var(--eagle-red); text-decoration: underline; }
+      .communication-section {
+        margin-top: 24px;
+        padding-top: 20px;
+        border-top: 1px solid #CFD9E6;
+      }
+      .communication-section h3 {
+        margin: 0 0 14px;
+        color: var(--eagle-navy);
+        font-size: 16px;
+        font-weight: 700;
+      }
+      .communication-grid { display: grid; grid-template-columns: 1fr 1fr; }
+      .communication-block { padding-right: 34px; }
+      .communication-block + .communication-block {
+        padding: 0 0 0 42px;
+        border-left: 1px solid #B9C9DD;
+      }
+      .communication-block p {
+        margin: 0 0 12px;
+        color: #3E4A67;
+        font-size: 14px;
+      }
+      .communication-block p span { color: var(--eagle-muted); }
+      .communication-block .check-row { align-items: flex-start; font-size: 13px; line-height: 1.5; }
+      .communication-block .check-row input { flex: 0 0 16px; margin-top: 1px; }
+      .optional-update { margin-top: 13px; }
+      .offer-options { display: flex; flex-wrap: wrap; gap: 12px; }
+      .offer-options .check-row { align-items: center; }
+      .register-submit { width: min(100%, 440px); margin: 30px auto 0; text-align: center; }
+      .register-submit .submit-button { min-height: 54px; }
+      .register-submit .switch-row { margin-top: 17px; }
+      .wordmark img {
+        width: 62px;
+        height: 62px;
+        border: 2px solid rgba(244,196,20,.6);
+        box-shadow: 0 5px 18px rgba(20,36,91,.17), 0 0 0 4px rgba(16,184,215,.08);
+      }
+      .wordmark { grid-template-columns: 62px auto; }
+
+      @media (max-width: 760px) {
+        .wordmark { grid-template-columns: 46px auto; }
+        .wordmark img { width: 46px; height: 46px; }
+        .auth-shell-wide { padding-top: 24px; }
+        .register-heading { margin-bottom: 18px; }
+        .register-breadcrumb { margin-bottom: 16px; }
+        .register-card { padding: 24px 20px; }
+        .register-card::before { margin-bottom: 22px; }
+        .register-main-grid { grid-template-columns: 1fr; gap: 20px; }
+        .register-column-right { border-left: 0; border-top: 1px solid #B9C9DD; padding: 22px 0 0; }
+        .communication-grid { grid-template-columns: 1fr; gap: 18px; }
+        .communication-block { padding: 0; }
+        .communication-block + .communication-block { border-left: 0; border-top: 1px solid #B9C9DD; padding: 18px 0 0; }
+      }
+
+      /* Consistent eagle identity across sign-in, registration, and password reset */
+      .auth-header { min-height: 106px; }
+      .wordmark { grid-template-columns: 88px auto; column-gap: 16px; }
+      .wordmark img {
+        width: 88px;
+        height: 88px;
+        border: 3px solid var(--eagle-gold);
+        box-shadow: 0 0 0 5px rgba(16,184,215,.16), 0 10px 26px rgba(20,36,91,.22);
+      }
+      .wordmark span,
+      .wordmark small {
+        font-family: Georgia, "Times New Roman", serif;
+      }
+      .wordmark span { font-size: 19px; letter-spacing: .1em; }
+      .wordmark small { font-size: 11px; letter-spacing: .2em; }
+      .brand-emblem {
+        width: fit-content;
+        display: grid;
+        justify-items: center;
+        gap: 5px;
+        margin: 0 0 30px;
+        padding: 17px 22px 15px;
+        border: 1px solid rgba(244,196,20,.48);
+        border-radius: 22px;
+        background: linear-gradient(145deg, rgba(255,255,255,.94), rgba(226,244,252,.86));
+        box-shadow: 0 16px 38px rgba(20,36,91,.13), inset 0 1px 0 #fff;
+      }
+      .brand-emblem img {
+        width: 116px;
+        height: 116px;
+        object-fit: contain;
+        border: 4px solid #fff;
+        border-radius: 50%;
+        background: #fff;
+        box-shadow: 0 0 0 3px var(--eagle-gold), 0 0 0 8px rgba(16,184,215,.18), 0 12px 28px rgba(20,36,91,.2);
+      }
+      .brand-emblem span {
+        margin-top: 9px;
+        color: var(--eagle-navy);
+        font-size: 19px;
+        font-weight: 850;
+        letter-spacing: .13em;
+      }
+      .brand-emblem small {
+        color: var(--eagle-blue);
+        font-size: 10px;
+        font-weight: 750;
+        letter-spacing: .24em;
+      }
+      .editorial-side { border-color: rgba(8,120,201,.22); }
+      .register-heading .form-kicker { color: var(--eagle-red); }
+      .audience-options label {
+        padding: 9px 12px;
+        border: 1px solid #CFDDF0;
+        border-radius: 999px;
+        background: rgba(255,255,255,.78);
+        transition: border-color .18s ease, background .18s ease, box-shadow .18s ease;
+      }
+      .audience-options label:has(input:checked) {
+        border-color: var(--eagle-blue);
+        background: linear-gradient(110deg, rgba(16,184,215,.13), rgba(244,196,20,.15));
+        box-shadow: 0 3px 12px rgba(8,120,201,.1);
+      }
+      @media (max-width: 760px) {
+        .auth-header { min-height: 78px; }
+        .wordmark { grid-template-columns: 56px auto; column-gap: 11px; }
+        .wordmark img { width: 56px; height: 56px; }
+        .wordmark span { font-size: 16px; }
+        .brand-emblem { margin-bottom: 22px; padding: 14px 18px 12px; }
+        .brand-emblem img { width: 92px; height: 92px; }
       }
 
       @media (prefers-reduced-motion: reduce) {

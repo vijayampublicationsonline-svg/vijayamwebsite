@@ -12,7 +12,6 @@ import {
   Mic,
   Languages,
   ChevronDown,
-  ShoppingBag,
   HeartPulse,
   BriefcaseBusiness,
   Route,
@@ -20,7 +19,7 @@ import {
 } from "lucide-react";
 
 const languages = [
-  "English", "Telugu", "Hindi", "Tamil", "Marathi", "Gujarati",
+  "English", "Telugu", "Kannada", "Hindi", "Tamil", "Marathi", "Gujarati",
   "Odia", "Bengali", "Malayalam", "Kashmiri", "Rajasthani",
 ] as const;
 
@@ -39,6 +38,7 @@ type Translation = {
 const translations: Record<Language, Translation> = {
   English: { categories: ["Home", "Shop Now", "Gallery", "Bulk Order", "Join as an Author", "About Us"], search: "Search ISBN / Book Name", login: "Login", cart: "Cart", dayMode: "Day Mode", nightMode: "Night Mode", language: "Language" },
   Telugu: { categories: ["హోమ్", "షాప్", "గ్యాలరీ", "బల్క్ ఆర్డర్", "రచయితగా చేరండి", "మా గురించి"], search: "ISBN / పుస్తక పేరు వెతకండి", login: "లాగిన్", cart: "కార్ట్", dayMode: "డే మోడ్", nightMode: "నైట్ మోడ్", language: "భాష" },
+  Kannada: { categories: ["ಮುಖಪುಟ", "ಈಗ ಖರೀದಿಸಿ", "ಗ್ಯಾಲರಿ", "ಬೃಹತ್ ಆರ್ಡರ್", "ಲೇಖಕರಾಗಿ ಸೇರಿ", "ನಮ್ಮ ಬಗ್ಗೆ"], search: "ISBN / ಪುಸ್ತಕದ ಹೆಸರನ್ನು ಹುಡುಕಿ", login: "ಲಾಗಿನ್", cart: "ಕಾರ್ಟ್", dayMode: "ಹಗಲು ಮೋಡ್", nightMode: "ರಾತ್ರಿ ಮೋಡ್", language: "ಭಾಷೆ" },
   Hindi: { categories: ["होम", "अभी खरीदें", "गैलरी", "बल्क ऑर्डर", "लेखक बनें", "हमारे बारे में"], search: "ISBN / पुस्तक का नाम खोजें", login: "लॉगिन", cart: "कार्ट", dayMode: "डे मोड", nightMode: "नाइट मोड", language: "भाषा" },
   Tamil: { categories: ["முகப்பு", "இப்போது வாங்க", "கேலரி", "மொத்த ஆர்டர்", "ஆசிரியராக சேரவும்", "எங்களை பற்றி"], search: "ISBN / புத்தகப் பெயரைத் தேடுங்கள்", login: "உள்நுழைய", cart: "வண்டி", dayMode: "பகல் முறை", nightMode: "இரவு முறை", language: "மொழி" },
   Marathi: { categories: ["मुख्यपृष्ठ", "आता खरेदी करा", "गॅलरी", "बल्क ऑर्डर", "लेखक बना", "आमच्याबद्दल"], search: "ISBN / पुस्तकाचे नाव शोधा", login: "लॉगिन", cart: "कार्ट", dayMode: "डे मोड", nightMode: "नाईट मोड", language: "भाषा" },
@@ -465,10 +465,6 @@ export default function Navbar() {
               </button>
 
               <Link href="/login" className="vijayam-navbar-login hidden h-11 shrink-0 items-center rounded-2xl bg-gradient-to-r from-[#E8C874] to-[#B08D57] px-6 text-sm font-bold text-[#2B2620] shadow-[0_8px_18px_rgba(140,109,31,0.16)] transition hover:-translate-y-0.5 md:flex">{text.login}</Link>
-
-              <Link href="/cart" className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#D4AF37]/30 bg-white/65 text-[#5C5346] shadow-[0_6px_18px_rgba(140,109,31,0.06)] dark:bg-white/5 dark:text-[#F3D27A]" aria-label={text.cart}>
-                <ShoppingBag size={19} />
-              </Link>
 
               <button onClick={() => setMobileMenuOpen((open) => !open)} className="flex h-11 w-11 items-center justify-center rounded-full text-[#5C5346] xl:hidden dark:text-white" aria-label="Toggle navigation">
                 {mobileMenuOpen ? <X size={25} /> : <Menu size={25} />}
